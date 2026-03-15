@@ -1,0 +1,14 @@
+I want you to create a markdown file - a template for a TSD (Technical specifications document).
+
+This file will later be given to an LLM and I'll tell the LLM to interview the user
+
+to create a TSD according to the template.
+
+The TSD should contain all the technical details that are necessary to successfully implement a PRD (Product requirement document).
+
+The file name should be TSD-template_yourname_YYYYMMDDHHMM.md
+
+Put the file in a folder under project-root/tmp/TSD-template.
+
+For background reference, I'm adding a template for a PRD. You don't have to follow it with the same structure in the TSD,
+just get inspired by it so that the TSD template has all the necessary parts to fill in all the technical details, so that programmers can take the TSD and implement the system.

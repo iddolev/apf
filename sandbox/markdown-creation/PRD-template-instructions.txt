@@ -1,0 +1,5 @@
+I want you to create a markdown file - a template for a PRD (Product requirements document).
+This file will later be given to an LLM and I'll tell the LLM to interview the user
+to create a PRD according to the template.
+The file name should be PRD-template_yourname_YYYYMMDDHHMM.md
+Put the file in a folder under project-root/tmp.

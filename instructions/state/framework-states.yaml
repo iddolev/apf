@@ -1,0 +1,28 @@
+comments:
+  - Testing is not a separate phase
+
+defaults:
+  phase:
+    "not started"
+    "in progress"
+    "done"
+
+SDLC:
+  not_started:
+    description: "Initial state before anything start"
+    stage: "not started"
+    phase: "not started"
+  planning:
+    description:
+    stage:
+      - PRD:
+        description: |
+          Requirements stage, that produces a PRD (product requirements document)
+        phase: defaults
+      - TSD:
+  implementation:
+    description: TBD
+    comments:
+  deployment:
+
+

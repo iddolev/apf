@@ -1,0 +1,12 @@
+I want you to create a markdown file that contains instructions on how to create a PRD
+that looks like the template instructions/PRD/PRD-template.md,
+i.e. the instructions will contain steps of how to query the user with enough iterations
+so that the end result will be a PRD according to the template.
+These two files will later be given to an LLM and I'll tell the LLM:
+execute the instructions in PRD-instructions.md.
+This will result in an iterative process of interviewing the user, iteratively building the PRD according to the template.
+Important: Given that the LLM will get both the PRD-instructions.md file and the template file,
+DO NOT replicate the PRD-template contents with specific questions.
+You should focus on explaining the process, how to ask, and perhaps some specific instructions for certain template sections,
+but don't have an explicit question per template item - that's redundant.
+The file you create should be under projectroot/tmp/PRD-instructions and have the name PRD-instructions_yourname_YYYYMMDDHHMM.

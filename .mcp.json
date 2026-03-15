@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "project-tracker": {
+      "command": "python",
+      "args": [
+        "instructions/mcp-servers/tasks/server.py",
+        "--state-dir",
+        "sandbox/tmp"
+      ]
+    }
+  }
+}

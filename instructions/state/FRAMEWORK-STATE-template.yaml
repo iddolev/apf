@@ -1,0 +1,16 @@
+# This is a template for the file FRAMEWORK-STATE.yaml which tracks the stage of preparing an agentic programming project
+
+# This indicates the stage in the software development life cycle (SDLC) of the project
+
+version: v0.1
+
+SDLC: "not started"
+
+# This indicates the preparation stage, e.g. "not started", "PRD", "TSD", ... , and finally: "completed"
+# Note: "Copy shared files to the project" is NOT a tracked stage — it always runs regardless of the current stage.
+stage: "not started"
+
+# This indicates the phase inside the stage
+# E.g. if stage == "PRD" and phase == "Phase B", then the LLM should resume from Phase B
+# E.g. if stage == "PRD" and it has completed (and stage "TSD" has not yet started) then phase should be "completed"
+phase: "not started"

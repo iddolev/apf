@@ -1,0 +1,15 @@
+# IDE
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Project-specific
+private/
+conversations/
+*.local.*
+tmp/
+
