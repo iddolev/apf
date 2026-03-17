@@ -176,7 +176,7 @@ def copy_entry(src: Path, dest: Path, *, dry_run: bool) -> None:
 
 def _is_apf_repo(project_dir: Path) -> bool:
     """Detect if *project_dir* is the APF repo itself.
-    (This is a big fragile, in case we ever rename apf_install.py
+    (This is a bit fragile, in case we ever rename apf_install.py
     or move it to a different folder,
     but that change would be rare, so that's good enough for now.
     """
@@ -204,9 +204,9 @@ def update_gitignore(project_dir: Path, *, dry_run: bool) -> None:
     content_lines = content.splitlines()
 
     content_stripped = {line.strip() for line in content_lines}
-    git_ignore_s = set(GITIGNORE_ENTRIES)
+    git_ignore_s = {e.strip() for e in GITIGNORE_ENTRIES}
     existing_ignore = [line for line in content_lines if line.strip() in git_ignore_s]
-    missing = [line for line in GITIGNORE_ENTRIES if line not in content_stripped]
+    missing = [e for e in GITIGNORE_ENTRIES if e.strip() not in content_stripped]
 
     if not existing_ignore:
         # None of the GITIGNORE_ENTRIES lines exist — add full section
