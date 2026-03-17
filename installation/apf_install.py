@@ -16,6 +16,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+from datetime import datetime
 from pathlib import Path
 
 # ── Configuration ────────────────────────────────────────────────────────────
@@ -31,13 +32,6 @@ PATH_MAP: list[tuple[str, str]] = [
     (".claude/commands/apf",  ".claude/commands/apf"),
     (".claude/scripts",       ".claude/scripts"),
 ]
-
-
-# Files where we inject content between markers instead of overwriting.
-# These must also appear in PATH_MAP above.
-MARKER_MERGE_FILES: set[str] = {
-    "CLAUDE.md",
-}
 
 MARKER_BEGIN = "<!-- BEGIN APF -->"
 MARKER_END = "<!-- END APF -->"
@@ -110,10 +104,10 @@ def clone_repo(tmp_dir: Path) -> Path:
 _YAML_LINE_RE = re.compile(r"(\w+)\s?:\s?(\w+)")
 
 
-def naive_yaml_parser(path: Path) -> dict:
-    """In order not to rely on installing the pyyaml package"""
+def naive_yaml_parser(text: str) -> dict:
+    """Parse simple 'key: value' YAML lines. No pyyaml dependency."""
     result = {}
-    for line in path.read_text().splitlines():
+    for line in text.splitlines():
         line = line.strip()
         m = _YAML_LINE_RE.match(line)
         if m:
@@ -124,9 +118,19 @@ def naive_yaml_parser(path: Path) -> dict:
     return result
 
 
+def read_frontmatter(text: str) -> dict:
+    """Extract YAML frontmatter (between --- delimiters) from file content."""
+    if not text.startswith("---"):
+        return {}
+    end = text.find("\n---", 3)
+    if end < 0:
+        return {}
+    return naive_yaml_parser(text[3:end])
+
+
 def read_apf_version(path: Path) -> str:
     """Read the version field from a YAML .apf file (simple key: value parsing)."""
-    data = naive_yaml_parser(path)
+    data = naive_yaml_parser(path.read_text())
     value = data.get('version')
     if value:
         return value
@@ -142,7 +146,7 @@ def get_new_version(repo_dir: Path) -> str:
 
 
 def merge_with_markers(
-    source_content: str,
+    src_path: str,
     dest_path: Path,
     version: str,
     *,
@@ -150,6 +154,7 @@ def merge_with_markers(
 ) -> None:
     """Insert *source_content* between markers in an existing file,
     or append the marked block if the file has no markers yet."""
+    source_content = src_path.read_text()
     managed_block = (
         f"{MARKER_BEGIN}\n"
         f"<!-- managed by APF {version} — do not edit manually -->\n"
@@ -181,36 +186,75 @@ def merge_with_markers(
         print(f"  ✏️  {action.capitalize()}d managed block in {dest_path}")
 
 
-def copy_entry(
+DATE_FORMAT = "%Y-%m-%d %H:%M"
+
+
+def source_is_newer(src: Path, dest: Path) -> bool | None:
+    """Compare last_updated frontmatter fields. Returns True if source is newer
+    or if either file lacks a last_updated field (safer to update)."""
+    new_fm = read_frontmatter(src.read_text())
+    old_fm = read_frontmatter(dest.read_text())
+    new_date_s = new_fm.get("last_updated")
+    old_date_s = old_fm.get("last_updated")
+    if not new_date_s:
+        print("  ⚠️  Cloned file is corrupt: last_updated not found. Skipping file.")
+        return False
+    if not old_date_s:
+        print("  ⚠️  Existing file is corrupt: last_updated not found. Skipping file.")
+        return False
+    try:
+        new_date = datetime.strptime(new_date_s, DATE_FORMAT)
+    except ValueError as e:
+        print(f"  ⚠️  Bad date format in cloned file ({src.name}) frontmatter: {e}. Skipping file.")
+        return False
+    try:
+        old_date = datetime.strptime(old_date_s, DATE_FORMAT)
+    except ValueError as e:
+        print(f"  ⚠️  Bad date format in existing file ({dest.name}) frontmatter: {e}. Skipping file.")
+        return False
+    return new_date > old_date
+
+
+def copy_file(
     src: Path,
     dest: Path,
+    version: str,
     *,
     dry_run: bool,
     force: bool,
 ) -> None:
-    """Copy a single file or directory tree from *src* to *dest*."""
-    if src.is_dir():
+    """Copy or merge a single file from *src* to *dest*."""
+    if (not dest.exists()) or force:
+        action = 'copy' if not dest.exists() else 'overwrite'
         if dry_run:
-            print(f"  [dry-run] Would recursively copy directory {src.name}/ → {dest}")
-            return
-        if dest.exists():
-            if force:
-                shutil.rmtree(dest)
-            else:
-                # Merge: copy tree on top of existing dir.
-                pass
-        shutil.copytree(src, dest, dirs_exist_ok=True)
-        print(f"  📁 Copied directory → {dest}")
-    else:
-        if dest.exists() and not force:
-            print(f"  ⚠️  Skipping {dest} (exists; use --force to overwrite)")
-            return
-        if dry_run:
-            print(f"  [dry-run] Would copy {src.name} → {dest}")
+            print(f"  [dry-run] Would {action} {src.name} → {dest}")
             return
         dest.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(src, dest)
         print(f"  📄 Copied → {dest}")
+    elif source_is_newer(src, dest):
+        merge_with_markers(src.read_text(), dest, version, dry_run=dry_run)
+    else:
+        print(f"  ⏭️  Skipping {dest} (already up to date)")
+
+
+def copy_entry(
+    src: Path,
+    dest: Path,
+    version: str,
+    *,
+    dry_run: bool,
+    force: bool,
+) -> None:
+    """Process a path from PATH_MAP. For directories, rglob finds all files
+    at every depth; parent dirs are created on demand by copy_file."""
+    if src.is_dir():
+        for descendant in sorted(src.rglob("*")):
+            if descendant.is_file():
+                rel = descendant.relative_to(src)
+                copy_file(descendant, dest / rel, version, dry_run=dry_run, force=force)
+    else:
+        copy_file(src, dest, version, dry_run=dry_run, force=force)
 
 
 def install(repo_dir: Path, project_dir: Path, new_version: str, args: argparse.Namespace) -> None:
@@ -225,11 +269,7 @@ def install(repo_dir: Path, project_dir: Path, new_version: str, args: argparse.
             print(f"  ⚠️  Source not found in repo: {src_rel} — skipping")
             continue
 
-        if dest_rel in MARKER_MERGE_FILES:
-            source_content = src.read_text()
-            merge_with_markers(source_content, dest, new_version, dry_run=args.dry_run)
-        else:
-            copy_entry(src, dest, dry_run=args.dry_run, force=args.force)
+        copy_entry(src, dest, new_version, dry_run=args.dry_run, force=args.force)
 
 
 # ── Entry point ──────────────────────────────────────────────────────────────
