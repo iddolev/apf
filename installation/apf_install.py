@@ -3,7 +3,7 @@
 Install / update the Agentic Programming Framework (APF) in the current project folder.
 
 Usage:
-    python apf_install.py [--dry-run] [--force] [--help]
+    python apf_install.py [--target FOLDER] [--dry-run] [--force] [--help]
 
 Place this script in your project root and run it from there.
 """
@@ -79,7 +79,8 @@ def clone_repo(tmp_dir: Path) -> Path:
     return dest
 
 
-# Match a valid keyword, then :, and then the rest of the line
+# Match a valid keyword, then :, then at least one character (empty values are
+# intentionally rejected — every key we care about must have a non-empty value).
 _YAML_LINE_RE = re.compile(r"\w+\s*:.+")
 
 
