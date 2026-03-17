@@ -16,7 +16,6 @@ import shutil
 import subprocess
 import sys
 import tempfile
-from datetime import datetime
 from pathlib import Path
 
 # ── Configuration ────────────────────────────────────────────────────────────
@@ -37,8 +36,6 @@ PATH_MAP: list[tuple[str, str]] = [
     (".claude/scripts",       ".claude/scripts"),
 ]
 
-MARKER_BEGIN = "<!-- BEGIN APF -->"
-MARKER_END = "<!-- END APF -->"
 APF_FILE = ".apf"
 
 # ── Core logic ───────────────────────────────────────────────────────────────
@@ -51,7 +48,8 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--target", type=Path, default=None,
                    help="Install into FOLDER instead of the current directory.")
     p.add_argument("--dry-run", action="store_true",
-                   help="Show what would be done without touching any files.")
+                   help="Show what would be done without touching any files. "
+                        "Note: the repo is still cloned to a temp directory.")
     p.add_argument("--force", action="store_true",
                    help="Overwrite existing files without prompting.")
     p.add_argument("--version", action="store_true",
@@ -105,16 +103,6 @@ def naive_yaml_parser(text: str) -> dict:
     return result
 
 
-def read_frontmatter(text: str) -> dict:
-    """Extract YAML frontmatter (between --- delimiters) from file content."""
-    if not text.startswith("---"):
-        return {}
-    end = text.find("\n---", 3)
-    if end < 0:
-        return {}
-    return naive_yaml_parser(text[3:end])
-
-
 def read_apf_version(path: Path) -> str:
     """Read the version field from a YAML .apf file (simple key: value parsing)."""
     data = naive_yaml_parser(path.read_text())
@@ -132,137 +120,30 @@ def get_new_version(repo_dir: Path) -> str:
     raise FileNotFoundError(f"Cloned repo is missing version file {version_path}")
 
 
-def _extract_managed_content(text: str) -> str:
-    """If *text* contains a BEGIN/END marker pair, return only the content
-    between them.  Otherwise return *text* unchanged."""
-    if MARKER_BEGIN in text and MARKER_END in text:
-        start = text.index(MARKER_BEGIN) + len(MARKER_BEGIN)
-        end = text.index(MARKER_END)
-        return text[start:end].strip()
-    return text
-
-
-def merge_with_markers(
-    src_path: Path,
-    dest_path: Path,
-    version: str,
-    *,
-    dry_run: bool,
-) -> None:
-    """Insert the managed content from *src_path* between markers in an
-    existing file, or append the managed block if the destination has no
-    markers."""
-    source_content = _extract_managed_content(src_path.read_text())
-    managed_block = (
-        f"{MARKER_BEGIN}\n"
-        f"<!-- managed by APF {version} — do not edit manually -->\n"
-        f"{source_content}\n"
-        f"{MARKER_END}"
-    )
-
-    if dest_path.exists():
-        existing = dest_path.read_text()
-        if MARKER_BEGIN in existing and MARKER_END in existing:
-            # Replace the existing managed block.
-            before = existing[: existing.index(MARKER_BEGIN)]
-            after = existing[existing.index(MARKER_END) + len(MARKER_END) :]
-            new_content = before + managed_block + after
-            action = "update"
-        else:
-            # Markers were removed from the destination — append and warn.
-            new_content = existing.rstrip() + "\n\n" + managed_block + "\n"
-            action = "append"
-            print(f"  ⚠️  Managed block markers were missing from {dest_path}. "
-                  f"Appending at end — verify placement is correct.")
-    else:
-        new_content = managed_block + "\n"
-        action = "create"
-
+def copy_file(src: Path, dest: Path, *, dry_run: bool) -> None:
+    """Copy a single file from *src* to *dest*, always overwriting."""
     if dry_run:
-        print(f"  [dry-run] Would {action} managed block in {dest_path}")
-    else:
-        dest_path.parent.mkdir(parents=True, exist_ok=True)
-        dest_path.write_text(new_content)
-        print(f"  ✏️  {action.capitalize()}d managed block in {dest_path}")
-
-
-DATE_FORMAT = "%Y-%m-%d %H:%M"
-
-
-def source_is_newer(src: Path, dest: Path) -> bool | None:
-    """Compare last_updated frontmatter fields. Returns True if source is newer
-    or if either file lacks a last_updated field (safer to update)."""
-    new_fm = read_frontmatter(src.read_text())
-    old_fm = read_frontmatter(dest.read_text())
-    new_date_s = new_fm.get("last_updated")
-    old_date_s = old_fm.get("last_updated")
-    if not new_date_s:
-        print("  ⚠️  Cloned file is corrupt: last_updated not found. Skipping file.")
-        return None
-    if not old_date_s:
-        print("  ⚠️  Existing file is corrupt: last_updated not found. Skipping file.")
-        return None
-    try:
-        new_date = datetime.strptime(new_date_s, DATE_FORMAT)
-    except ValueError as e:
-        print(f"  ⚠️  Bad date format in cloned file ({src.name}) frontmatter: {e}. Skipping file.")
-        return None
-    try:
-        old_date = datetime.strptime(old_date_s, DATE_FORMAT)
-    except ValueError as e:
-        print(f"  ⚠️  Bad date format in existing file ({dest.name}) frontmatter: {e}. Skipping file.")
-        return None
-    return new_date > old_date
-
-
-def copy_file(
-    src: Path,
-    dest: Path,
-    version: str,
-    *,
-    dry_run: bool,
-    force: bool,
-) -> None:
-    """Copy or merge a single file from *src* to *dest*."""
-    if (not dest.exists()) or force:
-        action = 'copy' if not dest.exists() else 'overwrite'
-        if dry_run:
-            print(f"  [dry-run] Would {action} {src.name} → {dest}")
-            return
-        dest.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(src, dest)
-        print(f"  📄 Copied → {dest}")
+        print(f"  [dry-run] Would copy {src.name} → {dest}")
         return
-    is_newer = source_is_newer(src, dest)
-    if is_newer:
-        merge_with_markers(src, dest, version, dry_run=dry_run)
-    elif is_newer is None:
-        pass
-    else:
-        print(f"  ⏭️  Skipping {dest} (already up to date)")
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(src, dest)
+    print(f"  📄 Copied → {dest}")
 
 
-def copy_entry(
-    src: Path,
-    dest: Path,
-    version: str,
-    *,
-    dry_run: bool,
-    force: bool,
-) -> None:
+def copy_entry(src: Path, dest: Path, *, dry_run: bool) -> None:
     """Process a path from PATH_MAP. For directories, rglob finds all files
     at every depth; parent dirs are created on demand by copy_file."""
     if src.is_dir():
         for descendant in sorted(src.rglob("*")):
             if descendant.is_file():
                 rel = descendant.relative_to(src)
-                copy_file(descendant, dest / rel, version, dry_run=dry_run, force=force)
+                copy_file(descendant, dest / rel, dry_run=dry_run)
     else:
-        copy_file(src, dest, version, dry_run=dry_run, force=force)
+        copy_file(src, dest, dry_run=dry_run)
 
 
-def install(repo_dir: Path, project_dir: Path, new_version: str, args: argparse.Namespace) -> None:
-    """Walk PATH_MAP and copy / merge everything into the project."""
+def install(repo_dir: Path, project_dir: Path, new_version: str, *, dry_run: bool) -> None:
+    """Walk PATH_MAP and copy every framework file into the project."""
     print(f"\n📦 Installing APF v{new_version} into {project_dir}\n")
 
     for src_rel, dest_rel in PATH_MAP:
@@ -273,7 +154,7 @@ def install(repo_dir: Path, project_dir: Path, new_version: str, args: argparse.
             print(f"  ⚠️  Source not found in repo: {src_rel} — skipping")
             continue
 
-        copy_entry(src, dest, new_version, dry_run=args.dry_run, force=args.force)
+        copy_entry(src, dest, dry_run=dry_run)
 
 
 # ── Entry point ──────────────────────────────────────────────────────────────
@@ -318,7 +199,7 @@ def main() -> None:
                 sys.exit(0)
             print(f"Invalid input: '{answer}'. Please enter y or n.")
 
-        install(repo_dir, project_dir, new_version, args)
+        install(repo_dir, project_dir, new_version, dry_run=args.dry_run)
 
 
 if __name__ == "__main__":
