@@ -3,7 +3,7 @@ Format markdown files according to the project's markdown guidelines.
 
 Rules enforced:
   1. Replace smart/curly quotes with ASCII equivalents.
-  2. Wrap lines longer than 120 characters (exceptions: table rows, URLs).
+  2. Wrap lines longer than MAX_LINE_LENGTH characters (exceptions: table rows, URLs).
   3. Ensure every heading is followed by exactly one blank line.
   4. Ensure every list is preceded by exactly one blank line.
   5. Ensure every list is followed by at least one blank line.
@@ -33,7 +33,7 @@ SMART_QUOTES = {
     "\u201D": '"',   # right double curly quote
 }
 
-MAX_LINE_LENGTH = 120
+MAX_LINE_LENGTH = 100
 
 
 EXCLUDE_PATTERNS = [
@@ -107,7 +107,7 @@ def _is_inside_code_fence(lines: list[str], index: int) -> bool:
 
 
 def wrap_long_lines(lines: list[str]) -> list[str]:
-    """Rule 2: Wrap lines exceeding 120 characters."""
+    """Rule 2: Wrap lines exceeding MAX_LINE_LENGTH characters."""
     result = []
     for i, line in enumerate(lines):
         if len(line) <= MAX_LINE_LENGTH:
