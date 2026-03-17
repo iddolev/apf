@@ -193,6 +193,23 @@ def main() -> None:
         print("❌ Refusing to install — target directory is the APF repo itself.")
         sys.exit(1)
 
+    # Confirm before cloning (skip prompt for --dry-run and --yes).
+    if not args.dry_run and not args.yes:
+        if existing_version_path.exists():
+            current = read_apf_version(existing_version_path)
+            prompt = f"This will update APF (currently v{current}) in {project_dir}"
+        else:
+            prompt = f"This will install APF in {project_dir}"
+        print(prompt)
+        try:
+            answer = input("Continue? [Y/n] ").strip().lower()
+            if answer not in ("y", "yes", ""):
+                print("Aborted.")
+                sys.exit(0)
+        except (KeyboardInterrupt, EOFError):
+            print("\nAborted.")
+            sys.exit(0)
+
     with tempfile.TemporaryDirectory(prefix="apf-") as tmp:
         tmp_dir = Path(tmp)
         repo_dir = clone_repo(tmp_dir)
@@ -203,21 +220,6 @@ def main() -> None:
             current = read_apf_version(existing_version_path)
             if current == new_version and not args.force:
                 print(f"ℹ️  Already at version {new_version}. Use --force to reinstall.")
-                sys.exit(0)
-            prompt = f"This will update APF ({current} → {new_version}) in {project_dir}"
-        else:
-            prompt = f"This will install APF v{new_version} in {project_dir}"
-
-        # Confirm before proceeding (skip prompt for --dry-run and --yes).
-        if not args.dry_run and not args.yes:
-            print(prompt)
-            try:
-                answer = input("Continue? [Y/n] ").strip().lower()
-                if answer not in ("y", "yes", ""):
-                    print("Aborted.")
-                    sys.exit(0)
-            except (KeyboardInterrupt, EOFError):
-                print("\nAborted.")
                 sys.exit(0)
 
         install(repo_dir, project_dir, new_version, dry_run=args.dry_run)
