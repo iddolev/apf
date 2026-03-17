@@ -22,6 +22,7 @@ from pathlib import Path
 # ── Configuration ────────────────────────────────────────────────────────────
 
 REPO_URL = "https://github.com/iddolev/apf.git"
+# TODO: support cloning a specific tag/branch, not only HEAD
 
 # Source path inside the cloned repo → destination path relative to project root.
 # Directories are copied recursively; files are copied individually.
@@ -60,16 +61,20 @@ def clone_repo(tmp_dir: Path) -> Path:
     """Clone the APF repo into *tmp_dir* and return the path."""
     dest = tmp_dir / "apf"
     print(f"⏳ Cloning {REPO_URL} ...")
-    subprocess.run(
-        [
-            "git", "clone",
-            REPO_URL,
-            str(dest),
-        ],
-        check=True,
-        capture_output=True,
-        text=True,
-    )
+    try:
+        subprocess.run(
+            [
+                "git", "clone",
+                REPO_URL,
+                str(dest),
+            ],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+    except subprocess.CalledProcessError as e:
+        print(f"❌ Failed to clone repository:\n{e.stderr}")
+        sys.exit(1)
     print("✅ Done.")
     return dest
 
@@ -83,6 +88,9 @@ def naive_yaml_parser(text: str) -> dict:
     result = {}
     for line in text.splitlines():
         line = line.strip()
+        if line.startswith('#'):
+            # Comment line
+            continue
         m = _YAML_LINE_RE.match(line)
         if m:
             pos = line.find(':')
@@ -206,8 +214,12 @@ def copy_file(
         dest.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(src, dest)
         print(f"  📄 Copied → {dest}")
-    elif source_is_newer(src, dest):
+        return
+    is_newer = source_is_newer(src, dest)
+    if is_newer:
         merge_with_markers(src, dest, version, dry_run=dry_run)
+    elif is_newer is None:
+        pass
     else:
         print(f"  ⏭️  Skipping {dest} (already up to date)")
 
@@ -262,7 +274,7 @@ def main() -> None:
     print(f"This will {action} the APF framework in {project_dir}")
     while True:
         answer = input("Continue? [Y/n] ").strip().lower()
-        if answer in ("y", "yes"):
+        if answer in ("y", "yes", ""):
             break
         if answer in ("n", "no"):
             print("Aborted.")
