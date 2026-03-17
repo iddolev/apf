@@ -49,6 +49,11 @@ GIT_IGNORE = [
 ]
 
 
+def err(*args, **kwargs) -> None:
+    """Print to stderr."""
+    print(*args, file=sys.stderr, **kwargs)
+
+
 # ── Core logic ───────────────────────────────────────────────────────────────
 
 
@@ -88,10 +93,10 @@ def clone_repo(tmp_dir: Path) -> Path:
             text=True,
         )
     except FileNotFoundError:
-        print("❌ git is not installed or not on PATH. Please install git and try again.")
+        err("❌ git is not installed or not on PATH. Please install git and try again.")
         sys.exit(1)
     except subprocess.CalledProcessError as e:
-        print(f"❌ Failed to clone repository (check your network connection):\n{e.stderr}")
+        err(f"❌ Failed to clone repository (check your network connection):\n{e.stderr}")
         sys.exit(1)
     print("✅ Done.")
     return dest
@@ -235,7 +240,7 @@ def install(repo_dir: Path, project_dir: Path, new_version: str, *, dry_run: boo
         dest = project_dir / dest_rel
 
         if not src.exists():
-            print(f"  ⚠️  Source not found in repo: {src_rel} — skipping")
+            err(f"  ⚠️  Source not found in repo: {src_rel} — skipping")
             continue
 
         copy_entry(src, dest, dry_run=dry_run)
@@ -250,7 +255,7 @@ def main() -> None:
     args = parse_args()
     project_dir = args.target.resolve() if args.target else Path.cwd()
     if not project_dir.is_dir():
-        print(f"❌ Target directory does not exist: {project_dir}")
+        err(f"❌ Target directory does not exist: {project_dir}")
         sys.exit(1)
     existing_version_path = project_dir / APF_FILE
 
@@ -263,7 +268,7 @@ def main() -> None:
         return
 
     if _is_apf_repo(project_dir):
-        print("❌ Refusing to install — target directory is the APF repo itself.")
+        err("❌ Refusing to install — target directory is the APF repo itself.")
         sys.exit(1)
 
     # Fetch remote version (no clone) to allow early exit when up to date.
@@ -271,7 +276,7 @@ def main() -> None:
     try:
         new_version = fetch_remote_version()
     except ValueError as e:
-        print(f"❌ {e}")
+        err(f"❌ {e}")
         sys.exit(1)
     print(f"   Latest: v{new_version}")
 
@@ -281,8 +286,8 @@ def main() -> None:
         try:
             current_version = read_apf_version(existing_version_path)
         except ValueError as e:
-            print(f"⚠️  {e}")
-            print("   Ignoring .apf and proceeding as a fresh install.")
+            err(f"⚠️  {e}")
+            err("   Ignoring .apf and proceeding as a fresh install.")
 
 
     # Skip clone entirely if already up to date.
@@ -315,7 +320,7 @@ def main() -> None:
         print("\n🏁 Dry run complete — no files were modified.")
     else:
         print(f"\n🏁 APF v{new_version} installed successfully.")
-        print(f"⚠️  You should commit .apf to your repo, to remember the APF version.")
+        err(f"⚠️  You should commit .apf to your repo, to remember the APF version.")
 
 
 if __name__ == "__main__":
