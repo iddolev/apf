@@ -261,10 +261,10 @@ def main() -> None:
         action = "install"
     print(f"This will {action} the APF framework in {project_dir}")
     while True:
-        answer = input("Continue? [y/n] ").strip().lower()
+        answer = input("Continue? [Y/n] ").strip().lower()
         if answer in ("y", "yes"):
             break
-        if answer in ("n", "no", ""):
+        if answer in ("n", "no"):
             print("Aborted.")
             sys.exit(0)
         print(f"Invalid input: '{answer}'. Please enter y or n.")
@@ -275,7 +275,6 @@ def main() -> None:
         new_version = get_new_version(repo_dir)
 
         # Check if already installed at this version.
-        existing_version_path = project_dir / APF_FILE
         if existing_version_path.exists():
             current = read_apf_version(existing_version_path)
             if current == new_version and not args.force:
