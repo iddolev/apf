@@ -42,6 +42,8 @@ PATH_MAP: list[tuple[str, str]] = [
 APF_FILE = ".apf"
 
 GIT_IGNORE = [
+    "apf_install.bat",
+    "apf_install.py",
     ".claude/commands/apf/",
     ".claude/scripts/apf/",
 ]
