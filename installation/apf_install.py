@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Install / update the Agentic Programming Framework (APF) into the current project folder.
+Install / update the Agentic Programming Framework (APF) in the current project folder.
 
 Usage:
     python install_framework.py [--dry-run] [--force] [--help]
@@ -26,9 +26,11 @@ REPO_URL = "https://github.com/iddolev/apf.git"
 # Source path inside the cloned repo → destination path relative to project root.
 # Directories are copied recursively; files are copied individually.
 PATH_MAP: list[tuple[str, str]] = [
-    ("dist/.claude/commands", ".claude/commands"),
-    ("dist/hooks",            ".claude/hooks"),
+    # Distribution files (relevant only for the user project, not for the apf project)
     ("dist/CLAUDE.md",        "CLAUDE.md"),
+    ("dist/.claude/commands", ".claude/commands"),
+    ("dist/.claude/hooks",    ".claude/hooks"),
+    # More files (relevant both for the user project and for the apf project)
     (".claude/commands/apf",  ".claude/commands/apf"),
     (".claude/scripts",       ".claude/scripts"),
 ]
