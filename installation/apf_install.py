@@ -29,18 +29,18 @@ REPO_SLUG = "iddolev/apf"  # for raw.githubusercontent.com
 # Source path inside the cloned repo → destination path relative to project root.
 # Directories are copied recursively; files are copied individually.
 PATH_MAP: list[tuple[str, str]] = [
-    # Distribution files (relevant only for the user project, not for the apf project)
     (".apf", ".apf"),
     ("dist/CLAUDE.md",        "CLAUDE.md"),
     ("dist/.claude/commands", ".claude/commands"),
     ("dist/.claude/scripts",  ".claude/scripts"),
-    # More files (relevant both for the user project and for the apf project)
     (".claude/commands/apf",  ".claude/commands/apf"),
     (".claude/scripts/apf",   ".claude/scripts/apf"),
 ]
 
 APF_FILE = ".apf"
 
+# Note: Deliberately not including .apf in .gitignore
+# because it's supposed to be tracked in the git of the user project
 GIT_IGNORE = [
     "apf_install.bat",
     "apf_install.py",
@@ -175,7 +175,11 @@ def copy_entry(src: Path, dest: Path, *, dry_run: bool) -> None:
 
 
 def _is_apf_repo(project_dir: Path) -> bool:
-    """Detect if *project_dir* is the APF repo itself."""
+    """Detect if *project_dir* is the APF repo itself.
+    (This is a big fragile, in case we ever rename apf_install.py
+    or move it to a different folder,
+    but that change would be rare, so that's good enough for now.
+    """
     return (project_dir / "installation" / "apf_install.py").exists()
 
 
@@ -197,12 +201,12 @@ def update_gitignore(project_dir: Path, *, dry_run: bool) -> None:
         return
 
     content = gitignore_path.read_text()
-    existing_lines = content.splitlines()
+    content_lines = content.splitlines()
 
-    existing_stripped = {line.strip() for line in existing_lines}
+    content_stripped = {line.strip() for line in content_lines}
     git_ignore_s = set(GIT_IGNORE)
-    existing_ignore = [line for line in existing_lines if line.strip() in git_ignore_s]
-    missing = [line for line in GIT_IGNORE if line not in existing_stripped]
+    existing_ignore = [line for line in content_lines if line.strip() in git_ignore_s]
+    missing = [line for line in GIT_IGNORE if line not in content_stripped]
 
     if not existing_ignore:
         # None of the GIT_IGNORE lines exist — add full section
@@ -218,7 +222,7 @@ def update_gitignore(project_dir: Path, *, dry_run: bool) -> None:
 
     # Find last occurrence of any GIT_IGNORE line
     last_idx = -1
-    for i, line in enumerate(existing_lines):
+    for i, line in enumerate(content_lines):
         if line.strip() in GIT_IGNORE:
             last_idx = i
 
@@ -226,7 +230,7 @@ def update_gitignore(project_dir: Path, *, dry_run: bool) -> None:
         print(f"  [dry-run] Would add some APF entries to .gitignore")
         return
 
-    new_lines = existing_lines[: last_idx + 1] + missing + existing_lines[last_idx + 1:]
+    new_lines = content_lines[: last_idx + 1] + missing + content_lines[last_idx + 1:]
     gitignore_path.write_text("\n".join(new_lines) + "\n")
     print(f"  📄 Updated .gitignore")
 
@@ -288,7 +292,6 @@ def main() -> None:
         except ValueError as e:
             err(f"⚠️  {e}")
             err("   Ignoring .apf and proceeding as a fresh install.")
-
 
     # Skip clone entirely if already up to date.
     if current_version == new_version and not args.force:
