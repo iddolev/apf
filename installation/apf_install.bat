@@ -3,6 +3,9 @@ REM This is the file to share with anyone who wants to install APF in their proj
 
 curl -sL -o apf_install.py https://raw.githubusercontent.com/iddolev/apf/main/installation/apf_install.py
 
-for %%a in (%*) do if "%%a"=="--import" exit /b 0
+for %%a in (%*) do if "%%a"=="--fetch" (
+    echo Fetched apf_install.py
+    exit /b 0
+)
 
 python apf_install.py %*
