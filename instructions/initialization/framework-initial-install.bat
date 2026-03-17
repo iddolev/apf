@@ -9,11 +9,11 @@ if not exist "%AP%" (
     exit /b 1
 )
 
-if not exist .claude\commands mkdir .claude\commands
+if not exist .claude\commands\apf mkdir .claude\commands\apf
 if not exist .claude\scripts mkdir .claude\scripts
 
-copy "%AP%\instructions\claude\commands\start-agentic-framework.md" ".claude\commands\start-agentic-framework.md" > NUL 2>&1
-copy "%AP%\instructions\claude\commands\update-agentic-framework.md" ".claude\commands\update-agentic-framework.md" > NUL 2>&1
+copy "%AP%\instructions\claude\commands\apf\start-agentic-framework.md" ".claude\commands\apf\start-agentic-framework.md" > NUL 2>&1
+copy "%AP%\instructions\claude\commands\apf\update-agentic-framework.md" ".claude\commands\apf\update-agentic-framework.md" > NUL 2>&1
 copy "%AP%\instructions\claude\scripts\update-agentic-framework.bat" ".claude\scripts\update-agentic-framework.bat" > NUL 2>&1
 copy "%AP%\instructions\initialization\framework-initial-install.bat" "scripts\framework-initial-install.bat" > NUL 2>&1
 copy "%AP%\.claude\commands\format-markdown.md" ".claude\commands\format-markdown.md" > NUL 2>&1

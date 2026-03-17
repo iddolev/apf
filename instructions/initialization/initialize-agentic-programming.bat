@@ -8,7 +8,7 @@ echo Run this script just once to initialize the agentic programming framework f
 if exist agentic-programming (
     echo.
     echo Error: agentic-programming folder already exists.
-    echo To update, run this command in Claude Code: /update-agentic-framework
+    echo To update, run this command in Claude Code: /apf:update-agentic-framework
     exit /b 1
 )
 
@@ -20,5 +20,5 @@ call agentic-programming\instructions\initialization\framework-initial-install.b
 
 echo.
 echo Done.
-echo Now you can run Claude Code (using: "claude"), and run the command: /start-agentic-framework
+echo Now you can run Claude Code (using: "claude"), and run the command: /apf:start-agentic-framework
 echo.
