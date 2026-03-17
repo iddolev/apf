@@ -41,6 +41,10 @@ PATH_MAP: list[tuple[str, str]] = [
 
 APF_FILE = ".apf"
 
+GIT_IGNORE = [
+    ".claude/commands/apf/",
+    ".claude/scripts/apf/",
+]
 
 
 # ── Core logic ───────────────────────────────────────────────────────────────
