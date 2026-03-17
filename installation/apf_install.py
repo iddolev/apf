@@ -246,6 +246,9 @@ def install(repo_dir: Path, project_dir: Path, new_version: str, *, dry_run: boo
 def main() -> None:
     args = parse_args()
     project_dir = args.target.resolve() if args.target else Path.cwd()
+    if not project_dir.is_dir():
+        print(f"❌ Target directory does not exist: {project_dir}")
+        sys.exit(1)
     existing_version_path = project_dir / APF_FILE
 
     # --version: show installed version and exit.
