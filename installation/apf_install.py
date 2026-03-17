@@ -17,10 +17,13 @@ import subprocess
 import sys
 import tempfile
 from pathlib import Path
+from urllib.request import urlopen
+from urllib.error import URLError
 
 # ── Configuration ────────────────────────────────────────────────────────────
 
 REPO_URL = "https://github.com/iddolev/apf.git"
+REPO_SLUG = "iddolev/apf"  # for raw.githubusercontent.com
 # TODO: support cloning a specific tag/branch, not only HEAD
 
 # Source path inside the cloned repo → destination path relative to project root.
@@ -123,6 +126,18 @@ def read_apf_version(path: Path) -> str:
     raise ValueError(f"{path} is missing a 'version' field")
 
 
+def fetch_remote_version() -> str:
+    """Fetch .apf from remote repo and return version"""
+    try:
+        url = f"https://raw.githubusercontent.com/{REPO_SLUG}/main/{APF_FILE}"
+        with urlopen(url, timeout=10) as resp:
+            data = naive_yaml_parser(resp.read().decode())
+            if v := data.get("version"):
+                return v
+    except (URLError, UnicodeDecodeError):
+        raise ValueError("Could not fetch remote version from GitHub (check network)")
+
+
 def get_new_version(repo_dir: Path) -> str:
     """Read the version string shipped with the framework repo."""
     version_path = repo_dir / APF_FILE
@@ -193,13 +208,29 @@ def main() -> None:
         print("❌ Refusing to install — target directory is the APF repo itself.")
         sys.exit(1)
 
+    # Fetch remote version (no clone) to allow early exit when up to date.
+    print("⏳ Checking latest version...")
+    try:
+        new_version = fetch_remote_version()
+    except ValueError as e:
+        print(f"❌ {e}")
+        sys.exit(1)
+    print(f"   Latest: v{new_version}")
+
+    # Skip clone entirely if already up to date.
+    if existing_version_path.exists():
+        current = read_apf_version(existing_version_path)
+        if current == new_version and not args.force:
+            print(f"ℹ️  Already at version {new_version}. Use --force to reinstall.")
+            sys.exit(0)
+
     # Confirm before cloning (skip prompt for --dry-run and --yes).
     if not args.dry_run and not args.yes:
         if existing_version_path.exists():
             current = read_apf_version(existing_version_path)
-            prompt = f"This will update APF (currently v{current}) in {project_dir}"
+            prompt = f"This will update APF (v{current} → v{new_version}) in {project_dir}"
         else:
-            prompt = f"This will install APF in {project_dir}"
+            prompt = f"This will install APF v{new_version} in {project_dir}"
         print(prompt)
         try:
             answer = input("Continue? [Y/n] ").strip().lower()
@@ -213,15 +244,6 @@ def main() -> None:
     with tempfile.TemporaryDirectory(prefix="apf-") as tmp:
         tmp_dir = Path(tmp)
         repo_dir = clone_repo(tmp_dir)
-        new_version = get_new_version(repo_dir)
-
-        # Check if already installed at this version.
-        if existing_version_path.exists():
-            current = read_apf_version(existing_version_path)
-            if current == new_version and not args.force:
-                print(f"ℹ️  Already at version {new_version}. Use --force to reinstall.")
-                sys.exit(0)
-
         install(repo_dir, project_dir, new_version, dry_run=args.dry_run)
 
     if args.dry_run:
