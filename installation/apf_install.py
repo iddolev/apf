@@ -59,8 +59,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--target", type=Path, default=None,
                    help="Install into FOLDER instead of the current directory.")
     p.add_argument("--dry-run", action="store_true",
-                   help="Show what would be done without touching any files. "
-                        "Note: the repo is still cloned to a temp directory.")
+                   help="Show what would be done without touching any files.")
     p.add_argument("--yes", "-y", action="store_true",
                    help="Skip the confirmation prompt.")
     p.add_argument("--force", action="store_true",
@@ -140,19 +139,11 @@ def fetch_remote_version() -> str:
         url = f"https://raw.githubusercontent.com/{REPO_SLUG}/main/{APF_FILE}"
         with urlopen(url, timeout=10) as resp:
             data = naive_yaml_parser(resp.read().decode())
-            if v := data.get("version"):
-                return v
-            raise ValueError(f"Remote {APF_FILE} is missing a 'version' field")
     except (URLError, UnicodeDecodeError):
         raise ValueError("Could not fetch remote version from GitHub (check network)")
-
-
-def get_new_version(repo_dir: Path) -> str:
-    """Read the version string shipped with the framework repo."""
-    version_path = repo_dir / APF_FILE
-    if version_path.exists():
-        return read_apf_version(version_path)
-    raise FileNotFoundError(f"Cloned repo is missing version file {version_path}")
+    if v := data.get("version"):
+        return v
+    raise ValueError(f"Remote {APF_FILE} is missing a 'version' field")
 
 
 def copy_file(src: Path, dest: Path, *, dry_run: bool) -> None:
@@ -223,13 +214,11 @@ def update_gitignore(project_dir: Path, *, dry_run: bool) -> None:
         if line.strip() in GIT_IGNORE:
             last_idx = i
 
-    lines_to_add = [line for line in GIT_IGNORE if line not in set(existing_lines)]
-
     if dry_run:
         print(f"  [dry-run] Would add some APF entries to .gitignore")
         return
 
-    new_lines = existing_lines[: last_idx + 1] + lines_to_add + existing_lines[last_idx + 1 :]
+    new_lines = existing_lines[: last_idx + 1] + missing + existing_lines[last_idx + 1:]
     gitignore_path.write_text("\n".join(new_lines) + "\n")
     print(f"  📄 Updated .gitignore")
 
@@ -280,18 +269,26 @@ def main() -> None:
         sys.exit(1)
     print(f"   Latest: v{new_version}")
 
+    # Read current version once (if installed).
+    current_version = read_apf_version(existing_version_path) if existing_version_path.exists() else None
+
     # Skip clone entirely if already up to date.
-    if existing_version_path.exists():
-        current = read_apf_version(existing_version_path)
-        if current == new_version and not args.force:
-            print(f"ℹ️  Already at version {new_version}. Use --force to reinstall.")
-            return
+    if current_version == new_version and not args.force:
+        print(f"ℹ️  Already at version {new_version}. Use --force to reinstall.")
+        return
+
+    if args.dry_run:
+        print(f"\n📦 Installing APF v{new_version} into {project_dir}\n")
+        for src_rel, dest_rel in PATH_MAP:
+            print(f"  [dry-run] Would copy {src_rel} → {project_dir / dest_rel}")
+        print(f"  [dry-run] Might update .gitignore")
+        print("\n🏁 Dry run complete — no files were modified.")
+        return
 
     # Confirm before cloning (skip prompt for --dry-run and --yes).
-    if not args.dry_run and not args.yes:
-        if existing_version_path.exists():
-            current = read_apf_version(existing_version_path)
-            prompt = f"This will update APF (v{current} → v{new_version}) in {project_dir}"
+    if not args.yes:
+        if current_version:
+            prompt = f"This will update APF (v{current_version} → v{new_version}) in {project_dir}"
         else:
             prompt = f"This will install APF v{new_version} in {project_dir}"
         print(prompt)
@@ -307,13 +304,10 @@ def main() -> None:
     with tempfile.TemporaryDirectory(prefix="apf-") as tmp:
         tmp_dir = Path(tmp)
         repo_dir = clone_repo(tmp_dir)
-        install(repo_dir, project_dir, new_version, dry_run=args.dry_run)
+        install(repo_dir, project_dir, new_version, dry_run=False)
 
-    if args.dry_run:
-        print("\n🏁 Dry run complete — no files were modified.")
-    else:
-        print(f"\n🏁 APF v{new_version} installed successfully.")
-        print(f"⚠  You should commit .apf to your repo, to remember the APF version.")
+    print(f"\n🏁 APF v{new_version} installed successfully.")
+    print(f"⚠️  You should commit .apf to your repo, to remember the APF version.")
 
 
 if __name__ == "__main__":
