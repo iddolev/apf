@@ -59,7 +59,8 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--target", type=Path, default=None,
                    help="Install into FOLDER instead of the current directory.")
     p.add_argument("--dry-run", action="store_true",
-                   help="Show what would be done without touching any files.")
+                   help="Show what would be done without touching any files. "
+                        "Note: still clones the repo to inspect its contents.")
     p.add_argument("--yes", "-y", action="store_true",
                    help="Skip the confirmation prompt.")
     p.add_argument("--force", action="store_true",
@@ -194,7 +195,8 @@ def update_gitignore(project_dir: Path, *, dry_run: bool) -> None:
     existing_lines = content.splitlines()
 
     existing_stripped = {line.strip() for line in existing_lines}
-    existing_ignore = [line for line in existing_lines if line.strip() in set(GIT_IGNORE)]
+    git_ignore_s = set(GIT_IGNORE)
+    existing_ignore = [line for line in existing_lines if line.strip() in git_ignore_s]
     missing = [line for line in GIT_IGNORE if line not in existing_stripped]
 
     if not existing_ignore:
