@@ -42,46 +42,16 @@ APF_FILE = ".apf"
 # ── Core logic ───────────────────────────────────────────────────────────────
 
 
-VALID_FLAGS = {"--dry-run", "--force", "--help", "--target"}
-
-HELP_TEXT = """\
-Install / update the APF framework into the current project folder.
-
-Usage:
-    python apf_install.py [OPTIONS]
-
-Options:
-    --dry-run          Show what would be done without touching any files.
-    --branch BRANCH    Git branch / tag to clone (default: main).
-    --force            Overwrite existing files without prompting.
-    --target FOLDER    Install into FOLDER instead of the current directory.
-    --help             Show this help message and exit.
-"""
-
-
 def parse_args() -> argparse.Namespace:
-    # Validate flags before letting argparse parse them.
-    raw_args = sys.argv[1:]
-    skip_next = False
-    for arg in raw_args:
-        if skip_next:
-            skip_next = False
-            continue
-        if arg.startswith("--") and arg not in VALID_FLAGS:
-            print(f"Error: Unknown flag '{arg}'.")
-            print(f"Valid flags are: {', '.join(sorted(VALID_FLAGS))}")
-            sys.exit(1)
-        if arg == "--branch":
-            skip_next = True
-
-    if "--help" in raw_args:
-        print(HELP_TEXT)
-        sys.exit(0)
-
-    p = argparse.ArgumentParser(description=__doc__, add_help=False)
-    p.add_argument("--dry-run", action="store_true")
-    p.add_argument("--force", action="store_true")
-    p.add_argument("--target", type=Path, default=None)
+    p = argparse.ArgumentParser(
+        description="Install / update the APF framework into the current project folder.",
+    )
+    p.add_argument("--target", type=Path, default=None,
+                   help="Install into FOLDER instead of the current directory.")
+    p.add_argument("--dry-run", action="store_true",
+                   help="Show what would be done without touching any files.")
+    p.add_argument("--force", action="store_true",
+                   help="Overwrite existing files without prompting.")
     return p.parse_args()
 
 
