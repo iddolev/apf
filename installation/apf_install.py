@@ -130,7 +130,7 @@ def naive_yaml_parser(text: str) -> dict:
 def read_apf_version(path: Path) -> str:
     """Read the version field from a YAML .apf file (simple key: value parsing)."""
     try:
-        data = naive_yaml_parser(path.read_text())
+        data = naive_yaml_parser(path.read_text(encoding="utf-8"))
     except (OSError, UnicodeDecodeError) as e:
         raise ValueError(f"Cannot read {path}: {e}") from e
     value = data.get('version')
@@ -196,11 +196,11 @@ def update_gitignore(project_dir: Path, *, dry_run: bool) -> None:
         if dry_run:
             print(f"  [dry-run] Would create .gitignore with APF entries")
             return
-        gitignore_path.write_text(new_section)
+        gitignore_path.write_text(new_section, encoding="utf-8")
         print(f"  📄 Created .gitignore")
         return
 
-    content = gitignore_path.read_text()
+    content = gitignore_path.read_text(encoding="utf-8")
     content_lines = content.splitlines()
 
     content_stripped = {line.strip() for line in content_lines}
@@ -213,7 +213,7 @@ def update_gitignore(project_dir: Path, *, dry_run: bool) -> None:
         if dry_run:
             print(f"  [dry-run] Would add APF section to .gitignore")
             return
-        gitignore_path.write_text(content.rstrip() + "\n\n" + new_section)
+        gitignore_path.write_text(content.rstrip() + "\n\n" + new_section, encoding="utf-8")
         print(f"  📄 Updated .gitignore")
         return
 
@@ -231,7 +231,7 @@ def update_gitignore(project_dir: Path, *, dry_run: bool) -> None:
         return
 
     new_lines = content_lines[: last_idx + 1] + missing + content_lines[last_idx + 1:]
-    gitignore_path.write_text("\n".join(new_lines) + "\n")
+    gitignore_path.write_text("\n".join(new_lines) + "\n", encoding="utf-8")
     print(f"  📄 Updated .gitignore")
 
 
@@ -317,17 +317,23 @@ def main() -> None:
         err(f"❌ Target directory does not exist: {project_dir}")
         sys.exit(1)
 
-    # --version: show installed version and exit.
+    # --version: show installed and latest versions, then exit.
     if args.version:
         apf_path = project_dir / APF_FILE
         if apf_path.exists():
             try:
-                print(f"APF v{read_apf_version(apf_path)}")
+                local = read_apf_version(apf_path)
+                print(f"Installed: v{local}")
             except ValueError as e:
                 err(f"❌ {e}")
                 sys.exit(1)
         else:
-            print("APF is not installed in this project.")
+            print("Installed: (not installed)")
+        try:
+            remote = fetch_remote_version()
+            print(f"Latest:    v{remote}")
+        except ValueError:
+            print("Latest:    (unable to fetch)")
         return
 
     if _is_apf_repo(project_dir):
