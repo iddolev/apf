@@ -113,7 +113,10 @@ def naive_yaml_parser(text: str) -> dict:
 
 def read_apf_version(path: Path) -> str:
     """Read the version field from a YAML .apf file (simple key: value parsing)."""
-    data = naive_yaml_parser(path.read_text())
+    try:
+        data = naive_yaml_parser(path.read_text())
+    except (OSError, UnicodeDecodeError) as e:
+        raise ValueError(f"Cannot read {path}: {e}") from e
     value = data.get('version')
     if value:
         return value
@@ -209,14 +212,10 @@ def main() -> None:
         if not args.dry_run and not args.yes:
             print(prompt)
             try:
-                while True:
-                    answer = input("Continue? [Y/n] ").strip().lower()
-                    if answer in ("y", "yes", ""):
-                        break
-                    if answer in ("n", "no"):
-                        print("Aborted.")
-                        sys.exit(0)
-                    print(f"Invalid input: '{answer}'. Please enter y or n.")
+                answer = input("Continue? [Y/n] ").strip().lower()
+                if answer not in ("y", "yes", ""):
+                    print("Aborted.")
+                    sys.exit(0)
             except (KeyboardInterrupt, EOFError):
                 print("\nAborted.")
                 sys.exit(0)
