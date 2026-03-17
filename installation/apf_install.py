@@ -207,7 +207,7 @@ def copy_file(
         shutil.copy2(src, dest)
         print(f"  📄 Copied → {dest}")
     elif source_is_newer(src, dest):
-        merge_with_markers(src.read_text(), dest, version, dry_run=dry_run)
+        merge_with_markers(src, dest, version, dry_run=dry_run)
     else:
         print(f"  ⏭️  Skipping {dest} (already up to date)")
 
