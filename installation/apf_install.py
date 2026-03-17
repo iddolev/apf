@@ -172,20 +172,20 @@ def source_is_newer(src: Path, dest: Path) -> bool | None:
     old_date_s = old_fm.get("last_updated")
     if not new_date_s:
         print("  ⚠️  Cloned file is corrupt: last_updated not found. Skipping file.")
-        return False
+        return None
     if not old_date_s:
         print("  ⚠️  Existing file is corrupt: last_updated not found. Skipping file.")
-        return False
+        return None
     try:
         new_date = datetime.strptime(new_date_s, DATE_FORMAT)
     except ValueError as e:
         print(f"  ⚠️  Bad date format in cloned file ({src.name}) frontmatter: {e}. Skipping file.")
-        return False
+        return None
     try:
         old_date = datetime.strptime(old_date_s, DATE_FORMAT)
     except ValueError as e:
         print(f"  ⚠️  Bad date format in existing file ({dest.name}) frontmatter: {e}. Skipping file.")
-        return False
+        return None
     return new_date > old_date
 
 
