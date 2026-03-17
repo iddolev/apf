@@ -273,7 +273,14 @@ def main() -> None:
     print(f"   Latest: v{new_version}")
 
     # Read current version once (if installed).
-    current_version = read_apf_version(existing_version_path) if existing_version_path.exists() else None
+    current_version = None
+    if existing_version_path.exists():
+        try:
+            current_version = read_apf_version(existing_version_path)
+        except ValueError as e:
+            print(f"⚠️  {e}")
+            print("   Ignoring .apf and proceeding as a fresh install.")
+
 
     # Skip clone entirely if already up to date.
     if current_version == new_version and not args.force:
