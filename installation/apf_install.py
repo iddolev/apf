@@ -65,6 +65,8 @@ def clone_repo(tmp_dir: Path) -> Path:
         subprocess.run(
             [
                 "git", "clone",
+                # --depth=1 means shallow clone — we only need the latest files, not history
+                "--depth", "1",
                 REPO_URL,
                 str(dest),
             ],
