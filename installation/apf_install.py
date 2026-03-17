@@ -73,7 +73,7 @@ def clone_repo(tmp_dir: Path) -> Path:
             text=True,
         )
     except subprocess.CalledProcessError as e:
-        print(f"❌ Failed to clone repository:\n{e.stderr}")
+        print(f"❌ Failed to clone repository (check your network connection and that git is installed):\n{e.stderr}")
         sys.exit(1)
     print("✅ Done.")
     return dest
@@ -172,7 +172,7 @@ def main() -> None:
             print(f"APF v{read_apf_version(existing_version_path)}")
         else:
             print("APF is not installed in this project.")
-        sys.exit(0)
+        return
 
     with tempfile.TemporaryDirectory(prefix="apf-") as tmp:
         tmp_dir = Path(tmp)
@@ -201,6 +201,11 @@ def main() -> None:
             print(f"Invalid input: '{answer}'. Please enter y or n.")
 
         install(repo_dir, project_dir, new_version, dry_run=args.dry_run)
+
+    if args.dry_run:
+        print("\n🏁 Dry run complete — no files were modified.")
+    else:
+        print(f"\n🏁 APF v{new_version} installed successfully.")
 
 
 if __name__ == "__main__":
