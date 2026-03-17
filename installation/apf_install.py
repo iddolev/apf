@@ -11,6 +11,7 @@ Place this script in your project root and run it from there.
 from __future__ import annotations
 
 import argparse
+import re
 import shutil
 import subprocess
 import sys
@@ -23,14 +24,17 @@ REPO_URL = "https://github.com/iddolev/apf.git"
 
 # Source path inside the cloned repo → destination path relative to project root.
 # Directories are copied recursively; files are copied individually.
-FILE_MAP: dict[str, str] = {
-    "dist/.claude/commands": ".claude/commands",
-    "dist/hooks":            ".claude/hooks",
-    "dist/CLAUDE.md":        "CLAUDE.md",
-}
+PATH_MAP: list[tuple[str, str]] = [
+    ("dist/.claude/commands", ".claude/commands"),
+    ("dist/hooks",            ".claude/hooks"),
+    ("dist/CLAUDE.md",        "CLAUDE.md"),
+    (".claude/commands/apf",  ".claude/commands/apf"),
+    (".claude/scripts",       ".claude/scripts"),
+]
+
 
 # Files where we inject content between markers instead of overwriting.
-# These must also appear in FILE_MAP above.
+# These must also appear in PATH_MAP above.
 MARKER_MERGE_FILES: set[str] = {
     "CLAUDE.md",
 }
@@ -103,12 +107,29 @@ def clone_repo(tmp_dir: Path) -> Path:
     return dest
 
 
-def read_apf_version(path: Path) -> str:
-    """Read the version field from a YAML .apf file (simple key: value parsing)."""
+_YAML_LINE_RE = re.compile(r"(\w+)\s?:\s?(\w+)")
+
+
+def naive_yaml_parser(path: Path) -> dict:
+    """In order not to rely on installing the pyyaml package"""
+    result = {}
     for line in path.read_text().splitlines():
         line = line.strip()
-        if line.startswith("version:"):
-            return line.split(":", 1)[1].strip()
+        m = _YAML_LINE_RE.match(line)
+        if m:
+            pos = line.find(':')
+            key = line[:pos].strip()
+            value = line[pos+1:].strip()
+            result[key] = value
+    return result
+
+
+def read_apf_version(path: Path) -> str:
+    """Read the version field from a YAML .apf file (simple key: value parsing)."""
+    data = naive_yaml_parser(path)
+    value = data.get('version')
+    if value:
+        return value
     raise ValueError(f"{path} is missing a 'version' field")
 
 
@@ -131,7 +152,7 @@ def merge_with_markers(
     or append the marked block if the file has no markers yet."""
     managed_block = (
         f"{MARKER_BEGIN}\n"
-        f"<!-- managed by agentic-framework {version} — do not edit manually -->\n"
+        f"<!-- managed by APF {version} — do not edit manually -->\n"
         f"{source_content}\n"
         f"{MARKER_END}"
     )
@@ -170,7 +191,7 @@ def copy_entry(
     """Copy a single file or directory tree from *src* to *dest*."""
     if src.is_dir():
         if dry_run:
-            print(f"  [dry-run] Would copy directory {src.name}/ → {dest}")
+            print(f"  [dry-run] Would recursively copy directory {src.name}/ → {dest}")
             return
         if dest.exists():
             if force:
@@ -193,10 +214,10 @@ def copy_entry(
 
 
 def install(repo_dir: Path, project_dir: Path, new_version: str, args: argparse.Namespace) -> None:
-    """Walk FILE_MAP and copy / merge everything into the project."""
+    """Walk PATH_MAP and copy / merge everything into the project."""
     print(f"\n📦 Installing APF v{new_version} into {project_dir}\n")
 
-    for src_rel, dest_rel in FILE_MAP.items():
+    for src_rel, dest_rel in PATH_MAP:
         src = repo_dir / src_rel
         dest = project_dir / dest_rel
 

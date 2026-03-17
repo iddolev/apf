@@ -6,8 +6,9 @@ LLM-author: claude-Opus-4.6
 
 # Claude Preparation
 
-This is a markdown file that instructs an LLM how to create agent definition files, skills, and other knowledge files,
-to be used by agentic programming frameworks (such as Claude Code) for this project.
+This is a markdown file that instructs an LLM how to create agent definition files, skills, 
+and other knowledge files,
+to be used by agentic programming platforms (such as Claude Code and OpenCode) for the current project.
 
 ## Instantiation Instructions
 
