@@ -41,7 +41,7 @@ APF_FILE = ".apf"
 
 # Note: Deliberately not including .apf in .gitignore
 # because it's supposed to be tracked in the git of the user project
-GIT_IGNORE = [
+GITIGNORE_ENTRIES = [
     "apf_install.bat",
     "apf_install.py",
     ".claude/commands/apf/",
@@ -187,10 +187,10 @@ GIT_IGNORE_COMMENT = "# Don't include files of APF in your repo"
 
 
 def update_gitignore(project_dir: Path, *, dry_run: bool) -> None:
-    """Create or update .gitignore with GIT_IGNORE entries."""
+    """Create or update .gitignore with GITIGNORE_ENTRIES entries."""
     gitignore_path = project_dir / ".gitignore"
 
-    new_section = f"{GIT_IGNORE_COMMENT}\n" + "\n".join(GIT_IGNORE) + "\n"
+    new_section = f"{GIT_IGNORE_COMMENT}\n" + "\n".join(GITIGNORE_ENTRIES) + "\n"
 
     if not gitignore_path.exists():
         if dry_run:
@@ -204,12 +204,12 @@ def update_gitignore(project_dir: Path, *, dry_run: bool) -> None:
     content_lines = content.splitlines()
 
     content_stripped = {line.strip() for line in content_lines}
-    git_ignore_s = set(GIT_IGNORE)
+    git_ignore_s = set(GITIGNORE_ENTRIES)
     existing_ignore = [line for line in content_lines if line.strip() in git_ignore_s]
-    missing = [line for line in GIT_IGNORE if line not in content_stripped]
+    missing = [line for line in GITIGNORE_ENTRIES if line not in content_stripped]
 
     if not existing_ignore:
-        # None of the GIT_IGNORE lines exist — add full section
+        # None of the GITIGNORE_ENTRIES lines exist — add full section
         if dry_run:
             print(f"  [dry-run] Would add APF section to .gitignore")
             return
@@ -220,10 +220,10 @@ def update_gitignore(project_dir: Path, *, dry_run: bool) -> None:
     if not missing:
         return
 
-    # Find last occurrence of any GIT_IGNORE line
+    # Find last occurrence of any GITIGNORE_ENTRIES line
     last_idx = -1
     for i, line in enumerate(content_lines):
-        if line.strip() in GIT_IGNORE:
+        if line.strip() in git_ignore_s:
             last_idx = i
 
     if dry_run:
@@ -239,6 +239,7 @@ def install(repo_dir: Path, project_dir: Path, new_version: str, *, dry_run: boo
     """Walk PATH_MAP and copy every framework file into the project."""
     print(f"\n📦 Installing APF v{new_version} into {project_dir}\n")
 
+    failed: list[tuple[str, str]] = []
     for src_rel, dest_rel in PATH_MAP:
         src = repo_dir / src_rel
         dest = project_dir / dest_rel
@@ -247,9 +248,17 @@ def install(repo_dir: Path, project_dir: Path, new_version: str, *, dry_run: boo
             err(f"  ⚠️  Source not found in repo: {src_rel} — skipping")
             continue
 
-        copy_entry(src, dest, dry_run=dry_run)
+        try:
+            copy_entry(src, dest, dry_run=dry_run)
+        except OSError as e:
+            err(f"  ❌ Failed to copy {src_rel} → {dest_rel}: {e}")
+            failed.append((src_rel, dest_rel))
 
     update_gitignore(project_dir, dry_run=dry_run)
+
+    if failed:
+        err(f"\n⚠️  {len(failed)} path(s) failed to copy. "
+            "The installation is incomplete — some files may be outdated or missing.")
 
 
 # ── Entry point ──────────────────────────────────────────────────────────────
