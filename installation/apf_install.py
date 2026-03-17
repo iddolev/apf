@@ -191,16 +191,17 @@ def main() -> None:
         else:
             prompt = f"This will install APF v{new_version} in {project_dir}"
 
-        # Confirm before proceeding.
-        print(prompt)
-        while True:
-            answer = input("Continue? [Y/n] ").strip().lower()
-            if answer in ("y", "yes", ""):
-                break
-            if answer in ("n", "no"):
-                print("Aborted.")
-                sys.exit(0)
-            print(f"Invalid input: '{answer}'. Please enter y or n.")
+        # Confirm before proceeding (skip prompt for --dry-run and --force).
+        if not args.dry_run and not args.force:
+            print(prompt)
+            while True:
+                answer = input("Continue? [Y/n] ").strip().lower()
+                if answer in ("y", "yes", ""):
+                    break
+                if answer in ("n", "no"):
+                    print("Aborted.")
+                    sys.exit(0)
+                print(f"Invalid input: '{answer}'. Please enter y or n.")
 
         install(repo_dir, project_dir, new_version, dry_run=args.dry_run)
 
