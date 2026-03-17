@@ -9,7 +9,7 @@ Rules enforced:
   5. Ensure every list is followed by at least one blank line.
 
 Usage:
-    python scripts/format_markdown.py [paths...]
+    python scripts/apf/format_markdown.py [paths...]
 
     If no paths are given, all *.md files in the repo are processed
     (excluding sandbox/ anf tmd/ and .git/).

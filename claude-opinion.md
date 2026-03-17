@@ -76,7 +76,7 @@ instructions/
    checklists, and security sections with an explicit `<!-- ADAPT -->` comment for
    risk-level calibration.
 
-5. **Markdown formatting is enforced by a Python script** (`.claude/scripts/format_markdown.py`)
+5. **Markdown formatting is enforced by a Python script** (`.claude/scripts/apf/format_markdown.py`)
    rather than by an LLM-interpreted instruction file, making it deterministic and consistent.
 
 #### Areas for improvement
