@@ -6,6 +6,10 @@ Usage:
     python apf_install.py [--target FOLDER] [--dry-run] [--yes] [--force] [--help]
 
 Place this script in your project root and run it from there.
+
+TODO: If a future APF version removes a file that existed in a previous version,
+      the installer won't delete it from the user's project.
+      Consider tracking installed files in .apf or a manifest.
 """
 
 from __future__ import annotations
@@ -49,7 +53,7 @@ GITIGNORE_ENTRIES = [
 ]
 
 
-def err(*args, **kwargs) -> None:
+def warn(*args, **kwargs) -> None:
     """Print to stderr."""
     print(*args, file=sys.stderr, **kwargs)
 
@@ -63,6 +67,9 @@ def parse_args() -> argparse.Namespace:
     )
     p.add_argument("--target", type=Path, default=None,
                    help="Install into FOLDER instead of the current directory.")
+    # For dry-run, we cannot skip clone,
+    # because we want the entire logic to run and inspect all repo files
+    # and say what would be done in a real run.
     p.add_argument("--dry-run", action="store_true",
                    help="Show what would be done without touching any files. "
                         "Note: still clones the repo to inspect its contents.")
@@ -93,10 +100,10 @@ def clone_repo(tmp_dir: Path) -> Path:
             text=True,
         )
     except FileNotFoundError:
-        err("❌ git is not installed or not on PATH. Please install git and try again.")
+        warn("❌ git is not installed or not on PATH. Please install git and try again.")
         sys.exit(1)
     except subprocess.CalledProcessError as e:
-        err(f"❌ Failed to clone repository (check your network connection):\n{e.stderr}")
+        warn(f"❌ Failed to clone repository (check your network connection):\n{e.stderr}")
         sys.exit(1)
     print("✅ Done.")
     return dest
@@ -245,20 +252,20 @@ def install(repo_dir: Path, project_dir: Path, new_version: str, *, dry_run: boo
         dest = project_dir / dest_rel
 
         if not src.exists():
-            err(f"  ⚠️  Source not found in repo: {src_rel} — skipping")
+            warn(f"  ⚠️  Source not found in repo: {src_rel} — skipping")
             continue
 
         try:
             copy_entry(src, dest, dry_run=dry_run)
         except OSError as e:
-            err(f"  ❌ Failed to copy {src_rel} → {dest_rel}: {e}")
+            warn(f"  ❌ Failed to copy {src_rel} → {dest_rel}: {e}")
             failed.append((src_rel, dest_rel))
 
     update_gitignore(project_dir, dry_run=dry_run)
 
     if failed:
-        err(f"\n⚠️  {len(failed)} path(s) failed to copy. "
-            "The installation is incomplete — some files may be outdated or missing.")
+        warn(f"\n⚠️  {len(failed)} path(s) failed to copy. "
+             "The installation is incomplete — some files may be outdated or missing.")
 
 
 # ── Entry point ──────────────────────────────────────────────────────────────
@@ -274,7 +281,7 @@ def resolve_versions(project_dir: Path, *, force: bool) -> tuple[str | None, str
     try:
         new_version = fetch_remote_version()
     except ValueError as e:
-        err(f"❌ {e}")
+        warn(f"❌ {e}")
         sys.exit(1)
     print(f"   Latest: v{new_version}")
 
@@ -284,8 +291,8 @@ def resolve_versions(project_dir: Path, *, force: bool) -> tuple[str | None, str
         try:
             current_version = read_apf_version(apf_path)
         except ValueError as e:
-            err(f"⚠️  {e}")
-            err("   Ignoring .apf and proceeding as a fresh install.")
+            warn(f"⚠️  {e}")
+            warn("   Ignoring .apf and proceeding as a fresh install.")
 
     if current_version == new_version and not force:
         print(f"ℹ️  Already at version {new_version}. Use --force to reinstall.")
@@ -314,7 +321,7 @@ def main() -> None:
     args = parse_args()
     project_dir = args.target.resolve() if args.target else Path.cwd()
     if not project_dir.is_dir():
-        err(f"❌ Target directory does not exist: {project_dir}")
+        warn(f"❌ Target directory does not exist: {project_dir}")
         sys.exit(1)
 
     # --version: show installed and latest versions, then exit.
@@ -325,7 +332,7 @@ def main() -> None:
                 local = read_apf_version(apf_path)
                 print(f"Installed: v{local}")
             except ValueError as e:
-                err(f"❌ {e}")
+                warn(f"❌ {e}")
                 sys.exit(1)
         else:
             print("Installed: (not installed)")
@@ -337,7 +344,7 @@ def main() -> None:
         return
 
     if _is_apf_repo(project_dir):
-        err("❌ Refusing to install — target directory is the APF repo itself.")
+        warn("❌ Refusing to install — target directory is the APF repo itself.")
         sys.exit(1)
 
     current_version, new_version = resolve_versions(project_dir, force=args.force)
@@ -356,7 +363,7 @@ def main() -> None:
         print("\n🏁 Dry run complete — no files were modified.")
     else:
         print(f"\n🏁 APF v{new_version} installed successfully.")
-        err(f"⚠️  You should commit .apf to your repo, to remember the APF version.")
+        warn(f"⚠️  You should commit .apf to your repo, to remember the APF version.")
 
 
 if __name__ == "__main__":
