@@ -255,27 +255,12 @@ def install(repo_dir: Path, project_dir: Path, new_version: str, *, dry_run: boo
 # ── Entry point ──────────────────────────────────────────────────────────────
 
 
-def main() -> None:
-    args = parse_args()
-    project_dir = args.target.resolve() if args.target else Path.cwd()
-    if not project_dir.is_dir():
-        err(f"❌ Target directory does not exist: {project_dir}")
-        sys.exit(1)
-    existing_version_path = project_dir / APF_FILE
+def resolve_versions(project_dir: Path, *, force: bool) -> tuple[str | None, str]:
+    """Fetch the remote version and read the local one (if installed).
 
-    # --version: show installed version and exit.
-    if args.version:
-        if existing_version_path.exists():
-            print(f"APF v{read_apf_version(existing_version_path)}")
-        else:
-            print("APF is not installed in this project.")
-        return
-
-    if _is_apf_repo(project_dir):
-        err("❌ Refusing to install — target directory is the APF repo itself.")
-        sys.exit(1)
-
-    # Fetch remote version (no clone) to allow early exit when up to date.
+    Returns (current_version, new_version).
+    Exits early if already up to date (unless *force* is set).
+    """
     print("⏳ Checking latest version...")
     try:
         new_version = fetch_remote_version()
@@ -284,34 +269,63 @@ def main() -> None:
         sys.exit(1)
     print(f"   Latest: v{new_version}")
 
-    # Read current version once (if installed).
     current_version = None
-    if existing_version_path.exists():
+    apf_path = project_dir / APF_FILE
+    if apf_path.exists():
         try:
-            current_version = read_apf_version(existing_version_path)
+            current_version = read_apf_version(apf_path)
         except ValueError as e:
             err(f"⚠️  {e}")
             err("   Ignoring .apf and proceeding as a fresh install.")
 
-    # Skip clone entirely if already up to date.
-    if current_version == new_version and not args.force:
+    if current_version == new_version and not force:
         print(f"ℹ️  Already at version {new_version}. Use --force to reinstall.")
+        sys.exit(0)
+
+    return current_version, new_version
+
+
+def confirm_install(current_version: str | None, new_version: str,
+                    project_dir: Path) -> bool:
+    """Prompt the user and return True to proceed, False to abort."""
+    if current_version:
+        prompt = f"This will update APF (v{current_version} → v{new_version}) in {project_dir}"
+    else:
+        prompt = f"This will install APF v{new_version} in {project_dir}"
+    print(prompt)
+    try:
+        answer = input("Continue? [Y/n] ").strip().lower()
+        return answer in ("y", "yes", "")
+    except (KeyboardInterrupt, EOFError):
+        print()
+        return False
+
+
+def main() -> None:
+    args = parse_args()
+    project_dir = args.target.resolve() if args.target else Path.cwd()
+    if not project_dir.is_dir():
+        err(f"❌ Target directory does not exist: {project_dir}")
+        sys.exit(1)
+
+    # --version: show installed version and exit.
+    if args.version:
+        apf_path = project_dir / APF_FILE
+        if apf_path.exists():
+            print(f"APF v{read_apf_version(apf_path)}")
+        else:
+            print("APF is not installed in this project.")
         return
 
-    # Confirm before cloning (skip prompt for --dry-run and --yes).
+    if _is_apf_repo(project_dir):
+        err("❌ Refusing to install — target directory is the APF repo itself.")
+        sys.exit(1)
+
+    current_version, new_version = resolve_versions(project_dir, force=args.force)
+
     if not args.dry_run and not args.yes:
-        if current_version:
-            prompt = f"This will update APF (v{current_version} → v{new_version}) in {project_dir}"
-        else:
-            prompt = f"This will install APF v{new_version} in {project_dir}"
-        print(prompt)
-        try:
-            answer = input("Continue? [Y/n] ").strip().lower()
-            if answer not in ("y", "yes", ""):
-                print("Aborted.")
-                return
-        except (KeyboardInterrupt, EOFError):
-            print("\nAborted.")
+        if not confirm_install(current_version, new_version, project_dir):
+            print("Aborted.")
             return
 
     with tempfile.TemporaryDirectory(prefix="apf-") as tmp:
