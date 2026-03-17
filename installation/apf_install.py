@@ -288,16 +288,8 @@ def main() -> None:
         print(f"ℹ️  Already at version {new_version}. Use --force to reinstall.")
         return
 
-    if args.dry_run:
-        print(f"\n📦 Installing APF v{new_version} into {project_dir}\n")
-        for src_rel, dest_rel in PATH_MAP:
-            print(f"  [dry-run] Would copy {src_rel} → {project_dir / dest_rel}")
-        print(f"  [dry-run] Might update .gitignore")
-        print("\n🏁 Dry run complete — no files were modified.")
-        return
-
     # Confirm before cloning (skip prompt for --dry-run and --yes).
-    if not args.yes:
+    if not args.dry_run and not args.yes:
         if current_version:
             prompt = f"This will update APF (v{current_version} → v{new_version}) in {project_dir}"
         else:
@@ -315,10 +307,13 @@ def main() -> None:
     with tempfile.TemporaryDirectory(prefix="apf-") as tmp:
         tmp_dir = Path(tmp)
         repo_dir = clone_repo(tmp_dir)
-        install(repo_dir, project_dir, new_version, dry_run=False)
+        install(repo_dir, project_dir, new_version, dry_run=args.dry_run)
 
-    print(f"\n🏁 APF v{new_version} installed successfully.")
-    print(f"⚠️  You should commit .apf to your repo, to remember the APF version.")
+    if args.dry_run:
+        print("\n🏁 Dry run complete — no files were modified.")
+    else:
+        print(f"\n🏁 APF v{new_version} installed successfully.")
+        print(f"⚠️  You should commit .apf to your repo, to remember the APF version.")
 
 
 if __name__ == "__main__":

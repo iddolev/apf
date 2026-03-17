@@ -2,6 +2,10 @@
 
 ## More concepts
 
+Repeatedly and insistently request feedback and fix (but also detect A->B->A->B->A loop of changes). Just like I did for the script, kept getting more and more things to fix.
+Until reach steady state.
+
+
 1. TDD test driven design
 2. DDD https://claude.ai/chat/717b4a61-741a-4baf-a056-6bac5d31c8e5
 3. ADP (acceptance driven programming - Paul?)
