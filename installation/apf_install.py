@@ -3,7 +3,7 @@
 Install / update the Agentic Programming Framework (APF) in the current project folder.
 
 Usage:
-    python install_framework.py [--dry-run] [--force] [--help]
+    python apf_install.py [--dry-run] [--force] [--help]
 
 Place this script in your project root and run it from there.
 """
@@ -27,6 +27,7 @@ REPO_URL = "https://github.com/iddolev/apf.git"
 # Directories are copied recursively; files are copied individually.
 PATH_MAP: list[tuple[str, str]] = [
     # Distribution files (relevant only for the user project, not for the apf project)
+    (".apf", ".apf"),
     ("dist/CLAUDE.md",        "CLAUDE.md"),
     ("dist/.claude/commands", ".claude/commands"),
     ("dist/.claude/hooks",    ".claude/hooks"),
@@ -56,7 +57,7 @@ def parse_args() -> argparse.Namespace:
 
 
 def clone_repo(tmp_dir: Path) -> Path:
-    """Shallow-clone the framework repo into *tmp_dir* and return the path."""
+    """Clone the APF repo into *tmp_dir* and return the path."""
     dest = tmp_dir / "apf"
     print(f"⏳ Cloning {REPO_URL} ...")
     subprocess.run(
@@ -73,7 +74,8 @@ def clone_repo(tmp_dir: Path) -> Path:
     return dest
 
 
-_YAML_LINE_RE = re.compile(r"(\w+)\s?:\s?(\w+)")
+# Match a valid keyword, then :, and then the rest of the line
+_YAML_LINE_RE = re.compile(r"\w+\s*:.+")
 
 
 def naive_yaml_parser(text: str) -> dict:
@@ -118,7 +120,7 @@ def get_new_version(repo_dir: Path) -> str:
 
 
 def merge_with_markers(
-    src_path: str,
+    src_path: Path,
     dest_path: Path,
     version: str,
     *,

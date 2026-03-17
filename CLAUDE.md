@@ -1,8 +1,9 @@
 ---
 date: 2026-03-07
 author: "Iddo Lev"
-description: This file is meant to be read by Claude Code only when developing the agentic programming itself, and not
-when the framework is used in anohter project.
+description: |
+  This file is meant to be read by Claude Code only when developing the agentic programming itself, 
+  and not when the framework is used in another project.
 ---
 
 # CLAUDE.md — Agentic Programming
