@@ -33,13 +33,15 @@ PATH_MAP: list[tuple[str, str]] = [
     (".apf", ".apf"),
     ("dist/CLAUDE.md",        "CLAUDE.md"),
     ("dist/.claude/commands", ".claude/commands"),
-    ("dist/.claude/hooks",    ".claude/hooks"),
+    ("dist/.claude/scripts",  ".claude/scripts"),
     # More files (relevant both for the user project and for the apf project)
     (".claude/commands/apf",  ".claude/commands/apf"),
-    (".claude/scripts",       ".claude/scripts"),
+    (".claude/scripts/apf",   ".claude/scripts/apf"),
 ]
 
 APF_FILE = ".apf"
+
+
 
 # ── Core logic ───────────────────────────────────────────────────────────────
 
