@@ -225,7 +225,7 @@ whether something general should be added to the template
 
 backend-specialist-template
 
-Comparison of `instructions/claude/agent-templates/backend-specialist-template.md` vs
+Comparison of `instructions/.claude/agent-templates/backend-specialist-template.md` vs
 `sandbox/michael-mykey-agents/mykey-backend-developer.md`.
 
 The mykey version has several substantive sections that the template currently lacks (it only has empty
@@ -272,7 +272,7 @@ criteria.
 
 ## Possibly to consider: frontend-specialist-template vs mykey-frontend-specialist
 
-Comparison of `instructions/claude/agent-templates/frontend-specialist-template.md` vs
+Comparison of `instructions/.claude/agent-templates/frontend-specialist-template.md` vs
 `sandbox/michael-mykey-agents/mykey-frontend-specialist.md`.
 
 The template is already quite strong here — it has responsive design, accessibility, component architecture, and i18n
@@ -323,7 +323,7 @@ requirements, performance vs UX tradeoffs, accessibility priority. Worth adding 
 
 ## Possibly to consider: security-specialist-template vs mykey-security-specialist
 
-Comparison of `instructions/claude/agent-templates/security-specialist-template.md` vs
+Comparison of `instructions/.claude/agent-templates/security-specialist-template.md` vs
 `sandbox/michael-mykey-agents/mykey-security-specialist.md`.
 
 The template is already **very strong** — it has comprehensive sections on threat modeling, input validation,
@@ -464,7 +464,7 @@ a system-architect template.
 
 ## Possibly to consider: test-specialist-template vs mykey-test-specialist
 
-Comparison of `instructions/claude/agent-templates/test-specialist-template.md` vs
+Comparison of `instructions/.claude/agent-templates/test-specialist-template.md` vs
 `sandbox/michael-mykey-agents/mykey-test-specialist.md`.
 
 The template is already strong with test quality, structure, mocking/isolation, and coverage/traceability sections.

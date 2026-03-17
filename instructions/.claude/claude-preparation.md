@@ -33,7 +33,7 @@ In all the files mentioned below:
 > **NOTE:** The rationale for this approach is explained in `docs/rationale.md` in the agentic-programming project,
 > section "Why Agent Templates Use a General-Then-Specific Approach".
 
-We have a general template for each agent (under the folder instructions/claude/agent-templates),
+We have a general template for each agent (under the folder instructions/.claude/agent-templates),
 plus general instructions (in this file) explaining how to adapt the template to the specific project,
 by creating a specific agent tailor-made for this project.
 

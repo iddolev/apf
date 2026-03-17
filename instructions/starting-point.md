@@ -118,7 +118,7 @@ In the file @STATE/FRAMEWORK-STATE.yaml: If stage != "agents" then: set stage = 
 In this stage you are to create agents to be used by agentic programming frameworks
 (such as Claude Code) for this project.
 
-Follow the instructions in @instructions/claude/claude-preparation.md
+Follow the instructions in @instructions/.claude/claude-preparation.md
 
 ## Finalize
 

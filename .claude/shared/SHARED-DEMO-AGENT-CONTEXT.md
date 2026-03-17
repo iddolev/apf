@@ -12,11 +12,12 @@ The project maintains a running log `logs/agents_invocations_log.jsonl` of agent
 Each line is a JSON record with a timestamp, actor name, and message.
 
 You, as an agent, are instructed to add entries to this log file, 
-so that the human user can review what really happened during a Claude Code session.
+so that the human user can review what really happened during a Claude Code or OpenCode session.
+Here are instructions on how to do that: 
 
 ## Instructions
 
-**Whenever you receive focus (either directly from the human user or when you are invoked by the architect agent)**, run:
+**Whenever you receive focus (either directly from the human user or when you are invoked by the tech lead agent)**, run:
 
 ```
 python .claude/scripts/log_agent_invocations.py "<your-agent-name>" "agent-start" "<brief description of the task and input you received>"
