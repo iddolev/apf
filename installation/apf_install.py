@@ -103,11 +103,20 @@ def clone_repo(tmp_dir: Path) -> Path:
     return dest
 
 
+def read_apf_version(path: Path) -> str:
+    """Read the version field from a YAML .apf file (simple key: value parsing)."""
+    for line in path.read_text().splitlines():
+        line = line.strip()
+        if line.startswith("version:"):
+            return line.split(":", 1)[1].strip()
+    raise ValueError(f"{path} is missing a 'version' field")
+
+
 def get_new_version(repo_dir: Path) -> str:
     """Read the version string shipped with the framework repo."""
     version_path = repo_dir / APF_FILE
     if version_path.exists():
-        return version_path.read_text().strip()
+        return read_apf_version(version_path)
     raise FileNotFoundError(f"Cloned repo is missing version file {version_path}")
 
 
@@ -201,14 +210,6 @@ def install(repo_dir: Path, project_dir: Path, new_version: str, args: argparse.
         else:
             copy_entry(src, dest, dry_run=args.dry_run, force=args.force)
 
-    # Write version stamp.
-    version_path = project_dir / APF_FILE
-    if args.dry_run:
-        print(f"\n  [dry-run] Would write version {new_version} → {version_path}")
-    else:
-        version_path.write_text(new_version)
-        print(f"\n✅ Installed APF version {new_version} successfully.")
-
 
 # ── Entry point ──────────────────────────────────────────────────────────────
 
@@ -241,7 +242,7 @@ def main() -> None:
         # Check if already installed at this version.
         existing_version_path = project_dir / APF_FILE
         if existing_version_path.exists():
-            current = existing_version_path.read_text().strip()
+            current = read_apf_version(existing_version_path)
             if current == new_version and not args.force:
                 print(f"ℹ️  Already at version {new_version}. Use --force to reinstall.")
                 sys.exit(0)
