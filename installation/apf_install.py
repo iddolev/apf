@@ -37,7 +37,7 @@ MARKER_MERGE_FILES: set[str] = {
 
 MARKER_BEGIN = "<!-- BEGIN APF -->"
 MARKER_END = "<!-- END APF -->"
-VERSION_FILE = ".apf_version"
+APF_FILE = ".apf"
 
 # ── Core logic ───────────────────────────────────────────────────────────────
 
@@ -105,7 +105,7 @@ def clone_repo(tmp_dir: Path) -> Path:
 
 def get_new_version(repo_dir: Path) -> str:
     """Read the version string shipped with the framework repo."""
-    version_path = repo_dir / VERSION_FILE
+    version_path = repo_dir / APF_FILE
     if version_path.exists():
         return version_path.read_text().strip()
     raise FileNotFoundError(f"Cloned repo is missing version file {version_path}")
@@ -202,7 +202,7 @@ def install(repo_dir: Path, project_dir: Path, new_version: str, args: argparse.
             copy_entry(src, dest, dry_run=args.dry_run, force=args.force)
 
     # Write version stamp.
-    version_path = project_dir / VERSION_FILE
+    version_path = project_dir / APF_FILE
     if args.dry_run:
         print(f"\n  [dry-run] Would write version {new_version} → {version_path}")
     else:
@@ -218,7 +218,7 @@ def main() -> None:
     project_dir = args.target.resolve() if args.target else Path.cwd()
 
     # Confirm before proceeding.
-    existing_version_path = project_dir / VERSION_FILE
+    existing_version_path = project_dir / APF_FILE
     if existing_version_path.exists():
         action = "update"
     else:
@@ -239,7 +239,7 @@ def main() -> None:
         new_version = get_new_version(repo_dir)
 
         # Check if already installed at this version.
-        existing_version_path = project_dir / VERSION_FILE
+        existing_version_path = project_dir / APF_FILE
         if existing_version_path.exists():
             current = existing_version_path.read_text().strip()
             if current == new_version and not args.force:
