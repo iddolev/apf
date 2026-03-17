@@ -134,6 +134,7 @@ def fetch_remote_version() -> str:
             data = naive_yaml_parser(resp.read().decode())
             if v := data.get("version"):
                 return v
+            raise ValueError(f"Remote {APF_FILE} is missing a 'version' field")
     except (URLError, UnicodeDecodeError):
         raise ValueError("Could not fetch remote version from GitHub (check network)")
 
