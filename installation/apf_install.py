@@ -223,7 +223,7 @@ def main() -> None:
         current = read_apf_version(existing_version_path)
         if current == new_version and not args.force:
             print(f"ℹ️  Already at version {new_version}. Use --force to reinstall.")
-            sys.exit(0)
+            return
 
     # Confirm before cloning (skip prompt for --dry-run and --yes).
     if not args.dry_run and not args.yes:
@@ -237,10 +237,10 @@ def main() -> None:
             answer = input("Continue? [Y/n] ").strip().lower()
             if answer not in ("y", "yes", ""):
                 print("Aborted.")
-                sys.exit(0)
+                return
         except (KeyboardInterrupt, EOFError):
             print("\nAborted.")
-            sys.exit(0)
+            return
 
     with tempfile.TemporaryDirectory(prefix="apf-") as tmp:
         tmp_dir = Path(tmp)
