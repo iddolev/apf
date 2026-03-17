@@ -193,8 +193,9 @@ def update_gitignore(project_dir: Path, *, dry_run: bool) -> None:
     content = gitignore_path.read_text()
     existing_lines = content.splitlines()
 
+    existing_stripped = {line.strip() for line in existing_lines}
     existing_ignore = [line for line in existing_lines if line.strip() in set(GIT_IGNORE)]
-    missing = [line for line in GIT_IGNORE if line not in set(existing_lines)]
+    missing = [line for line in GIT_IGNORE if line not in existing_stripped]
 
     if not existing_ignore:
         # None of the GIT_IGNORE lines exist — add full section
