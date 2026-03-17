@@ -8,25 +8,28 @@ description: |
 
 # History
 
-The project maintains a running log `logs/agents_invocations_log.jsonl` of agent invocations during a claude session. 
+The project maintains a running log `logs/agents_invocations_log.jsonl` of agent invocations during
+a claude session.
 Each line is a JSON record with a timestamp, actor name, and message.
 
-You, as an agent, are instructed to add entries to this log file, 
+You, as an agent, are instructed to add entries to this log file,
 so that the human user can review what really happened during a Claude Code or OpenCode session.
-Here are instructions on how to do that: 
+Here are instructions on how to do that:
 
 ## Instructions
 
-**Whenever you receive focus (either directly from the human user or when you are invoked by the tech lead agent)**, run:
+**Whenever you receive focus (either directly from the human user or when you are invoked by the
+tech lead agent)**, run:
 
 ```
 python .claude/scripts/log_agent_invocations.py "<your-agent-name>" "agent-start" "<brief description of the task and input you received>"
 ```
 
-**Whenever you are about to relinquish your execution (when you return focus to whoever called you)**, run:
+**Whenever you are about to relinquish your execution (when you return focus to whoever called
+you)**, run:
 
 ```
 python .claude/scripts/log_agent_invocations.py "<your-agent-name>" "agent-stop" "<brief summary of what you did and the outcome so far>"
 ```
 
-Keep messages short (1-2 sentences). 
+Keep messages short (1-2 sentences).
