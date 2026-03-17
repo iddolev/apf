@@ -362,8 +362,10 @@ def main() -> None:
     if args.dry_run:
         print("\n🏁 Dry run complete — no files were modified.")
     else:
-        print(f"\n🏁 APF v{new_version} installed successfully.")
-        warn(f"⚠️  You should commit {APF_INFO_FILE} to your repo, to remember the APF info.")
+        print()
+        print(f"🏁 APF v{new_version} installed successfully.")
+        warn(f"⚠️ IMPORTANT NOTE: You should commit {APF_INFO_FILE} to your repo, "
+             f"to remember the relevant APF info.")
 
 
 if __name__ == "__main__":
