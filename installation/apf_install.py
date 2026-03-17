@@ -54,6 +54,8 @@ def parse_args() -> argparse.Namespace:
                    help="Show what would be done without touching any files.")
     p.add_argument("--force", action="store_true",
                    help="Overwrite existing files without prompting.")
+    p.add_argument("--version", action="store_true",
+                   help="Show the currently installed APF version and exit.")
     return p.parse_args()
 
 
@@ -96,6 +98,9 @@ def naive_yaml_parser(text: str) -> dict:
             pos = line.find(':')
             key = line[:pos].strip()
             value = line[pos+1:].strip()
+            # Strip surrounding quotes (single or double).
+            if len(value) >= 2 and value[0] == value[-1] and value[0] in ('"', "'"):
+                value = value[1:-1]
             result[key] = value
     return result
 
@@ -264,22 +269,15 @@ def install(repo_dir: Path, project_dir: Path, new_version: str, args: argparse.
 def main() -> None:
     args = parse_args()
     project_dir = args.target.resolve() if args.target else Path.cwd()
-
-    # Confirm before proceeding.
     existing_version_path = project_dir / APF_FILE
-    if existing_version_path.exists():
-        action = "update"
-    else:
-        action = "install"
-    print(f"This will {action} the APF framework in {project_dir}")
-    while True:
-        answer = input("Continue? [Y/n] ").strip().lower()
-        if answer in ("y", "yes", ""):
-            break
-        if answer in ("n", "no"):
-            print("Aborted.")
-            sys.exit(0)
-        print(f"Invalid input: '{answer}'. Please enter y or n.")
+
+    # --version: show installed version and exit.
+    if args.version:
+        if existing_version_path.exists():
+            print(f"APF v{read_apf_version(existing_version_path)}")
+        else:
+            print("APF is not installed in this project.")
+        sys.exit(0)
 
     with tempfile.TemporaryDirectory(prefix="apf-") as tmp:
         tmp_dir = Path(tmp)
@@ -292,7 +290,20 @@ def main() -> None:
             if current == new_version and not args.force:
                 print(f"ℹ️  Already at version {new_version}. Use --force to reinstall.")
                 sys.exit(0)
-            print(f"🔄 Updating {current} → {new_version}")
+            prompt = f"This will update APF ({current} → {new_version}) in {project_dir}"
+        else:
+            prompt = f"This will install APF v{new_version} in {project_dir}"
+
+        # Confirm before proceeding.
+        print(prompt)
+        while True:
+            answer = input("Continue? [Y/n] ").strip().lower()
+            if answer in ("y", "yes", ""):
+                break
+            if answer in ("n", "no"):
+                print("Aborted.")
+                sys.exit(0)
+            print(f"Invalid input: '{answer}'. Please enter y or n.")
 
         install(repo_dir, project_dir, new_version, args)
 
