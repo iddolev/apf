@@ -37,7 +37,7 @@ MARKER_MERGE_FILES: set[str] = {
 
 MARKER_BEGIN = "<!-- BEGIN APF -->"
 MARKER_END = "<!-- END APF -->"
-VERSION_FILE = ".apf-version"
+VERSION_FILE = ".apf_version"
 
 # ── Core logic ───────────────────────────────────────────────────────────────
 
@@ -99,7 +99,7 @@ def clone_repo(tmp_dir: Path) -> Path:
         capture_output=True,
         text=True,
     )
-    print("✅ Clone complete.")
+    print("✅ Done.")
     return dest
 
 
@@ -225,7 +225,7 @@ def main() -> None:
         action = "install"
     print(f"This will {action} the APF framework in {project_dir}")
     while True:
-        answer = input("Continue? [y/N] ").strip().lower()
+        answer = input("Continue? [y/n] ").strip().lower()
         if answer in ("y", "yes"):
             break
         if answer in ("n", "no", ""):
