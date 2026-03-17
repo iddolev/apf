@@ -3,7 +3,7 @@
 Install / update the Agentic Programming Framework (APF) in the current project folder.
 
 Usage:
-    python apf_install.py [--target FOLDER] [--dry-run] [--force] [--help]
+    python apf_install.py [--target FOLDER] [--dry-run] [--yes] [--force] [--help]
 
 Place this script in your project root and run it from there.
 """
@@ -50,8 +50,10 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--dry-run", action="store_true",
                    help="Show what would be done without touching any files. "
                         "Note: the repo is still cloned to a temp directory.")
+    p.add_argument("--yes", "-y", action="store_true",
+                   help="Skip the confirmation prompt.")
     p.add_argument("--force", action="store_true",
-                   help="Overwrite existing files without prompting.")
+                   help="Reinstall even if already at the latest version.")
     p.add_argument("--version", action="store_true",
                    help="Show the currently installed APF version and exit.")
     return p.parse_args()
@@ -74,8 +76,11 @@ def clone_repo(tmp_dir: Path) -> Path:
             capture_output=True,
             text=True,
         )
+    except FileNotFoundError:
+        print("❌ git is not installed or not on PATH. Please install git and try again.")
+        sys.exit(1)
     except subprocess.CalledProcessError as e:
-        print(f"❌ Failed to clone repository (check your network connection and that git is installed):\n{e.stderr}")
+        print(f"❌ Failed to clone repository (check your network connection):\n{e.stderr}")
         sys.exit(1)
     print("✅ Done.")
     return dest
@@ -83,7 +88,7 @@ def clone_repo(tmp_dir: Path) -> Path:
 
 # Match a valid keyword, then :, then at least one character (empty values are
 # intentionally rejected — every key we care about must have a non-empty value).
-_YAML_LINE_RE = re.compile(r"\w+\s*:.+")
+_YAML_LINE_RE = re.compile(r"^\w+\s*:.+$")
 
 
 def naive_yaml_parser(text: str) -> dict:
@@ -145,6 +150,11 @@ def copy_entry(src: Path, dest: Path, *, dry_run: bool) -> None:
         copy_file(src, dest, dry_run=dry_run)
 
 
+def _is_apf_repo(project_dir: Path) -> bool:
+    """Detect if *project_dir* is the APF repo itself."""
+    return (project_dir / "installation" / "apf_install.py").exists()
+
+
 def install(repo_dir: Path, project_dir: Path, new_version: str, *, dry_run: bool) -> None:
     """Walk PATH_MAP and copy every framework file into the project."""
     print(f"\n📦 Installing APF v{new_version} into {project_dir}\n")
@@ -176,6 +186,10 @@ def main() -> None:
             print("APF is not installed in this project.")
         return
 
+    if _is_apf_repo(project_dir):
+        print("❌ Refusing to install — target directory is the APF repo itself.")
+        sys.exit(1)
+
     with tempfile.TemporaryDirectory(prefix="apf-") as tmp:
         tmp_dir = Path(tmp)
         repo_dir = clone_repo(tmp_dir)
@@ -191,17 +205,21 @@ def main() -> None:
         else:
             prompt = f"This will install APF v{new_version} in {project_dir}"
 
-        # Confirm before proceeding (skip prompt for --dry-run and --force).
-        if not args.dry_run and not args.force:
+        # Confirm before proceeding (skip prompt for --dry-run and --yes).
+        if not args.dry_run and not args.yes:
             print(prompt)
-            while True:
-                answer = input("Continue? [Y/n] ").strip().lower()
-                if answer in ("y", "yes", ""):
-                    break
-                if answer in ("n", "no"):
-                    print("Aborted.")
-                    sys.exit(0)
-                print(f"Invalid input: '{answer}'. Please enter y or n.")
+            try:
+                while True:
+                    answer = input("Continue? [Y/n] ").strip().lower()
+                    if answer in ("y", "yes", ""):
+                        break
+                    if answer in ("n", "no"):
+                        print("Aborted.")
+                        sys.exit(0)
+                    print(f"Invalid input: '{answer}'. Please enter y or n.")
+            except (KeyboardInterrupt, EOFError):
+                print("\nAborted.")
+                sys.exit(0)
 
         install(repo_dir, project_dir, new_version, dry_run=args.dry_run)
 
