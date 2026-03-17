@@ -132,6 +132,16 @@ def get_new_version(repo_dir: Path) -> str:
     raise FileNotFoundError(f"Cloned repo is missing version file {version_path}")
 
 
+def _extract_managed_content(text: str) -> str:
+    """If *text* contains a BEGIN/END marker pair, return only the content
+    between them.  Otherwise return *text* unchanged."""
+    if MARKER_BEGIN in text and MARKER_END in text:
+        start = text.index(MARKER_BEGIN) + len(MARKER_BEGIN)
+        end = text.index(MARKER_END)
+        return text[start:end].strip()
+    return text
+
+
 def merge_with_markers(
     src_path: Path,
     dest_path: Path,
@@ -139,9 +149,10 @@ def merge_with_markers(
     *,
     dry_run: bool,
 ) -> None:
-    """Insert *source_content* between markers in an existing file,
-    or append the marked block if the file has no markers yet."""
-    source_content = src_path.read_text()
+    """Insert the managed content from *src_path* between markers in an
+    existing file, or append the managed block if the destination has no
+    markers."""
+    source_content = _extract_managed_content(src_path.read_text())
     managed_block = (
         f"{MARKER_BEGIN}\n"
         f"<!-- managed by APF {version} — do not edit manually -->\n"
@@ -158,9 +169,11 @@ def merge_with_markers(
             new_content = before + managed_block + after
             action = "update"
         else:
-            # Append managed block to the end.
+            # Markers were removed from the destination — append and warn.
             new_content = existing.rstrip() + "\n\n" + managed_block + "\n"
             action = "append"
+            print(f"  ⚠️  Managed block markers were missing from {dest_path}. "
+                  f"Appending at end — verify placement is correct.")
     else:
         new_content = managed_block + "\n"
         action = "create"
