@@ -321,7 +321,11 @@ def main() -> None:
     if args.version:
         apf_path = project_dir / APF_FILE
         if apf_path.exists():
-            print(f"APF v{read_apf_version(apf_path)}")
+            try:
+                print(f"APF v{read_apf_version(apf_path)}")
+            except ValueError as e:
+                err(f"❌ {e}")
+                sys.exit(1)
         else:
             print("APF is not installed in this project.")
         return
