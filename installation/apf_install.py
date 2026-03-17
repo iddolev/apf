@@ -180,6 +180,58 @@ def _is_apf_repo(project_dir: Path) -> bool:
     return (project_dir / "installation" / "apf_install.py").exists()
 
 
+GIT_IGNORE_COMMENT = "# Don't include files of APF in your repo"
+
+
+def update_gitignore(project_dir: Path, *, dry_run: bool) -> None:
+    """Create or update .gitignore with GIT_IGNORE entries."""
+    gitignore_path = project_dir / ".gitignore"
+
+    new_section = f"{GIT_IGNORE_COMMENT}\n" + "\n".join(GIT_IGNORE) + "\n"
+
+    if not gitignore_path.exists():
+        if dry_run:
+            print(f"  [dry-run] Would create .gitignore with APF entries")
+            return
+        gitignore_path.write_text(section)
+        print(f"  📄 Created .gitignore")
+        return
+
+    content = gitignore_path.read_text()
+    existing_lines = content.splitlines()
+
+    existing_ignore = [line for line in existing_lines if line.strip() in set(GIT_IGNORE)]
+    missing = [line for line in GIT_IGNORE if line not in set(existing_lines)]
+
+    if not existing_ignore:
+        # None of the GIT_IGNORE lines exist — add full section
+        if dry_run:
+            print(f"  [dry-run] Would add APF section to .gitignore")
+            return
+        gitignore_path.write_text(content.rstrip() + "\n\n" + section)
+        print(f"  📄 Updated .gitignore")
+        return
+
+    if not missing:
+        return
+
+    # Find last occurrence of any GIT_IGNORE line
+    last_idx = -1
+    for i, line in enumerate(existing_lines):
+        if line.strip() in GIT_IGNORE:
+            last_idx = i
+
+    lines_to_add = [line for line in GIT_IGNORE if line not in set(existing_lines)]
+
+    if dry_run:
+        print(f"  [dry-run] Would add some APF entries to .gitignore")
+        return
+
+    new_lines = existing_lines[: last_idx + 1] + lines_to_add + existing_lines[last_idx + 1 :]
+    gitignore_path.write_text("\n".join(new_lines) + "\n")
+    print(f"  📄 Updated .gitignore")
+
+
 def install(repo_dir: Path, project_dir: Path, new_version: str, *, dry_run: bool) -> None:
     """Walk PATH_MAP and copy every framework file into the project."""
     print(f"\n📦 Installing APF v{new_version} into {project_dir}\n")
@@ -193,6 +245,8 @@ def install(repo_dir: Path, project_dir: Path, new_version: str, *, dry_run: boo
             continue
 
         copy_entry(src, dest, dry_run=dry_run)
+
+    update_gitignore(project_dir, dry_run=dry_run)
 
 
 # ── Entry point ──────────────────────────────────────────────────────────────
