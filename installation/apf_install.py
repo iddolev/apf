@@ -30,18 +30,18 @@ REPO_URL = "https://github.com/iddolev/apf.git"
 REPO_SLUG = "iddolev/apf"  # for raw.githubusercontent.com
 # TODO: support cloning a specific tag/branch, not only HEAD
 
+APF_INFO_FILE = ".apf.yaml"
+
 # Source path inside the cloned repo → destination path relative to project root.
 # Directories are copied recursively; files are copied individually.
 PATH_MAP: list[tuple[str, str]] = [
-    (".apf", ".apf"),
+    (APF_INFO_FILE, APF_INFO_FILE),
     ("dist/CLAUDE.md",        "CLAUDE.md"),
     ("dist/.claude/commands", ".claude/commands"),
     ("dist/.claude/scripts",  ".claude/scripts"),
     (".claude/commands/apf",  ".claude/commands/apf"),
     (".claude/scripts/apf",   ".claude/scripts/apf"),
 ]
-
-APF_FILE = ".apf"
 
 # Note: Deliberately not including .apf in .gitignore
 # because it's supposed to be tracked in the git of the user project
@@ -149,14 +149,14 @@ def read_apf_version(path: Path) -> str:
 def fetch_remote_version() -> str:
     """Fetch .apf from remote repo and return version"""
     try:
-        url = f"https://raw.githubusercontent.com/{REPO_SLUG}/main/{APF_FILE}"
+        url = f"https://raw.githubusercontent.com/{REPO_SLUG}/main/{APF_INFO_FILE}"
         with urlopen(url, timeout=10) as resp:
             data = naive_yaml_parser(resp.read().decode())
     except (URLError, UnicodeDecodeError) as e:
         raise ValueError("Could not fetch remote version from GitHub (check network)") from e
     if v := data.get("version"):
         return v
-    raise ValueError(f"Remote {APF_FILE} is missing a 'version' field")
+    raise ValueError(f"Remote {APF_INFO_FILE} is missing a 'version' field")
 
 
 def copy_file(src: Path, dest: Path, *, dry_run: bool) -> None:
@@ -286,7 +286,7 @@ def resolve_versions(project_dir: Path, *, force: bool) -> tuple[str | None, str
     print(f"   Latest: v{new_version}")
 
     current_version = None
-    apf_path = project_dir / APF_FILE
+    apf_path = project_dir / APF_INFO_FILE
     if apf_path.exists():
         try:
             current_version = read_apf_version(apf_path)
@@ -326,7 +326,7 @@ def main() -> None:
 
     # --version: show installed and latest versions, then exit.
     if args.version:
-        apf_path = project_dir / APF_FILE
+        apf_path = project_dir / APF_INFO_FILE
         if apf_path.exists():
             try:
                 local = read_apf_version(apf_path)
@@ -363,7 +363,7 @@ def main() -> None:
         print("\n🏁 Dry run complete — no files were modified.")
     else:
         print(f"\n🏁 APF v{new_version} installed successfully.")
-        warn(f"⚠️  You should commit .apf to your repo, to remember the APF version.")
+        warn(f"⚠️  You should commit {APF_INFO_FILE} to your repo, to remember the APF info.")
 
 
 if __name__ == "__main__":

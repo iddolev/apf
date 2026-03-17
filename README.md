@@ -29,6 +29,16 @@ After the documents are complete, the toolkit also guides creation of
 
 ## Structure
 
+[TBD: Need to update this section to reflect new structure. 
+ In particular, 
+ dist - contains files to be copied as is. 
+ templates - contains files to be instantiated based on specific info from the user's project.
+ .claude - contains some general utils that are useful for both the APF project and the user project
+    these exist either under an "apf" sub-folder (e.g. .claude/commands/apf/) or named with a prefix "apf-"
+ .claude also contains entities that are relevant only for the APF project and not the user project,
+    so they are not copied by apf_install.py to the user project.
+]
+
 ```
 instructions/
 ├── starting-point.md                             — Entry point and orchestration
