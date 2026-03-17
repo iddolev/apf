@@ -193,7 +193,7 @@ def update_gitignore(project_dir: Path, *, dry_run: bool) -> None:
         if dry_run:
             print(f"  [dry-run] Would create .gitignore with APF entries")
             return
-        gitignore_path.write_text(section)
+        gitignore_path.write_text(new_section)
         print(f"  📄 Created .gitignore")
         return
 
@@ -208,7 +208,7 @@ def update_gitignore(project_dir: Path, *, dry_run: bool) -> None:
         if dry_run:
             print(f"  [dry-run] Would add APF section to .gitignore")
             return
-        gitignore_path.write_text(content.rstrip() + "\n\n" + section)
+        gitignore_path.write_text(content.rstrip() + "\n\n" + new_section)
         print(f"  📄 Updated .gitignore")
         return
 
