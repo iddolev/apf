@@ -8,10 +8,9 @@ LLM-author: claude-Opus-4.6
 
 ## Purpose and Audience
 
-<!-- Instruction for the agent: do NOT read rationale.md — it is only for the human user. -->
 
-> **NOTE:** The rationale for why this file is separate from `PROGRAMMING-PRINCIPLES.md`I me
-> is explained in `docs/rationale.md` in the agentic-programming project,
+> **NOTE:** The rationale for why this file is separate from `PROGRAMMING-PRINCIPLES.md`
+> is explained in `docs/rationale.md` in the APF project,
 > section "Why SOFTWARE-ENGINEERING-PRINCIPLES.md and PROGRAMMING-PRINCIPLES.md Are Separate Files".
 
 This file contains foundational software engineering theory — the underlying principles
@@ -30,11 +29,13 @@ that inform the practical coding rules in `PROGRAMMING-PRINCIPLES.md`.
 
 ## Foundational Design Principles
 
-- **DRY** — Don't Repeat Yourself. Every piece of knowledge should have a single, authoritative representation.
+- **DRY** — Don't Repeat Yourself. Every piece of knowledge should have a single, authoritative
+  representation.
 - **KISS** — Keep It Simple, Stupid. Prefer the simplest solution that works.
 - **YAGNI** — You Aren't Gonna Need It. Don't build for hypothetical future requirements.
 - **SoC** — Separation of Concerns. Each module/layer handles one concern.
-- **LoD** — Law of Demeter (Principle of Least Knowledge). A module should only talk to its immediate collaborators.
+- **LoD** — Law of Demeter (Principle of Least Knowledge). A module should only talk to its
+  immediate collaborators.
 - **CoC** — Convention over Configuration. Sensible defaults reduce boilerplate.
 - **PoLA** — Principle of Least Astonishment. Code should behave as readers expect.
 
@@ -65,22 +66,26 @@ that inform the practical coding rules in `PROGRAMMING-PRINCIPLES.md`.
 
 - **Fail Fast** — Detect and report errors as early as possible.
 - **Defensive Programming** — Validate inputs at boundaries; assume nothing about external data.
-- **Postel's Law** (Robustness Principle) — Be conservative in what you send, liberal in what you accept.
+- **Postel's Law** (Robustness Principle) — Be conservative in what you send, liberal in what you
+  accept.
 
 ## Code Quality & Readability
 
 - **Boy Scout Rule** — Leave the code cleaner than you found it.
 - **Self-Documenting Code** — Code should communicate its intent without needing comments.
-- **Command-Query Separation (CQS)** — A method should either change state or return a result, not both.
+- **Command-Query Separation (CQS)** — A method should either change state or return a result, not
+  both.
 - **Tell, Don't Ask** — Tell objects what to do; don't ask for their state and act on it externally.
 
 ## Architecture & Scale
 
-- **Layered Separation of Concerns** — Presentation, business logic, and data access in distinct layers.
+- **Layered Separation of Concerns** — Presentation, business logic, and data access in distinct
+  layers.
 - **Domain-Driven Design (DDD)** — Model software around the business domain.
 - **CQRS** — Command Query Responsibility Segregation. Separate read and write models.
 - **Event-Driven Architecture** — Components communicate through events, not direct calls.
-- **Twelve-Factor App** — Methodology for building SaaS apps (config in env, stateless processes, etc.).
+- **Twelve-Factor App** — Methodology for building SaaS apps (config in env, stateless processes,
+  etc.).
 
 ## Testing
 
@@ -97,6 +102,7 @@ that inform the practical coding rules in `PROGRAMMING-PRINCIPLES.md`.
 
 ## Performance
 
-- **Premature Optimization is the Root of All Evil** (Knuth) — Write correct code first; optimize with evidence.
+- **Premature Optimization is the Root of All Evil** (Knuth) — Write correct code first; optimize
+  with evidence.
 - **Lazy Evaluation** — Defer computation until the result is needed.
 - **Caching** — Store computed results to avoid redundant work.

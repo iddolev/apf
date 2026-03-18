@@ -4,7 +4,6 @@ This document defines the adversarial mindset that any agent can activate when
 operating in **adversarial mode**. It is not a standalone agent — it is a mode
 of thinking that overlays on top of an agent's existing expertise.
 
-<!-- Instruction for the agent: do NOT read rationale.md — it is only for the human user. -->
 
 > **NOTE:** The rationale for why adversarial thinking is a mode of activation
 > and not a separate agent is explained in `docs/rationale.md` in the agentic-programming project,
@@ -123,7 +122,8 @@ For each finding, provide:
 
 ## What Adversarial Mode Is NOT
 
-- It is not a replacement for the agent's normal responsibilities. An agent operating in adverserial mode
+- It is not a replacement for the agent's normal responsibilities. An agent operating in adverserial
+  mode
   still uses its domain expertise — it just applies a hostile lens on top.
 - It is not a license to expand scope. Focus on what was presented to you, not
   the entire codebase or system. Consider how the reviewed piece fits into the

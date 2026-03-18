@@ -38,7 +38,9 @@ We have a general template for each agent (under the folder instructions/.claude
 plus general instructions (in this file) explaining how to adapt the template to the specific project,
 by creating a specific agent tailor-made for this project.
 
-IMPORTANT NOTE: When starting a new version of an existing project, there is a new set of spec docs.
+### IMPORTANT NOTE
+
+Whenever starting a new version of an existing project, there is a new set of spec docs.
 Therefore, it is necessary to review the agent definitions to make sure they are adapted to be useful
 for the new specs and don't remain stuck with capabilities that are not good enough for the new version.
 

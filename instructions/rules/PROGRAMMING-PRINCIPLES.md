@@ -1,6 +1,6 @@
 # Programming Principles
 
-These principles apply to all agents that produce code (e.g. backend, frontend, testing, etc.)
+These principles apply to all agents that create code (e.g. backend, frontend, testing, etc.)
 and to all agents that review code (e.g. code reviewer, security expert).
 Read this file before creating or reviewing code.
 

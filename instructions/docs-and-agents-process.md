@@ -2,16 +2,18 @@
 date: 2026-03-05
 author: "Iddo Lev"
 LLM-author: claude-Opus-4.6
-description: This script is meant to be copied to the user's project. Do not run it in the agentic-programming project
+description: This script is meant to be copied to the user's project. Do not run it in the APF agentic-programming project
 itself.
 ---
 
-# Starting point
+# Documents and Agents Process
 
 ## Purpose
 
 This file should be given to an LLM when the user is starting a new project,
 or starting a new major project version (after the previous version is completed).
+The process interviews the user to create documents (PRD, TSD, etc.) 
+and then to adapt generic agent templates to the specific project.
 
 ## Core Identity
 

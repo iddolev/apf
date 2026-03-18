@@ -9,20 +9,38 @@ Design decisions and their reasoning for the agentic-programming framework.
 
 ---
 
-## Why Document Creation Is a Guided *Process*, Not an Agent
+## Relevancy Table
 
-### Context
+This table shows which parts are relevant for which file
+
+TBD: put only the file name, not the full path.
+
+TBD: Add in the table: for docs-and-agents-process.md - section 1
+
+| File | Relevant Sections |
+|---|-------------------|
+| `instructions/rules/ADVERSARIAL-THINKING.md` | [6](#adversarial-thinking-and-why-it-is-a-mode-not-a-separate-agent)            |
+| `instructions/rules/SOFTWARE-ENGINEERING-PRINCIPLES.md` | 7                 |
+| `instructions/rules/PROGRAMMING-PRINCIPLES.md` | 7                 |
+
+---
+
+<a id="why-document-creation-is-a-guided-process-not-an-agent"/>
+
+## 1. Why Document Creation Is a Guided *Process*, Not an Agent
+
+### 1.1. Context
 
 Our framework's preparation phase creates four documents in sequence:
 PRD, TSD, implementation plan, and test plan (driven by `starting-point.md`
 and the instruction files under `instructions/creating-docs/`).
 This is a human-led process guided by an LLM, not an autonomous agent pipeline.
 
-### Decision
+### 1.2. Decision
 
 **Document creation is a guided, interactive process, not an agent or set of agents.**
 
-### Reasoning
+### 1.3. Reasoning
 
 **1. The interview process requires rich back-and-forth with the user.**
 
@@ -54,7 +72,7 @@ being too generic based on merely an initial brief high level prompt description
 If agents were created first (or concurrently), they would either be too generic
 or would need to be revised after the documents are finalized.
 
-### When to Revisit
+### 1.4. When to Revisit
 
 This approach may need revision if:
 
@@ -67,7 +85,7 @@ This approach may need revision if:
 
 ---
 
-## (Any) Decision Records (ADRs)
+## 2. (Any) Decision Records (ADRs)
 
 Full rationale in [ADR-rationale.md](ADR-rationale.md). **Not yet implemented.**
 
@@ -85,20 +103,20 @@ relevant decisions, and embedding constraints into task assignments.
 
 ---
 
-## Why There Is No System Architect Agent
+## 3. Why There Is No System Architect Agent
 
-### Context
+### 3.1. Context
 
 Multi-agent frameworks often include a dedicated **system architect agent**
 responsible for API contract design, data-flow diagrams, Architecture Decision Records (ADRs),
 and technology evaluation. The question is whether our framework needs one too.
 
-### Decision
+### 3.2. Decision
 
 **No dedicated architect agent.** Architectural decisions during implementation are handled
 by the **tech lead agent**.
 
-### Reasoning
+### 3.3. Reasoning
 
 **1. Our TSD process (in @TSD-instructions.md) already covers what an architect agent would do.**
 
@@ -150,7 +168,7 @@ Collapsing architectural authority into the tech lead avoids this entirely.
 Adding an architect agent means another agent that needs to load project context.
 The tech lead already has it loaded. No duplication needed.
 
-### What This Means for the Tech Lead
+### 3.4. What This Means for the Tech Lead
 
 The tech lead template should include an explicit architectural decision-making mandate:
 when specialist agents encounter architectural ambiguity (TSD gaps, design conflicts,
@@ -158,37 +176,38 @@ cross-cutting concerns), the tech lead is the architectural authority. It analyz
 makes or proposes a design decision (in ADR format when appropriate),
 and updates the TSD if needed before dispatching further implementation work.
 
-### When to Revisit
+### 3.5. When to Revisit
 
 If the tech lead consistently gets overloaded with architectural reasoning on large projects --
 spending more time on design decisions than on orchestration -- that is the signal to extract
 a dedicated architect agent.
-[TBD: Convert this to an operational process that detects this case, informs the user, suggests solutions]
+[TBD: Convert this to an operational process that detects this case, informs the user, suggests
+solutions]
 
 ---
 
-## Who Does the Documentation
+## 4. Who Does the Documentation
 
-### Context
+### 4.1. Context
 
 Documentation agents in multi-agent frameworks often have broad responsibilities
 spanning project docs, API docs, in-repo hygiene, knowledge management, user-facing guides,
 and more. The question is whether our framework needs such an agent.
 
-### Decision
+### 4.2. Decision
 
 **No dedicated documentation agent -- yet.** Most documentation responsibilities are already handled
 by the preparation phase or are out of scope for the current framework.
 The remaining gaps are real but too scattered to justify a single broad-scoped agent.
 
-### Reasoning
+### 4.3. Reasoning
 
 The tables below map every documentation function (from the todo list's documentation agent survey)
 to where it is currently handled in the framework. This audit reveals that the preparation phase
 and existing agents already cover the most critical items, while the uncovered items fall into
 distinct categories that each need a different solution.
 
-### Project Documentation
+### 4.4. Project Documentation
 
 | Documentation Function | Current Coverage |
 |---|---|
@@ -199,7 +218,7 @@ distinct categories that each need a different solution.
 | Onboarding guides | **Not covered** -- could be derived from README + project structure + TSD but no process exists |
 | Runbooks (deployment, rollback, incident response) | **Not covered** -- TSD sections on deployment/rollout provide source material but no runbook is generated |
 
-### API & Interface Documentation
+### 4.5. API & Interface Documentation
 
 | Documentation Function | Current Coverage |
 |---|---|
@@ -208,7 +227,7 @@ distinct categories that each need a different solution.
 | Integration guides | **Not covered** -- relevant only for projects with third-party integrations |
 | GraphQL/OpenAPI spec maintenance | **Not covered** -- keeping spec files in sync with code requires doc-code sync tooling, not just an agent |
 
-### In-Repo Documentation Hygiene
+### 4.6. In-Repo Documentation Hygiene
 
 | Documentation Function | Current Coverage |
 |---|---|
@@ -218,7 +237,7 @@ distinct categories that each need a different solution.
 | Template maintenance | **Not covered** -- templates live in this framework repo, not in user projects |
 | Table of contents / index generation | **Not covered** -- a mechanical task better suited to tooling than an agent |
 
-### Agentic / Multi-Agent Documentation
+### 4.7. Agentic / Multi-Agent Documentation
 
 | Documentation Function | Current Coverage |
 |---|---|
@@ -226,7 +245,7 @@ distinct categories that each need a different solution.
 | Agent memory curation | **Not covered** -- reviewing and cleaning agent memory files for accuracy has no owner |
 | Workflow documentation (agent interactions, pipeline, conventions) | **Not covered** -- how agents interact is implicit in templates but not documented per-project |
 
-### Knowledge Management
+### 4.8. Knowledge Management
 
 | Documentation Function | Current Coverage |
 |---|---|
@@ -235,7 +254,7 @@ distinct categories that each need a different solution.
 | Decision logs (beyond ADRs) | **Partially covered** -- tech lead records architectural decisions in the TSD; informal decisions during implementation are not captured |
 | Dependency documentation (why chosen, known quirks) | **Partially covered** -- TSD Section 7 (Technology Stack & Environments) documents choices and rationale; runtime quirks discovered during implementation are not captured |
 
-### User-Facing Documentation
+### 4.9. User-Facing Documentation
 
 | Documentation Function | Current Coverage |
 |---|---|
@@ -244,7 +263,7 @@ distinct categories that each need a different solution.
 | Migration guides (version upgrades) | **Not covered** -- same as above |
 | Configuration reference | **Not covered** -- same as above |
 
-### Documentation Review & Quality
+### 4.10. Documentation Review & Quality
 
 | Documentation Function | Current Coverage |
 |---|---|
@@ -253,7 +272,7 @@ distinct categories that each need a different solution.
 | Clarity & readability review | **Not covered** |
 | Audience appropriateness | **Not covered** |
 
-### Process Documentation
+### 4.11. Process Documentation
 
 | Documentation Function | Current Coverage |
 |---|---|
@@ -262,7 +281,7 @@ distinct categories that each need a different solution.
 | Testing strategy docs | **Covered** -- test plan created in preparation phase (`starting-point.md` step 6, `test-plan-instructions.md`) |
 | Security policies | **Partially covered** -- `SECURITY-CONVENTIONS-template.md` created in preparation phase if needed; does not cover disclosure process or incident response |
 
-### Diagramming & Visual Documentation
+### 4.12. Diagramming & Visual Documentation
 
 | Documentation Function | Current Coverage |
 |---|---|
@@ -271,7 +290,7 @@ distinct categories that each need a different solution.
 | ER diagrams (data models) | **Not covered** -- TSD data model section describes schema but does not generate visual diagrams |
 | Flowcharts (decision trees, state machines) | **Not covered** -- TSD may describe state machines textually but does not generate visual diagrams |
 
-### Analysis
+### 4.13. Analysis
 
 The audit reveals three distinct clusters of uncovered documentation:
 
@@ -292,7 +311,7 @@ end up too broad to be effective. A focused agent should target cluster 1 --
 post-implementation documentation -- since that is where the framework has a clear gap
 and where an LLM agent adds the most value.
 
-### When to Revisit
+### 4.14. When to Revisit
 
 - When the framework adds a post-implementation phase, a **release documentation agent**
   scoped to changelogs, release notes, and updated READMEs should be considered
@@ -303,19 +322,21 @@ and where an LLM agent adds the most value.
 
 ---
 
-## Why Agent Templates Use a General-Then-Specific Approach
+## 5. Why Agent Templates Use a General-Then-Specific Approach
 
-### Context
+### 5.1. Context
 
-When building agents for a multi-project framework, there is a tension between generality and specificity.
+When building agents for a multi-project framework, there is a tension between generality and
+specificity.
 
-### Decision
+### 5.2. Decision
 
 **Use general templates with `<!-- ADAPT -->` markers, instantiated per-project.**
 
-### Reasoning
+### 5.3. Reasoning
 
-A purely general agent is too broad. E.g. it covers Node.js, Python, and Go when the project only uses one.
+A purely general agent is too broad. E.g. it covers Node.js, Python, and Go when the project only
+uses one.
 This wastes context window on irrelevant instructions and produces vague guidance
 (e.g., "Use parameterized queries" instead of
 "Use SQLAlchemy ORM with async sessions as established in `backend/db/session.py`").
@@ -324,8 +345,10 @@ A purely per-project agent built from scratch means every developer on every pro
 reinvents the wheel without benefiting from accumulated best practices.
 
 The template approach splits the difference: the template encodes hard-won, generic best practices
-(error handling patterns, pipeline awareness, memory conventions), while the `<!-- ADAPT -->` markers
-guide instantiation with project-specific details (e.g. tech stack, file paths, conventions from the TSD).
+(error handling patterns, pipeline awareness, memory conventions), while the `<!-- ADAPT -->`
+markers
+guide instantiation with project-specific details (e.g. tech stack, file paths, conventions from the
+TSD).
 
 Context window is precious. A project-specific agent only includes what matters
 for that project's stack, patterns, and conventions -- no wasted tokens on irrelevant frameworks.
@@ -334,9 +357,11 @@ actual patterns, and actual conventions.
 
 ---
 
-## Adversarial Thinking, and Why It Is a Mode, Not a Separate Agent
+<a id="adversarial-thinking-and-why-it-is-a-mode-not-a-separate-agent"/>
 
-### Context
+## 6. Adversarial Thinking, and Why It Is a Mode, Not a Separate Agent
+
+### 6.1. Context
 
 LLM-generated code cannot yet be fully trusted. Models may hallucinate APIs
 that don't exist, introduce subtle logic errors, or make junior-level mistakes
@@ -351,19 +376,19 @@ Automated adversarial thinking is an area where agent-based workflows can delive
 outsized value: the adversarial pass costs minutes of compute, not days of human effort,
 and it never feels pressured to "just finish and move on."
 
-### Question
+### 6.2. Question
 
 Some frameworks include a dedicated "devil's advocate" or adversarial review agent.
 The question here is whether adversarial review should be a standalone agent or a mode
 that existing specialist agents can activate.
 
-### Decision
+### 6.3. Decision
 
 **Adversarial thinking is a mode of activation, not a separate agent.**
 It is defined in `ADVERSARIAL-THINKING.md` as a mindset overlay,
 and an agent may be activated in normal mode or adverserial mode.
 
-### Reasoning
+### 6.4. Reasoning
 
 A standalone adversarial agent would be too broadly scoped -- it would need to be adversarial
 about architecture, code quality, security, performance, data integrity, and operational readiness,
@@ -377,22 +402,23 @@ adversarial agent ever could.
 
 ---
 
-## Why SOFTWARE-ENGINEERING-PRINCIPLES.md and PROGRAMMING-PRINCIPLES.md Are Separate Files
+## 7. Why SOFTWARE-ENGINEERING-PRINCIPLES.md and PROGRAMMING-PRINCIPLES.md Are Separate Files
 
-### Context
+### 7.1. Context
 
 The framework has two files that govern coding quality:
 `PROGRAMMING-PRINCIPLES.md` (practical rules) and `SOFTWARE-ENGINEERING-PRINCIPLES.md`
 (theoretical foundations).
 
-### Decision
+### 7.2. Decision
 
 **Keep them as separate files with different agent audiences.**
 
-### Reasoning
+### 7.3. Reasoning
 
 `PROGRAMMING-PRINCIPLES.md` is a practical workflow guide -- it tells agents how to behave:
-read before writing, implement incrementally, self-review, validate inputs, use parameterized queries.
+read before writing, implement incrementally, self-review, validate inputs, use parameterized
+queries.
 It is prescriptive and actionable.
 
 `SOFTWARE-ENGINEERING-PRINCIPLES.md` contains the theoretical foundation that explains
