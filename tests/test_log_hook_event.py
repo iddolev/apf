@@ -68,4 +68,4 @@ def test_install_adds_section_with_comments(tmp_path):
             f"Comment for {name}: expected '{expected_comment}' in '{comments[name]}'"
         )
 
-    assert False # try
+    assert False, "test try" # try
