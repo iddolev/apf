@@ -33,15 +33,19 @@ REPO_SLUG = "iddolev/apf"  # for raw.githubusercontent.com
 
 APF_INFO_FILE = ".apf.yaml"
 
-# Source path inside the cloned repo → destination path relative to project root.
+# List of:
+# (source path in cloned repo, destination relative to project root, overwrite).
+# When overwrite is True, the destination is always replaced with the repo version.
+# When overwrite is False, the file is only copied on first install (i.e. when the
+# destination does not yet exist).
 # Directories are copied recursively; files are copied individually.
-PATH_MAP: list[tuple[str, str]] = [
-    (APF_INFO_FILE, APF_INFO_FILE),
-    ("dist/CLAUDE.md",        "CLAUDE.md"),
-    ("dist/.claude/commands", ".claude/commands"),
-    ("dist/.claude/scripts",  ".claude/scripts"),
-    (".claude/commands/apf",  ".claude/commands/apf"),
-    (".claude/scripts/apf",   ".claude/scripts/apf"),
+PATH_MAP: list[tuple[str, str, bool]] = [
+    (f"dist/{APF_INFO_FILE}", APF_INFO_FILE, False),
+    ("dist/CLAUDE.md",        "CLAUDE.md",        True),
+    ("dist/.claude/commands", ".claude/commands",  True),
+    ("dist/.claude/scripts",  ".claude/scripts",   True),
+    (".claude/commands/apf",  ".claude/commands/apf", True),
+    (".claude/scripts/apf",   ".claude/scripts/apf",  True),
 ]
 
 # Note: Deliberately not including .apf in .gitignore
@@ -225,12 +229,16 @@ def install(repo_dir: Path, project_dir: Path, new_version: str, *, dry_run: boo
     print(f"\n📦 Installing APF v{new_version} into {project_dir}\n")
 
     failed: list[tuple[str, str]] = []
-    for src_rel, dest_rel in PATH_MAP:
+    for src_rel, dest_rel, overwrite in PATH_MAP:
         src = repo_dir / src_rel
         dest = project_dir / dest_rel
 
         if not src.exists():
             warn(f"  ⚠️  Source not found in repo: {src_rel} — skipping")
+            continue
+
+        if not overwrite and dest.exists():
+            print(f"  ⏭️  Already exists, skipping: {dest_rel}")
             continue
 
         try:
