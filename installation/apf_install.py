@@ -15,6 +15,7 @@ TODO: If a future APF version removes a file that existed in a previous version,
 from __future__ import annotations
 
 import argparse
+import re
 import shutil
 import subprocess
 import sys
@@ -224,6 +225,40 @@ def update_gitignore(project_dir: Path, *, dry_run: bool) -> None:
     print(f"  📄 Updated .gitignore")
 
 
+_VERSION_RE = re.compile(r"^version\s*:")
+
+
+def update_apf_version(project_dir: Path, new_version: str, *, dry_run: bool) -> None:
+    """Update the version line in the project's .apf.yaml, preserving comments and formatting."""
+    apf_path = project_dir / APF_INFO_FILE
+    if not apf_path.exists():
+        return
+    try:
+        content = apf_path.read_text(encoding="utf-8")
+    except OSError as e:
+        warn(f"  ⚠️  Could not read {APF_INFO_FILE}: {e}")
+        return
+
+    lines = content.splitlines(keepends=True)
+    for i, line in enumerate(lines):
+        if _VERSION_RE.match(line):
+            new_line = f"version: {new_version}\n"
+            if lines[i] == new_line:
+                return
+            lines[i] = new_line
+            break
+    else:
+        return
+    if dry_run:
+        print(f"  [dry-run] Would update version to {new_version} in {APF_INFO_FILE}")
+    else:
+        print(f"  📄 Updated version to {new_version} in {APF_INFO_FILE}")
+        try:
+            apf_path.write_text("".join(lines), encoding="utf-8")
+        except OSError as e:
+            warn(f"  ⚠️  Could not update version in {APF_INFO_FILE}: {e}")
+
+
 def install(repo_dir: Path, project_dir: Path, new_version: str, *, dry_run: bool) -> None:
     """Walk PATH_MAP and copy every framework file into the project."""
     print(f"\n📦 Installing APF v{new_version} into {project_dir}\n")
@@ -247,6 +282,7 @@ def install(repo_dir: Path, project_dir: Path, new_version: str, *, dry_run: boo
             warn(f"  ❌ Failed to copy {src_rel} → {dest_rel}: {e}")
             failed.append((src_rel, dest_rel))
 
+    update_apf_version(project_dir, new_version, dry_run=dry_run)
     update_gitignore(project_dir, dry_run=dry_run)
 
     if failed:
