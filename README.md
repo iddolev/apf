@@ -1,7 +1,7 @@
-# Agentic Programming
+# Agentic Programming Framework (APF)
 
 A methodology toolkit for AI-assisted software development. This repo contains templates,
-instruction files, and agent definitions that guide LLMs through a structured software
+instruction files, and agent templates that guide LLMs through a structured software
 engineering workflow — from product requirements all the way to test planning and agent setup.
 
 This is not a codebase. No application code lives here.
@@ -81,7 +81,8 @@ Download this file and run it:
 https://github.com/iddolev/apf/blob/main/installation/apf_install.bat
 ```
 
-This will download a python script and run it. There are several arguments you can pass to it:
+This will download a python script and run it. 
+There are several arguments you can pass to the script you downloaded:
 
 - `--version` — Show the installed APF version and the latest available version, then exit
 - `--target FOLDER` — Install into FOLDER instead of the current directory

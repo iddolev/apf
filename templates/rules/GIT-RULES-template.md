@@ -39,10 +39,11 @@ These rules exist to prevent damage while allowing agents to be productive.
 
 ## Push Policy
 
-Only the human user pushes to the remote repository. No agent is allowed to push to the
-remote git repo under any circumstances.
+Only the human user pushes to the remote repository. 
+No agent is allowed to push to the remote git repo under any circumstances.
 
-Later you may decide to relax this rule for specific agents that have demonstrated consistent high quality.
+Later you may decide to relax this rule for specific agents 
+if they have demonstrated consistent high quality.
 In such a case, document the exceptions here with the agent name and any conditions.
 
 ## Agent Git Permissions
