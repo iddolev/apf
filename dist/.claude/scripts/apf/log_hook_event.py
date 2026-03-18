@@ -85,21 +85,34 @@ def install() -> None:
         missing = [e for e in fields if e[0] not in existing_fields]
         if not missing:
             return
-        # Append missing fields at the end of the fields section
+        # Find the last existing field key in the file and insert after it
+        lines = content.splitlines()
+        last_field_line = -1
+        for i, line in enumerate(lines):
+            stripped = line.strip()
+            for key in existing_fields:
+                if stripped.startswith(f"{key}:"):
+                    last_field_line = i
+        if last_field_line == -1:
+            raise ValueError(f"Could not locate fields in {APF_INFO_FILENAME}")
         addition = "\n".join(_render_field(e) for e in missing)
-        content = content.rstrip() + "\n" + addition + "\n"
+        lines.insert(last_field_line + 1, addition)
+        content = "\n".join(lines) + "\n"
 
     path.write_text(content, encoding="utf-8")
 
 
 def log_event() -> None:
-    """If log_claude_code_events is enabled in .apf.config, add a line to the log file"""
+    """If log_claude_code_events is enabled in .apf.yaml, add a line to the log file."""
     is_enabled, enabled_fields = load_config()
     if not is_enabled:
         return
 
     # Data of Claude Code's event
-    data: dict = json.load(sys.stdin)
+    try:
+        data: dict = json.load(sys.stdin)
+    except json.JSONDecodeError as e:
+        raise json.JSONDecodeError(f"log_hook_event: failed to parse JSON from stdin: {e}", file=sys.stderr)
 
     timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     record = {"timestamp": timestamp}
