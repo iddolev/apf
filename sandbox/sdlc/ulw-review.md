@@ -1,7 +1,7 @@
 ---
 author: Iddo Lev
 LLM_author: Claude Opus 4.6
-last_updated: 2026-03-14
+last_update: 2026-03-14
 ---
 
 # UltraWork (Oh My OpenCode) Framework Review — Strengths and Gaps
