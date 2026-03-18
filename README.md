@@ -43,7 +43,7 @@ installation/
 dist/                            — Files copied as-is into user projects (currently empty)
 
 templates/
-└── CLAUDE-template.md           — CLAUDE.md template, instantiated per project
+└── CLAUDE.template.md           — CLAUDE.md template, instantiated per project
 
 instructions/
 ├── docs-and-agents-process.md   — Entry point and orchestration

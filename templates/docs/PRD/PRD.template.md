@@ -276,7 +276,7 @@ LLM-consolidator: GPT-5.2
 > data and integrations (the "what" and "why").
 > Detailed schemas, endpoint definitions, event payloads, and storage design belong in a **Technical Spec / API Spec**.
 
-- **Technical Spec (link):** [TBD] (template: `../TECH-SPEC/TECH-SPEC-template.md`)
+- **Technical Spec (link):** [TBD] (template: `../TECH-SPEC/TECH-SPEC.template.md`)
 - **API / Events Spec (link, if separate):** [TBD]
 - **Data retention / privacy policy reference (link, if applicable):** [TBD]
 
@@ -310,7 +310,7 @@ LLM-consolidator: GPT-5.2
 > Architecture, stack choices, migrations, feature-flag implementation, and
 > rollback mechanics belong in a **Technical Spec**.
 
-- **Technical Spec (link):** [TBD] (template: `../TECH-SPEC/TECH-SPEC-template.md`)
+- **Technical Spec (link):** [TBD] (template: `../TECH-SPEC/TECH-SPEC.template.md`)
 
 ### 11.1 Non-Negotiable Constraints (Product-impacting)
 
@@ -366,7 +366,7 @@ LLM-consolidator: GPT-5.2
 > **PRD guidance:** Keep this section at a product level (milestones, audience, sequencing).
 > Detailed runbooks, monitoring setup, support rotations, and rollback procedures belong in a **Launch Runbook**.
 
-- **Launch Runbook (link):** [TBD] (template: `../LAUNCH/Launch-runbook-template.md`)
+- **Launch Runbook (link):** [TBD] (template: `../LAUNCH/Launch-runbook.template.md`)
 
 #### Launch Requirements (High-level)
 
@@ -390,7 +390,7 @@ LLM-consolidator: GPT-5.2
 > Requirements) and how we'll validate outcomes.
 > Detailed test strategy and coverage planning belong in a **QA / test plan**.
 
-- **QA / test plan (link):** [TBD] (template: `../QA/QA-test-plan-template.md`)
+- **QA / test plan (link):** [TBD] (template: `../QA/QA-test-plan.template.md`)
 
 ### 14.3 Entry / Exit Criteria
 

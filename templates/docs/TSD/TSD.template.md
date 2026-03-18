@@ -668,7 +668,7 @@ Payload example:
 > Implementation details: what events/metrics are emitted, where, with what schema, and how they are validated.
 >
 > For the full tracking plan, see: **Analytics Tracking Plan**
-> (template: `../ANALYTICS/Analytics-tracking-plan-template.md`)
+> (template: `../ANALYTICS/Analytics-tracking-plan.template.md`)
 
 ### 17.1 Analytics Events
 

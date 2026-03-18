@@ -20,10 +20,10 @@ In all the files mentioned below:
 
 ## Creating Knowledge Files
 
-1. Instantiate the file @SHARED-AGENT-CONTEXT-template.md according to the instructions in it.
+1. Instantiate the file @SHARED-AGENT-CONTEXT.template.md according to the instructions in it.
    Put the result file SHARED-AGENT-CONTEXT.md under the folder <project_root>/.claude/knowledge/
    Update @STATE/FRAMEWORK-STATE phase to be "SHARED-AGENT-CONTEXT.md".
-2. Instantiate the file @CLAUDE-template.md according to the instructions in it
+2. Instantiate the file @CLAUDE.template.md according to the instructions in it
    Put the result file CLAUDE.md under the project's root folder
    Update @STATE/FRAMEWORK-STATE phase to be "CLAUDE.md".
 
@@ -46,16 +46,16 @@ for the new specs and don't remain stuck with capabilities that are not good eno
 
 ## Creating Agent Files
 
-1. Instantiate the file @agent-templates/tech-lead-template.md according to the instructions in it.
+1. Instantiate the file @agent-templates/tech-lead.template.md according to the instructions in it.
    It must be instantiated in ALL projects.
    Put the result file tech-lead.md under the folder <project_root>/.claude/agents/
    Update @STATE/FRAMEWORK-STATE phase to be "agents".
-2. For each agent template file <X>-template.md in the folder agent-templates, decide
+2. For each agent template file <X>.template.md in the folder agent-templates, decide
    whether it is required for the project.
    If yes, then instantiate it according to the instructions in it,
    and put the result file <X>.md under the folder <project_root>/.claude/agents/
 3. Finally, given all the agents you created in <project_root>/.claude/agents/,
-   instantiate the file @AGENTS-LIST-template.md according to the instructions in it.
+   instantiate the file @AGENTS-LIST.template.md according to the instructions in it.
    Put the result file @AGENTS-LIST.md under folder <project_root>/.claude/knowledge/
 
 ## Finalize

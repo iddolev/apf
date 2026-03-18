@@ -39,8 +39,8 @@ when it was interrupted before it got complete.
 So inspect the file @STATE/STATE.apf.yaml:
 
 If there is no file @STATE/STATE.apf.yaml, then:
-Infer the user wants to setup a new project,
-and tell the user you understand the user wants to setup a new project.
+Infer the user wants to set up a new project,
+and tell the user you understand the user wants to set up a new project.
 
 Otherwise, read @STATE/STATE.apf.yaml and:
 
@@ -89,24 +89,24 @@ item's name. When resuming, skip items whose phase has already passed.
    `<!-- ADAPT -->` markers, using information from the PRD and TSD. Place the
    result as `rules/PROGRAMMING-PRINCIPLES.md`.
 2. Project Rules (phase: `PROJECT-RULES`): Instantiate
-   @instructions/creating-docs/project-rules/PROJECT-RULES-template.md — derive
+   @instructions/creating-docs/project-rules/PROJECT-RULES.template.md — derive
    rules from the TSD and PRD, then confirm each rule with the user. Place the
    result as `rules/PROJECT-RULES.md`.
 3. Security Conventions (phase: `SECURITY-CONVENTIONS`): If the project has
    security conventions beyond @PROGRAMMING-PRINCIPLES.md, instantiate
-   @instructions/creating-docs/project-rules/SECURITY-CONVENTIONS-template.md and
+   @instructions/creating-docs/project-rules/SECURITY-CONVENTIONS.template.md and
    place the result as `rules/SECURITY-CONVENTIONS.md`. If skipped, move to the
    next phase.
 4. Git Rules (phase: `GIT-RULES`): Instantiate
-   @instructions/creating-docs/project-rules/GIT-RULES-template.md — confirm the
+   @instructions/creating-docs/project-rules/GIT-RULES.template.md — confirm the
    commit message format, branch naming, and agent permissions with the user. Place
    the result as `rules/GIT-RULES.md`.
 5. README (phase: `README`): Instantiate
-   @instructions/creating-docs/README/README-template.md according to its
+   @instructions/creating-docs/README/README.template.md according to its
    `<!-- ADAPT -->` markers, using information from the PRD, TSD, implementation
    plan, and test plan. Place the result as `README.md` in the project root folder.
 6. Project Structure (phase: `PROJECT-STRUCTURE`): Instantiate
-   @instructions/creating-docs/project-structure/PROJECT-STRUCTURE-template.md —
+   @instructions/creating-docs/project-structure/PROJECT-STRUCTURE.template.md —
    derive from the TSD's architecture and the implementation plan's work breakdown.
    Place the result as `docs/PROJECT-STRUCTURE.md`.
 
