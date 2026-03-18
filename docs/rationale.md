@@ -13,15 +13,12 @@ Design decisions and their reasoning for the agentic-programming framework.
 
 This table shows which parts are relevant for which file
 
-TBD: put only the file name, not the full path.
-
-TBD: Add in the table: for docs-and-agents-process.md - section 1
-
 | File | Relevant Sections |
-|---|-------------------|
-| `instructions/rules/ADVERSARIAL-THINKING.md` | [6](#adversarial-thinking-and-why-it-is-a-mode-not-a-separate-agent)            |
-| `instructions/rules/SOFTWARE-ENGINEERING-PRINCIPLES.md` | 7                 |
-| `instructions/rules/PROGRAMMING-PRINCIPLES.md` | 7                 |
+|---|---|
+| `docs-and-agents-process.md` | [1](#why-document-creation-is-a-guided-process-not-an-agent) |
+| `ADVERSARIAL-THINKING.md` | [6](#adversarial-thinking-and-why-it-is-a-mode-not-a-separate-agent) |
+| `SOFTWARE-ENGINEERING-PRINCIPLES.md` | [7](#why-software-engineering-principles-and-programming-principles-are-separate-files) |
+| `PROGRAMMING-PRINCIPLES.md` | [7](#why-software-engineering-principles-and-programming-principles-are-separate-files) |
 
 ---
 
@@ -85,6 +82,8 @@ This approach may need revision if:
 
 ---
 
+<a id="any-decision-records-adrs"/>
+
 ## 2. (Any) Decision Records (ADRs)
 
 Full rationale in [ADR-rationale.md](ADR-rationale.md). **Not yet implemented.**
@@ -102,6 +101,8 @@ with the tech lead acting as gatekeeper — reading the index, identifying
 relevant decisions, and embedding constraints into task assignments.
 
 ---
+
+<a id="why-there-is-no-system-architect-agent"/>
 
 ## 3. Why There Is No System Architect Agent
 
@@ -185,6 +186,8 @@ a dedicated architect agent.
 solutions]
 
 ---
+
+<a id="who-does-the-documentation"/>
 
 ## 4. Who Does the Documentation
 
@@ -322,6 +325,8 @@ and where an LLM agent adds the most value.
 
 ---
 
+<a id="why-agent-templates-use-a-general-then-specific-approach"/>
+
 ## 5. Why Agent Templates Use a General-Then-Specific Approach
 
 ### 5.1. Context
@@ -401,6 +406,8 @@ The narrow domain focus plus the adversarial lens produces sharper findings than
 adversarial agent ever could.
 
 ---
+
+<a id="why-software-engineering-principles-and-programming-principles-are-separate-files"/>
 
 ## 7. Why SOFTWARE-ENGINEERING-PRINCIPLES.md and PROGRAMMING-PRINCIPLES.md Are Separate Files
 
