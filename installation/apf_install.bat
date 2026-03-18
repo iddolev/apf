@@ -8,4 +8,5 @@ for %%a in (%*) do if "%%a"=="--fetch" (
     exit /b 0
 )
 
+pip install pyyaml
 python apf_install.py %*

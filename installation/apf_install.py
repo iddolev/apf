@@ -15,7 +15,6 @@ TODO: If a future APF version removes a file that existed in a previous version,
 from __future__ import annotations
 
 import argparse
-import re
 import shutil
 import subprocess
 import sys
@@ -23,6 +22,8 @@ import tempfile
 from pathlib import Path
 from urllib.request import urlopen
 from urllib.error import URLError
+
+import yaml
 
 # ── Configuration ────────────────────────────────────────────────────────────
 
@@ -109,40 +110,17 @@ def clone_repo(tmp_dir: Path) -> Path:
     return dest
 
 
-# Match a valid keyword, then :, then at least one character (empty values are
-# intentionally rejected — every key we care about must have a non-empty value).
-_YAML_LINE_RE = re.compile(r"^\w+\s*:.+$")
-
-
-def naive_yaml_parser(text: str) -> dict:
-    """Parse simple 'key: value' YAML lines. No pyyaml dependency."""
-    result = {}
-    for line in text.splitlines():
-        line = line.strip()
-        if line.startswith('#'):
-            # Comment line
-            continue
-        m = _YAML_LINE_RE.match(line)
-        if m:
-            pos = line.find(':')
-            key = line[:pos].strip()
-            value = line[pos+1:].strip()
-            # Strip surrounding quotes (single or double).
-            if len(value) >= 2 and value[0] == value[-1] and value[0] in ('"', "'"):
-                value = value[1:-1]
-            result[key] = value
-    return result
-
-
 def read_apf_version(path: Path) -> str:
-    """Read the version field from a YAML .apf file (simple key: value parsing)."""
+    """Read the version field from a YAML .apf file."""
     try:
-        data = naive_yaml_parser(path.read_text(encoding="utf-8"))
+        data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
     except (OSError, UnicodeDecodeError) as e:
         raise ValueError(f"Cannot read {path}: {e}") from e
+    except yaml.YAMLError as e:
+        raise ValueError(f"Cannot parse {path}: {e}") from e
     value = data.get('version')
     if value:
-        return value
+        return str(value)
     raise ValueError(f"{path} is missing a 'version' field")
 
 
@@ -151,8 +129,8 @@ def fetch_remote_version() -> str:
     try:
         url = f"https://raw.githubusercontent.com/{REPO_SLUG}/main/{APF_INFO_FILE}"
         with urlopen(url, timeout=10) as resp:
-            data = naive_yaml_parser(resp.read().decode())
-    except (URLError, UnicodeDecodeError) as e:
+            data = yaml.safe_load(resp.read().decode()) or {}
+    except (URLError, UnicodeDecodeError, yaml.YAMLError) as e:
         raise ValueError("Could not fetch remote version from GitHub (check network)") from e
     if v := data.get("version"):
         return v
