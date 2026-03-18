@@ -55,10 +55,10 @@ The end result must:
 
 # Technical instructions
 
-## FRAMEWORK-STATE.yaml
+## STATE.apf.yaml
 
-You must always consult the file @STATE/FRAMEWORK-STATE.yaml.
-Don't forget to always update the "stage" and "phase" fields in @STATE/FRAMEWORK-STATE.yaml to
+You must always consult the file @STATE/STATE.apf.yaml.
+Don't forget to always update the "stage" and "phase" fields in @STATE/STATE.apf.yaml to
 reflect the state of the preparation process.
 
 If stage == "test-plan" then continue in #naming-convention and onwards (resume from
@@ -227,7 +227,7 @@ quality. Write accordingly:
 
 ## Phase A — TSD/PRD analysis & scope assessment
 
-Update @STATE/FRAMEWORK-STATE.yaml: set phase to "Phase A" (if not already).
+Update @STATE/STATE.apf.yaml: set phase to "Phase A" (if not already).
 
 1. Read the approved TSD (`docs/specs/TSD_v{version}.md`).
 2. Read the PRD (`docs/specs/PRD_v{version}.md`) for requirements context.
@@ -250,7 +250,7 @@ Update @STATE/FRAMEWORK-STATE.yaml: set phase to "Phase A" (if not already).
 
 ## Phase B — Draft the test plan
 
-Update @STATE/FRAMEWORK-STATE.yaml: set phase to "Phase B".
+Update @STATE/STATE.apf.yaml: set phase to "Phase B".
 
 Write the test plan section by section, **updating the file on disk after each section is
 completed**:
@@ -269,14 +269,14 @@ After all sections are drafted, present the plan to the user and ask:
 
 ## Phase C — Iterate on feedback
 
-Update @STATE/FRAMEWORK-STATE.yaml: set phase to "Phase C".
+Update @STATE/STATE.apf.yaml: set phase to "Phase C".
 
 - Address the user's feedback by updating specific sections.
 - If the TSD or PRD changes, update affected test cases accordingly.
 
 ## Phase D — Quality check & sign-off
 
-Update @STATE/FRAMEWORK-STATE.yaml: set phase to "Phase D".
+Update @STATE/STATE.apf.yaml: set phase to "Phase D".
 
 Before asking for approval, verify:
 
@@ -296,7 +296,7 @@ If issues are found, present them and resolve with the user before asking for ap
 
 Then ask the user to set the status: Draft -> In Review -> Approved.
 
-When approved, update @STATE/FRAMEWORK-STATE.yaml: set phase to "completed".
+When approved, update @STATE/STATE.apf.yaml: set phase to "completed".
 
 Run `/format-markdown <test-plan-file>` on the test plan file.
 

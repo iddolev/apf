@@ -36,13 +36,13 @@ Your job now is to help the user with four types of tasks:
 
 This instructions file is intended to support resuming the preparation process
 when it was interrupted before it got complete.
-So inspect the file @STATE/FRAMEWORK-STATE.yaml:
+So inspect the file @STATE/STATE.apf.yaml:
 
-If there is no file @STATE/FRAMEWORK-STATE.yaml, then:
+If there is no file @STATE/STATE.apf.yaml, then:
 Infer the user wants to setup a new project,
 and tell the user you understand the user wants to setup a new project.
 
-Otherwise, read @STATE/FRAMEWORK-STATE.yaml and:
+Otherwise, read @STATE/STATE.apf.yaml and:
 
 If stage == "complete", then infer the user wants to start the agentic programming
 setup for a new version of the project:
@@ -50,7 +50,7 @@ setup for a new version of the project:
 1. Tell that to the user
 2. Go to the first stage (instructions for creating a PRD).
 
-If in @STATE/FRAMEWORK-STATE.yaml you see stage != "complete" then infer which stage has
+If in @STATE/STATE.apf.yaml you see stage != "complete" then infer which stage has
 not yet completed, and:
 
 1. Tell the user you're resuming from that stage
@@ -74,14 +74,14 @@ the document exists and adapting its behavior accordingly.
 
 ## Instantiating rules and project templates
 
-In @STATE/FRAMEWORK-STATE.yaml: if stage != "instantiating templates" then set
+In @STATE/STATE.apf.yaml: if stage != "instantiating templates" then set
 stage = "instantiating templates" and phase = "PROGRAMMING-PRINCIPLES".
 
 Instantiate each template below using information from the documents created
 above (PRD, TSD, implementation plan, test plan). Fill in `[TBD]` placeholders
 and adapt `<!-- ADAPT -->` sections to match the project.
 
-After completing each item, update @STATE/FRAMEWORK-STATE.yaml phase to the next
+After completing each item, update @STATE/STATE.apf.yaml phase to the next
 item's name. When resuming, skip items whose phase has already passed.
 
 1. Programming Principles (phase: `PROGRAMMING-PRINCIPLES`): Instantiate
@@ -111,7 +111,7 @@ item's name. When resuming, skip items whose phase has already passed.
    Place the result as `docs/PROJECT-STRUCTURE.md`.
 
 When all items are done, do this: 
-In the file @STATE/FRAMEWORK-STATE.yaml: If stage != "agents" then: set stage = "agents", and set phase = "not started".
+In the file @STATE/STATE.apf.yaml: If stage != "agents" then: set stage = "agents", and set phase = "not started".
 
 <a id="agents"/>
 

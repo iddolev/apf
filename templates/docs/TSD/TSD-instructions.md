@@ -55,11 +55,11 @@ The end result must:
 
 # Technical instructions
 
-## FRAMEWORK-STATE.yaml
+## STATE.apf.yaml
 
-You must always consult the file @STATE/FRAMEWORK-STATE.yaml.
+You must always consult the file @STATE/STATE.apf.yaml.
 Don't forget to always update the "stage" and "phase" fields in
-@STATE/FRAMEWORK-STATE.yaml to reflect the state of the preparation process.
+@STATE/STATE.apf.yaml to reflect the state of the preparation process.
 
 If stage == "TSD" then continue in #naming-convention and onwards (resume from
 whatever phase is recorded). Otherwise:
@@ -275,7 +275,7 @@ Assume the TSD's primary reader is a **developer** or an AI coding agent
 
 ## Phase A — PRD analysis & scope assessment
 
-Update @STATE/FRAMEWORK-STATE.yaml: set phase to "Phase A" (if not already).
+Update @STATE/STATE.apf.yaml: set phase to "Phase A" (if not already).
 
 1. Read the approved PRD (`docs/specs/PRD_v{version}.md`).
 2. If a codebase already exists, perform codebase discovery (see Technical
@@ -296,7 +296,7 @@ Update @STATE/FRAMEWORK-STATE.yaml: set phase to "Phase A" (if not already).
 
 ## Phase B — Draft the TSD
 
-Update @STATE/FRAMEWORK-STATE.yaml: set phase to "Phase B".
+Update @STATE/STATE.apf.yaml: set phase to "Phase B".
 
 Write the TSD section by section, **updating the file on disk after each section is
 completed**. For each included section:
@@ -319,7 +319,7 @@ After all sections are drafted, present the TSD to the user (or point them to th
 
 ## Phase C — Iterate on feedback
 
-Update @STATE/FRAMEWORK-STATE.yaml: set phase to "Phase C".
+Update @STATE/STATE.apf.yaml: set phase to "Phase C".
 
 - Address the user's feedback by updating specific sections.
 - If the user raises new technical questions, resolve them and update the TSD.
@@ -327,7 +327,7 @@ Update @STATE/FRAMEWORK-STATE.yaml: set phase to "Phase C".
 
 ## Phase D — Quality check & sign-off
 
-Update @STATE/FRAMEWORK-STATE.yaml: set phase to "Phase D".
+Update @STATE/STATE.apf.yaml: set phase to "Phase D".
 
 Before asking for approval, verify:
 
@@ -345,7 +345,7 @@ If issues are found, present them and resolve with the user before asking for ap
 
 Then ask the user to set the TSD status: Draft -> In Review -> Approved.
 
-When approved, update @STATE/FRAMEWORK-STATE.yaml: set phase to "completed".
+When approved, update @STATE/STATE.apf.yaml: set phase to "completed".
 
 Run `/format-markdown <tsd-file>` on the TSD file.
 

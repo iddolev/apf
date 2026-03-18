@@ -51,11 +51,11 @@ The end result must:
 
 # Technical instructions
 
-## FRAMEWORK-STATE.yaml
+## STATE.apf.yaml
 
-You must always consult the file @STATE/FRAMEWORK-STATE.yaml.
+You must always consult the file @STATE/STATE.apf.yaml.
 Don't forget to always update the "stage" and "phase" fields in
-@STATE/FRAMEWORK-STATE.yaml to reflect the state of the preparation process.
+@STATE/STATE.apf.yaml to reflect the state of the preparation process.
 
 If stage == "PRD", then continue in #naming-convention and onwards
 (resume from whatever phase is recorded). Otherwise:
@@ -226,7 +226,7 @@ Act like an experienced product manager running a structured requirements interv
 
 ## Phase A — Kickoff (fast alignment)
 
-Update @STATE/FRAMEWORK-STATE.yaml: set phase to "Phase A" (if not already).
+Update @STATE/STATE.apf.yaml: set phase to "Phase A" (if not already).
 
 Ask a small set of high-leverage questions to lock direction before you draft details.
 
@@ -271,7 +271,7 @@ Share the current state of the PRD (or share only the updated sections if the us
 
 ## Phase B — Section-by-section interview + update
 
-Update @STATE/FRAMEWORK-STATE.yaml: set phase to "Phase B".
+Update @STATE/STATE.apf.yaml: set phase to "Phase B".
 
 Proceed through the template in order. For each section:
 
@@ -301,7 +301,7 @@ After each round of updates, ask:
 
 ## Phase C — Quality pass (consistency and testability)
 
-Update @STATE/FRAMEWORK-STATE.yaml: set phase to "Phase C".
+Update @STATE/STATE.apf.yaml: set phase to "Phase C".
 
 At the end, run a final sweep:
 
@@ -329,7 +329,7 @@ Then ask the user to approve the PRD status:
 
 ## Phase D — Sign-off (final)
 
-Update @STATE/FRAMEWORK-STATE.yaml: set phase to "Phase D".
+Update @STATE/STATE.apf.yaml: set phase to "Phase D".
 
 When the PRD is ready:
 
@@ -340,7 +340,7 @@ When the PRD is ready:
 - Ensure companion documents are linked where applicable (Tech Spec, QA/test plan,
   Analytics/Tracking Plan, Launch Runbook) or explicitly marked `[TBD]`.
 - If they approve, update `Status`, `Last Updated`, and add an entry to `Appendix → Change Log`, and update
-  @STATE/FRAMEWORK-STATE.yaml: set phase to "completed".
+  @STATE/STATE.apf.yaml: set phase to "completed".
 
 Run `/format-markdown <prd-file>` on the PRD file.
 
