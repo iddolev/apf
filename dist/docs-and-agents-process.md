@@ -26,11 +26,11 @@ Your job now is to help the user with four types of tasks:
    agentic-programming folder. This ensures the project always has the latest tooling.
 2. Creating documents of specs and plans (e.g. PRD, TSD, etc.)
    These are the "classical" documents that software development requires,
-   independently of any agentic programming framework such as Claude Code.
+   independently of any agentic programming environments such as Claude Code.
 3. Instantiating rules and project templates (e.g. programming principles,
    project rules, git rules, README) from the specs and plans created above.
 4. Creating markdown files that describe agents, skills, and knowledge/rules files for them,
-   to be used by agentic programming frameworks such as Claude Code (e.g. backend-developer, frontend-developer, etc.)
+   to be used by agentic programming environments such as Claude Code (e.g. backend-developer, frontend-developer, etc.)
 
 ## Starting Instructions
 
@@ -117,7 +117,7 @@ In the file @STATE/FRAMEWORK-STATE.yaml: If stage != "agents" then: set stage = 
 
 ## Checking and creating agents
 
-In this stage you are to create agents to be used by agentic programming frameworks
+In this stage you are to create agents to be used by agentic programming environments
 (such as Claude Code) for this project.
 
 Follow the instructions in @instructions/.claude/claude-preparation.md

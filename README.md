@@ -8,7 +8,7 @@ This is not a codebase. No application code lives here.
 The code here includes only Python and Windows scripts to be copied into the user project
 which is using the agentic programming framework here.
 The purpose is that everyone
-in our company can benefit from the highest quality of agentic programming framework instead of
+can benefit from the highest quality of agentic programming framework instead of
 trying to figure this out by themselves or manually following instruction guides.
 
 ## The Document Chain
@@ -26,7 +26,7 @@ Each document has a **template** (the fill-in structure) and an **instructions f
 through this pipeline in order, with state tracking for resumption.
 
 After the documents are complete, the toolkit also guides creation of
-**agent definitions** for agentic programming frameworks like Claude Code.
+**agent definitions** for agentic programming environments like Claude Code.
 
 ## Structure
 
