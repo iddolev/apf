@@ -8,16 +8,14 @@ description: |
 
 # CLAUDE.md — Agentic Programming
 
-> **STOP — This file is for developers of the agentic-programming framework itself.**
-> If you are a project that _uses_ this framework (e.g. you were told to follow `starting-point.md`),
-> **ignore this entire file**. None of the rules below apply to your project.
+> **STOP — This file is for developers of APF (Agentic Programming Framework) itself.**
+> In a project that _uses_ this framework, this file should not appear.
 
 ## Rules
 
-- After modifying a markdown file, run `/format-markdown <file>` on it.
-- Do not add application code to this repo. It contains only markdown templates, instruction files, and YAML state
-  files.
-- Do not make templates project-specific. Templates must remain generic with `[TBD]`
-  placeholders — they are filled in by the LLM when used in an actual project.
-- The `sandbox/` and `tmp/` folders contain experiments and drafts. Do not treat their contents as authoritative or reference them
-  from instruction files.
+- After modifying a markdown file, run `/apf:format-markdown <file>` on it.
+- Do not make templates project-specific. Templates must remain generic with placeholders — 
+  they are filled in by the LLM when used in an actual project.
+- The `sandbox/` and `tmp/` folders contain experiments and drafts. 
+  You should completely ignore their contents in your thinking,
+  and you must never reference them, as if they do not exist.
