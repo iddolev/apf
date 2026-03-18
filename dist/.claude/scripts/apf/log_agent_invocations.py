@@ -9,17 +9,11 @@ import os
 import sys
 from datetime import datetime, timezone
 
-# To turn on / off this script, set value of ACTIVE:
-# ACTIVE = False
-ACTIVE = True
+
+# TODO: do a similar thing to log_claude_code_hook_event.py i.e. status, install, on, off
+
 
 LOGFILE = "logs/agents_invocations_log.jsonl"
-
-
-# ----------------------------------------
-
-if not ACTIVE:
-    exit(0)
 
 
 def main() -> None:
