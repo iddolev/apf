@@ -65,7 +65,7 @@ If stage == "test-plan" then continue in #naming-convention and onwards (resume 
 whatever phase is recorded). Otherwise:
 
 If stage == "implementation-plan" and phase != "completed" then this
-"test-plan-instructions.md" script has been activated incorrectly. Tell that to the user
+"test-plan.instructions.md" script has been activated incorrectly. Tell that to the user
 and stop.
 If stage == "implementation-plan" and phase == "completed" then:
 set "stage" to "test-plan"
@@ -349,7 +349,7 @@ to include. Below is guidance on how to approach each section when you include i
 # "Meta-Programming"
 
 - At any moment, the user can write: "META:" followed by a complaint about this
-  test-plan-instructions.md process. You should then understand what the user is
+  test-plan.instructions.md process. You should then understand what the user is
   unsatisfied about, propose a correction, and if approved, save the correction, then
-  reload test-plan-instructions.md and resume the conversation according to the corrected
+  reload test-plan.instructions.md and resume the conversation according to the corrected
   instructions.

@@ -64,7 +64,7 @@ Don't forget to always update the "stage" and "phase" fields in
 If stage == "TSD" then continue in #naming-convention and onwards (resume from
 whatever phase is recorded). Otherwise:
 
-If stage == "PRD" and phase != "completed" then this "TSD-instructions.md" script
+If stage == "PRD" and phase != "completed" then this "TSD.instructions.md" script
 has been activated incorrectly. Tell that to the user and stop.
 If stage == "PRD" and phase == "completed" then:
 set "stage" to "TSD"
@@ -382,9 +382,9 @@ approach each section when you include it.
 > **Note:** The following are separate companion documents, created after the TSD is approved (in this order):
 >
 > 1. **Implementation plan** (work breakdown, sequencing, milestones, critical path):
-`instructions/implementation-plan/implementation-plan-instructions.md`
+`instructions/implementation-plan/implementation-plan.instructions.md`
 > 2. **Test plan** (testing strategy, test cases, quality gates — references the implementation plan for work package
-dependencies): `instructions/test-plan/test-plan-instructions.md`
+dependencies): `instructions/test-plan/test-plan.instructions.md`
 
 ---
 
@@ -393,7 +393,7 @@ dependencies): `instructions/test-plan/test-plan-instructions.md`
 # "Meta-Programming"
 
 - At any moment, the user can write: "META:" followed by a complaint about this
-  TSD-instructions.md process. You should then understand what the user is
+  TSD.instructions.md process. You should then understand what the user is
   unsatisfied about, propose a correction, and if approved, save the correction,
-  then reload TSD-instructions.md and resume the conversation according to the
+  then reload TSD.instructions.md and resume the conversation according to the
   corrected instructions.

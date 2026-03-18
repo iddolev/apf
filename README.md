@@ -69,7 +69,7 @@ tests/                           — Framework tests
 ## Template Conventions
 
 - Templates use placeholders to be filled during an iterative interview with the user.
-- Some templates have a companion `-instructions.md` file that tells the LLM how to fill the template.
+- Some templates have a companion `.instructions.md` file that tells the LLM how to fill the template.
 
 ## How to Use
 

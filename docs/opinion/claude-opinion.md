@@ -27,16 +27,16 @@ instructions/
 ├── creating-docs/
 │   ├── PRD/
 │   │   ├── PRD.template.md                       — Product Requirements Document template
-│   │   └── PRD-instructions.md                   — Instructions for filling the PRD
+│   │   └── PRD.instructions.md                   — Instructions for filling the PRD
 │   ├── TSD/
 │   │   ├── TSD.template.md                       — Technical Specifications Document template
-│   │   └── TSD-instructions.md                   — Instructions for filling the TSD
+│   │   └── TSD.instructions.md                   — Instructions for filling the TSD
 │   ├── implementation-plan/
 │   │   ├── implementation-plan.template.md        — Implementation plan template
-│   │   └── implementation-plan-instructions.md    — Instructions for filling the plan
+│   │   └── implementation-plan.instructions.md    — Instructions for filling the plan
 │   └── test-plan/
 │       ├── test-plan.template.md                  — Test plan template
-│       └── test-plan-instructions.md              — Instructions for filling the test plan
+│       └── test-plan.instructions.md              — Instructions for filling the test plan
 ├── claude/
 │   ├── claude-preparation.md                      — Claude-specific preparation workflow
 │   ├── knowledge/

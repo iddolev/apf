@@ -59,7 +59,7 @@ reflect the state of the preparation process.
 If stage == "implementation-plan" then continue in #naming-convention and onwards (resume from
 whatever phase is recorded). Otherwise:
 
-If stage == "TSD" and phase != "completed" then this "implementation-plan-instructions.md"
+If stage == "TSD" and phase != "completed" then this "implementation-plan.instructions.md"
 script has been activated incorrectly. Tell that to the user and stop.
 If stage == "TSD" and phase == "completed" then:
 set "stage" to "implementation-plan"
@@ -327,7 +327,7 @@ Run `/format-markdown <plan-file>` on the implementation plan file.
 # "Meta-Programming"
 
 - At any moment, the user can write: "META:" followed by a complaint about this
-  implementation-plan-instructions.md process. You should then understand what the user is
+  implementation-plan.instructions.md process. You should then understand what the user is
   unsatisfied about, propose a correction, and if approved, save the correction, then reload
-  implementation-plan-instructions.md and resume the conversation according to the corrected
+  implementation-plan.instructions.md and resume the conversation according to the corrected
   instructions.

@@ -63,7 +63,7 @@ If stage == "PRD", then continue in #naming-convention and onwards
 If stage == "not started", then set "stage" to "PRD" and set "phase" to
 "Phase A", and continue here.
 If stage != "not started" and stage != "PRD", then this
-"PRD-instructions.md" script has been activated incorrectly.
+"PRD.instructions.md" script has been activated incorrectly.
 Tell that to the user and stop.
 
 ## Naming convention
@@ -450,7 +450,7 @@ Before asking for approval, ask:
 # "Meta-Programming"
 
 - At any moment, the user can write: "META:" followed by a complaint about the
-  this PRD-instructions.md file process. You should then understand what the user
+  this PRD.instructions.md file process. You should then understand what the user
   is unsatisfied about regarding this process, propose a correction, and if
-  approved, save the correction, and then reload PRD-instructions.md and resume
+  approved, save the correction, and then reload PRD.instructions.md and resume
   the conversation according to the corrected instructions.

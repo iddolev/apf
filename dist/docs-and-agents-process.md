@@ -65,10 +65,10 @@ Run the following instruction files one after another, in the order specified.
 exists. Each instruction file is responsible for detecting whether
 the document exists and adapting its behavior accordingly.
 
-1. PRD: using @instructions/creating-docs/PRD/PRD-instructions.md
-2. TSD: using @instructions/creating-docs/TSD/TSD-instructions.md
-3. Implementation Plan: using @instructions/creating-docs/implementation-plan/implementation-plan-instructions.md
-4. Test Plan: using @instructions/creating-docs/test-plan/test-plan-instructions.md
+1. PRD: using @instructions/creating-docs/PRD/PRD.instructions.md
+2. TSD: using @instructions/creating-docs/TSD/TSD.instructions.md
+3. Implementation Plan: using @instructions/creating-docs/implementation-plan/implementation-plan.instructions.md
+4. Test Plan: using @instructions/creating-docs/test-plan/test-plan.instructions.md
 
 <a id="rules-and-templates"/>
 

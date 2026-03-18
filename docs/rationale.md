@@ -133,7 +133,7 @@ by the **tech lead agent**.
 
 ### 3.3. Reasoning
 
-**1. Our TSD process (in @TSD-instructions.md) already covers what an architect agent would do.**
+**1. Our TSD process (in @TSD.instructions.md) already covers what an architect agent would do.**
 
 An architect agent may have four core responsibilities:
 
@@ -321,7 +321,7 @@ distinct categories that each need a different solution.
 |---|---|
 | Contributing guides (coding standards, PR process, branch naming) | **Partially covered** -- `GIT-RULES.template.md` covers git conventions; `PROGRAMMING-PRINCIPLES.md` covers coding standards; no unified contributing guide is generated |
 | CI/CD pipeline docs | **Not covered** |
-| Testing strategy docs | **Covered** -- test plan created in preparation phase (`starting-point.md` step 6, `test-plan-instructions.md`) |
+| Testing strategy docs | **Covered** -- test plan created in preparation phase (`starting-point.md` step 6, `test-plan.instructions.md`) |
 | Security policies | **Partially covered** -- `SECURITY-CONVENTIONS.template.md` created in preparation phase if needed; does not cover disclosure process or incident response |
 
 <a id="412-diagramming-visual-documentation"/>
