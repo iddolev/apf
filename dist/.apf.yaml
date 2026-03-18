@@ -4,23 +4,23 @@ log_claude_code_events:
   enabled: false
   fields:
     # Unique identifier for the current conversation session
-    "session_id": true,
+    session_id: true,
     # Path to the session's transcript JSONL file
-    "transcript_path": false,
+    transcript_path: false,
     # Working directory at the time of the event
-    "cwd": false,
-    # User's permission mode (e.g. "acceptEdits")
-    "permission_mode": false,
+    cwd: false,
+    # User's permission mode (e.g. acceptEdits)
+    permission_mode: false,
     # Unique identifier for this specific subagent invocation
-    "agent_id": true,
-    # Agent type: "general-purpose", "Explore", "Plan", or custom agent name
-    "agent_type": true,
-    # "SubagentStart" or "SubagentStop"
-    "hook_event_name": true,
+    agent_id: true,
+    # Agent type: general-purpose, Explore, Plan, or custom agent name
+    agent_type: true,
+    # SubagentStart or SubagentStop
+    hook_event_name: true,
     # Whether Claude is continuing as a result of a stop hook (SubagentStop only)
-    "stop_hook_active": false,
+    stop_hook_active: false,
     # Path to the subagent's own transcript JSONL file (SubagentStop only)
-    "agent_transcript_path": false,
+    agent_transcript_path: false,
     # The subagent's final response text (SubagentStop only)
-    "last_assistant_message": true,
+    last_assistant_message: true,
     
