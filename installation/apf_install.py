@@ -127,7 +127,7 @@ def read_apf_version(path: Path) -> str:
 def fetch_remote_version() -> str:
     """Fetch .apf from remote repo and return version"""
     try:
-        url = f"https://raw.githubusercontent.com/{REPO_SLUG}/main/{APF_INFO_FILE}"
+        url = f"https://raw.githubusercontent.com/{REPO_SLUG}/main/dist/{APF_INFO_FILE}"
         with urlopen(url, timeout=10) as resp:
             data = yaml.safe_load(resp.read().decode()) or {}
     except (URLError, UnicodeDecodeError, yaml.YAMLError) as e:

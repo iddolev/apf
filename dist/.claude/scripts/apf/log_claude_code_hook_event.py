@@ -62,22 +62,22 @@ def _add_field(fields_map: CommentedMap, name: str, default: bool, comment: str)
     fields_map.yaml_set_comment_before_after_key(name, before=comment, indent=FIELD_INDENT)
 
 
-def install(apf_yaml_path: Path | None = None) -> None:
+def install(enable_after_install: bool = False, apf_yaml_path: Path | None = None) -> None:
     # `apf_yaml_path` is used for testing
     path = apf_yaml_path or Path(APF_INFO_FILENAME)
-    config = _load_yaml(path)
-    existing = config.get(CONFIG_KEY)
+    config = _load_yaml(path) if path.exists() else {}
+    existing: CommentedMap = config.get(CONFIG_KEY)
 
     if not existing:
         fields_map = CommentedMap()
         for name, default, comment in FIELD_DEFINITIONS:
             _add_field(fields_map, name, default, comment)
         config[CONFIG_KEY] = CommentedMap([
-            ("enabled", False),
+            ("enabled", enable_after_install),
             ("fields", fields_map),
         ])
     else:
-        fields_map = existing.get("fields")
+        fields_map: CommentedMap = existing.get("fields")
         if not isinstance(fields_map, dict):
             raise ValueError(f"'fields' is missing or corrupt in {APF_INFO_FILENAME}")
         fields_map_keys = set(fields_map.keys())
@@ -114,9 +114,39 @@ def log_event() -> None:
         f.write(json.dumps(record, ensure_ascii=False) + "\n")
 
 
+def status() -> str:
+    """Return 'enabled' or 'disabled' based on .apf.yaml."""
+    try:
+        is_enabled, _ = load_config()
+        return "enabled" if is_enabled else "disabled"
+    except FileNotFoundError:
+        return "disabled"
+
+
+def toggle(apf_yaml_path: Path | None = None) -> str:
+    """Flip enabled/disabled. If .apf.yaml missing, install + enable. Return new status."""
+    path = apf_yaml_path or Path(APF_INFO_FILENAME)
+    if not path.exists():
+        install(apf_yaml_path=path, enable_after_install=True)
+        return "enabled"
+    config = _load_yaml(path)
+    section = config.get(CONFIG_KEY)
+    if not section:
+        install(apf_yaml_path=path, enable_after_install=True)
+        return "enabled"
+    section["enabled"] = not section.get("enabled", False)
+    with open(path, "w", encoding="utf-8") as f:
+        _yaml.dump(config, f)
+    return "enabled" if section["enabled"] else "disabled"
+
+
 def main() -> None:
-    if "--install" in sys.argv:
+    if "--status" in sys.argv:
+        print(status())
+    elif "--install" in sys.argv:
         install()
+    elif "--toggle" in sys.argv:
+        print(toggle())
     else:
         log_event()
 
