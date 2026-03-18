@@ -317,7 +317,8 @@ def resolve_versions(project_dir: Path, *, force: bool) -> tuple[str | None, str
             warn("   Ignoring .apf and proceeding as a fresh install.")
 
     if current_version == new_version and not force:
-        print(f"ℹ️  Already at version {new_version}. Use --force to reinstall.")
+        print(f"ℹ️  Already at version {new_version}.)")
+        print(f"    You can use --force to reinstall.")
         sys.exit(0)
 
     return current_version, new_version
