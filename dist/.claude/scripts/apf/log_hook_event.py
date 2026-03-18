@@ -11,32 +11,33 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-import yaml
-
+from ruamel.yaml import CommentedMap, YAML
 
 LOGFILE = "tmp/logs/claude_code_hook_events_log.jsonl"
 APF_INFO_FILENAME = ".apf.yaml"
+CONFIG_KEY = "log_claude_code_events"
+FIELD_INDENT = 4
+FIELD_DEFINITIONS = [
+    ("session_id", True, "Unique identifier for the current conversation session"),
+    ("transcript_path", False, "Path to the session's transcript JSONL file"),
+    ("cwd", False, "Working directory at the time of the event"),
+    ("permission_mode", False, "User's permission mode (e.g. acceptEdits)"),
+    ("agent_id", True, "Unique identifier for this specific subagent invocation"),
+    ("agent_type", True, "Agent type: general-purpose, Explore, Plan, or custom agent name"),
+    ("hook_event_name", True, "SubagentStart or SubagentStop"),
+    ("stop_hook_active", False, "Whether Claude is continuing as a result of a stop hook (SubagentStop only)"),
+    ("agent_transcript_path", False, "Path to the agent's own transcript JSONL file (SubagentStop only)"),
+    ("last_assistant_message", True, "The agent's final response text (SubagentStop only)"),
+]
 
 
-# Doing this with a string and not a dict so that the comments are also written to the yaml file
-INITIAL_LOG_CLAUDE_CODE_EVENTS = {
-    "enabled": False,
-    "fields": [
-        ("session_id", True, "Unique identifier for the current conversation session"),
-        ("transcript_path", False, "Path to the session's transcript JSONL file"),
-        ("cwd", False, "Working directory at the time of the event"),
-        ("permission_mode", False, "User's permission mode (e.g. acceptEdits)"),
-        ("agent_id", True, "Unique identifier for this specific subagent invocation"),
-        ("agent_type", True, "Agent type: general-purpose, Explore, Plan, or custom agent name"),
-        ("hook_event_name", True, "SubagentStart or SubagentStop"),
-        ("stop_hook_active", False, "Whether Claude is continuing as a result of a stop hook (SubagentStop only)"),
-        ("agent_transcript_path", False, "Path to the agent's own transcript JSONL file (SubagentStop only)"),
-        ("last_assistant_message", True, "The agent's final response text (SubagentStop only)"),
-    ]
-}
+_yaml = YAML()
+_yaml.preserve_quotes = True
 
-CONFIG_KEY_OF_LOG_CLAUDE_CODE_EVENTS = "log_claude_code_events"
-INDENT = " " * 4
+
+def _load_yaml(path: Path) -> CommentedMap:
+    """Load .apf.yaml, preserving comments and formatting."""
+    return _yaml.load(path.read_text(encoding="utf-8")) or {}
 
 
 def load_config() -> tuple[bool, set[str]]:
@@ -46,60 +47,47 @@ def load_config() -> tuple[bool, set[str]]:
     path = Path(APF_INFO_FILENAME)
     if not path.exists():
         raise FileNotFoundError(".apf.yaml")
-    config = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
-    data = config.get("log_claude_code_events")
+    data = _load_yaml(path).get(CONFIG_KEY)
     if not data:
         return False, set()
     is_enabled = data.get('enabled', False)
     fields = data.get('fields', {})
-    enabled_fields = {name for name, field_enabled in fields.items() if field_enabled is True}
+    enabled_fields = {name for name, enabled in fields.items() if enabled is True}
     return is_enabled, enabled_fields
 
 
-def _render_field(entry: tuple[str, bool, str]) -> str:
-    """Render a single field entry."""
-    return f'{INDENT}# {entry[2]}\n{INDENT}{entry[0]}: {entry[1]}'
+def _add_field(fields_map: CommentedMap, name: str, default: bool, comment: str) -> None:
+    """Add a field to a ruamel.yaml CommentedMap with a comment above."""
+    fields_map[name] = default
+    fields_map.yaml_set_comment_before_key(name, comment, indent=FIELD_INDENT)
 
 
 def install() -> None:
     path = Path(APF_INFO_FILENAME)
-    content = path.read_text(encoding="utf-8")
-    config = yaml.safe_load(content) or {}
-    existing = config.get(CONFIG_KEY_OF_LOG_CLAUDE_CODE_EVENTS)
-    fields = INITIAL_LOG_CLAUDE_CODE_EVENTS["fields"]
+    config = _load_yaml(path)
+    existing = config.get(CONFIG_KEY)
 
     if not existing:
-        # Append the entire section
-        lines = ["",
-                 "log_claude_code_events:",
-                 f"  enabled: {str(INITIAL_LOG_CLAUDE_CODE_EVENTS['enabled']).lower()}",
-                 "  fields:"]
-        lines.extend(_render_field(entry) for entry in fields)
-        content = content.rstrip() + "\n" + "\n".join(lines) + "\n"
+        fields_map = CommentedMap()
+        for name, default, comment in FIELD_DEFINITIONS:
+            _add_field(fields_map, name, default, comment)
+        config[CONFIG_KEY] = CommentedMap([
+            ("enabled", False),
+            ("fields", fields_map),
+        ])
     else:
-        # Add only missing fields
-        existing_fields_dict = existing.get("fields")
-        if not isinstance(existing_fields_dict, dict):
+        fields_map = existing.get("fields")
+        if not isinstance(fields_map, dict):
             raise ValueError(f"'fields' is missing or corrupt in {APF_INFO_FILENAME}")
-        existing_fields = set(existing_fields_dict.keys())
-        missing = [e for e in fields if e[0] not in existing_fields]
+        fields_map_keys = set(fields_map.keys())
+        missing = [(n, d, c) for n, d, c in FIELD_DEFINITIONS if n not in fields_map_keys]
         if not missing:
             return
-        # Find the last existing field key in the file and insert after it
-        lines = content.splitlines()
-        last_field_line = -1
-        for i, line in enumerate(lines):
-            stripped = line.strip()
-            for key in existing_fields:
-                if stripped.startswith(f"{key}:"):
-                    last_field_line = i
-        if last_field_line == -1:
-            raise ValueError(f"Could not locate fields in {APF_INFO_FILENAME}")
-        addition = "\n".join(_render_field(e) for e in missing)
-        lines.insert(last_field_line + 1, addition)
-        content = "\n".join(lines) + "\n"
+        for name, default, comment in missing:
+            _add_field(fields_map, name, default, comment)
 
-    path.write_text(content, encoding="utf-8")
+    with open(path, "w", encoding="utf-8") as f:
+        _yaml.dump(config, f)
 
 
 def log_event() -> None:
