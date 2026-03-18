@@ -16,8 +16,8 @@ from log_claude_code_hook_event import (
     install,
     load_config,
     log_event,
+    set_enabled,
     status,
-    toggle,
 )
 
 _yaml = YAML()
@@ -294,15 +294,15 @@ class TestStatus:
         assert status() == "disabled"
 
 
-# ── toggle() ─────────────────────────────────────────────────────────────
+# ── set_enabled() ─────────────────────────────────────────────────────────
 
 
-class TestToggle:
+class TestSetEnabled:
     def test_enables_when_disabled(self, tmp_path):
         apf_yaml = tmp_path / ".apf.yaml"
         _write_apf_yaml(apf_yaml, enabled=False, fields={"session_id": True})
 
-        result = toggle(apf_yaml_path=apf_yaml)
+        result = set_enabled(True, apf_yaml_path=apf_yaml)
 
         assert result == "enabled"
         config = _yaml.load(apf_yaml.read_text(encoding="utf-8"))
@@ -312,28 +312,41 @@ class TestToggle:
         apf_yaml = tmp_path / ".apf.yaml"
         _write_apf_yaml(apf_yaml, enabled=True, fields={"session_id": True})
 
-        result = toggle(apf_yaml_path=apf_yaml)
+        result = set_enabled(False, apf_yaml_path=apf_yaml)
 
         assert result == "disabled"
         config = _yaml.load(apf_yaml.read_text(encoding="utf-8"))
         assert config[CONFIG_KEY]["enabled"] is False
 
-    def test_installs_and_enables_when_file_missing(self, tmp_path):
+    def test_raises_when_file_missing(self, tmp_path):
         apf_yaml = tmp_path / ".apf.yaml"
 
-        result = toggle(apf_yaml_path=apf_yaml)
+        with pytest.raises(FileNotFoundError):
+            set_enabled(True, apf_yaml_path=apf_yaml)
 
-        assert result == "enabled"
-        assert apf_yaml.exists()
-        config = _yaml.load(apf_yaml.read_text(encoding="utf-8"))
-        assert config[CONFIG_KEY]["enabled"] is True
-
-    def test_installs_and_enables_when_section_missing(self, tmp_path):
+    def test_raises_when_section_missing(self, tmp_path):
         apf_yaml = tmp_path / ".apf.yaml"
         apf_yaml.write_text("version: 0.1.0\n", encoding="utf-8")
 
-        result = toggle(apf_yaml_path=apf_yaml)
+        with pytest.raises(ValueError):
+            set_enabled(True, apf_yaml_path=apf_yaml)
+
+    def test_on_is_idempotent(self, tmp_path):
+        apf_yaml = tmp_path / ".apf.yaml"
+        _write_apf_yaml(apf_yaml, enabled=True, fields={"session_id": True})
+
+        result = set_enabled(True, apf_yaml_path=apf_yaml)
 
         assert result == "enabled"
         config = _yaml.load(apf_yaml.read_text(encoding="utf-8"))
         assert config[CONFIG_KEY]["enabled"] is True
+
+    def test_off_is_idempotent(self, tmp_path):
+        apf_yaml = tmp_path / ".apf.yaml"
+        _write_apf_yaml(apf_yaml, enabled=False, fields={"session_id": True})
+
+        result = set_enabled(False, apf_yaml_path=apf_yaml)
+
+        assert result == "disabled"
+        config = _yaml.load(apf_yaml.read_text(encoding="utf-8"))
+        assert config[CONFIG_KEY]["enabled"] is False

@@ -123,21 +123,19 @@ def status() -> str:
         return "disabled"
 
 
-def toggle(apf_yaml_path: Path | None = None) -> str:
-    """Flip enabled/disabled. If .apf.yaml missing, install + enable. Return new status."""
+def set_enabled(enabled: bool, apf_yaml_path: Path | None = None) -> str:
+    """Set logging to enabled or disabled. Return new status."""
     path = apf_yaml_path or Path(APF_INFO_FILENAME)
     if not path.exists():
-        install(apf_yaml_path=path, enable_after_install=True)
-        return "enabled"
+        raise FileNotFoundError(f"{APF_INFO_FILENAME} not found. Run with --install first.")
     config = _load_yaml(path)
     section = config.get(CONFIG_KEY)
     if not section:
-        install(apf_yaml_path=path, enable_after_install=True)
-        return "enabled"
-    section["enabled"] = not section.get("enabled", False)
+        raise ValueError(f"No {CONFIG_KEY} section in {APF_INFO_FILENAME}. Run with --install first.")
+    section["enabled"] = enabled
     with open(path, "w", encoding="utf-8") as f:
         _yaml.dump(config, f)
-    return "enabled" if section["enabled"] else "disabled"
+    return "enabled" if enabled else "disabled"
 
 
 def main() -> None:
@@ -145,10 +143,17 @@ def main() -> None:
         print(status())
     elif "--install" in sys.argv:
         install()
-    elif "--toggle" in sys.argv:
-        print(toggle())
-    else:
+        print("installed")
+    elif "--on" in sys.argv:
+        print(set_enabled(True))
+    elif "--off" in sys.argv:
+        print(set_enabled(False))
+    elif len(sys.argv) == 1:
+        # No arguments: called as a hook, log the event
         log_event()
+    else:
+        print("Usage: log_claude_code_hook_event.py [--on | --off | --install | --status]", file=sys.stderr)
+        sys.exit(1)
 
 
 if __name__ == '__main__':
