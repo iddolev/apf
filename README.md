@@ -4,7 +4,7 @@ A methodology toolkit for AI-assisted software development. This repo contains t
 instruction files, and agent definitions that guide LLMs through a structured software
 engineering workflow — from product requirements all the way to test planning and agent setup.
 
-This is not a codebase. No application code lives here. 
+This is not a codebase. No application code lives here.
 The code here includes only Python and Windows scripts to be copied into the user project
 which is using the agentic programming framework here.
 The purpose is that everyone
@@ -13,7 +13,8 @@ trying to figure this out by themselves or manually following instruction guides
 
 ## The Document Chain
 
-The core of this toolkit is a four-document pipeline, where each document derives from the previous one:
+The core of this toolkit is a four-document pipeline, where each document derives from the previous
+one:
 
 1. **PRD** (Product Requirements Document) — defines *what* to build and *why*
 2. **TSD** (Technical Specifications Document) — defines *how* to build it
@@ -29,57 +30,74 @@ After the documents are complete, the toolkit also guides creation of
 
 ## Structure
 
-[TBD: Need to update this section to reflect new structure. 
- In particular, 
- dist - contains files to be copied as is. 
- templates - contains files to be instantiated based on specific info from the user's project.
- .claude - contains some general utils that are useful for both the APF project and the user project
-    these exist either under an "apf" sub-folder (e.g. .claude/commands/apf/) or named with a prefix "apf-"
- .claude also contains entities that are relevant only for the APF project and not the user project,
-    so they are not copied by apf_install.py to the user project.
-]
-
 ```
+.claude/
+├── commands/apf/                — Slash commands (format-markdown, log-claude-code-hook-event)
+├── scripts/apf/                 — Python scripts backing the slash commands
+└── ...                          — APF-only config (agents, settings) — not copied to user projects
+
+installation/
+├── apf_install.bat              — Windows launcher for the installer
+└── apf_install.py               — Copies dist/ files and instantiates templates/ into user project
+
+dist/                            — Files copied as-is into user projects (currently empty)
+
+templates/
+└── CLAUDE-template.md           — CLAUDE.md template, instantiated per project
+
 instructions/
-├── starting-point.md                             — Entry point and orchestration
+├── docs-and-agents-process.md   — Entry point and orchestration
 ├── rules/
-│   └── PROGRAMMING-PRINCIPLES.md                 — Coding standards for agents that write/review code
+│   ├── PROGRAMMING-PRINCIPLES.md       — Practical coding standards for agents
+│   ├── SOFTWARE-ENGINEERING-PRINCIPLES.md — Theoretical foundations for reviewers
+│   └── ADVERSARIAL-THINKING.md         — Adversarial mode overlay for any agent
 ├── creating-docs/
-│   ├── PRD/                                      — PRD template + instructions
-│   ├── TSD/                                      — TSD template + instructions
-│   ├── implementation-plan/                       — Implementation plan template + instructions
-│   └── test-plan/                                — Test plan template + instructions
-├── claude/
-│   ├── claude-preparation.md                      — Claude-specific agent setup workflow
-│   ├── knowledge/                                 — Templates for CLAUDE.md, agent lists, shared context
-│   └── agent-templates/                           — Agent role definitions (tech lead, backend, etc.)
-└── state/
-    └── FRAMEWORK-STATE-template.yaml            — State tracking for the preparation workflow
+│   ├── PRD/                     — PRD template + instructions
+│   ├── TSD/                     — TSD template + instructions
+│   ├── implementation-plan/     — Implementation plan template + instructions
+│   ├── test-plan/               — Test plan template + instructions
+│   ├── README/                  — README template
+│   ├── project-rules/           — Templates for git rules, project rules, security conventions
+│   └── project-structure/       — Project structure template
+├── initialization/              — First-time framework setup scripts and instructions
+└── state/                       — State tracking for the preparation workflow
+
+docs/                            — Design rationale and ADR documentation
+tests/                           — Framework tests
 ```
 
 ## Template Conventions
 
-- Templates use `[TBD]` as placeholders to be filled during an iterative interview with the user.
-- Each template has a companion `-instructions.md` file that tells the LLM how to fill it.
-- Documents reference each other by relative path, maintaining traceability across the chain.
+- Templates use placeholders to be filled during an iterative interview with the user.
+- Some templates have a companion `-instructions.md` file that tells the LLM how to fill the template.
 
 ## How to Use
 
-Clone this repo as a sub-folder in your project:
+### Download
+
+Download this file and run it:
 
 ```bash
-cd your-project
-git clone git@gitlab.com:claude-code-experiments/agentic-programming.git
+https://github.com/iddolev/apf/blob/main/installation/apf_install.bat
 ```
 
-To update to the latest version:
+This will download a python script and run it. There are several arguments you can pass to it:
 
-```bash
-cd agentic-programming
-git pull
-cd ..
-```
+- `--version` — Show the installed APF version and the latest available version, then exit
+- `--target FOLDER` — Install into FOLDER instead of the current directory
+- `--dry-run` — Show what would be done without touching any files
+- `--yes` / `-y` — Skip the confirmation prompt
+- `--force` — Reinstall even if already at the latest version
+- If you run it without any flag, the local version will be updated 
+  only if there is a newer version available
 
-Then give an LLM (Cursor with Claude Sonnet, or Claude Code) the prompt:
+### Run
 
-> Follow the instructions in @starting-point.md
+Once download is complete, give an LLM (Cursor with Claude Sonnet, or Claude Code) the prompt:
+
+> Follow the instructions in docs-and-agents-process.md
+
+## Rationale
+
+See the [rationale](https://github.com/iddolev/apf/blob/main/docs/rationale.md) page
+for explanations about the rationale of various parts of the APF.
