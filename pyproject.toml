@@ -1,0 +1,13 @@
+[project]
+name = "apf"
+requires-python = ">=3.10"
+
+dependencies = [
+    "ruamel.yaml",
+]
+
+[project.optional-dependencies]
+test = ["pytest"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

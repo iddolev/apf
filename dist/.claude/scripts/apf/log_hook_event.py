@@ -59,11 +59,12 @@ def load_config() -> tuple[bool, set[str]]:
 def _add_field(fields_map: CommentedMap, name: str, default: bool, comment: str) -> None:
     """Add a field to a ruamel.yaml CommentedMap with a comment above."""
     fields_map[name] = default
-    fields_map.yaml_set_comment_before_key(name, comment, indent=FIELD_INDENT)
+    fields_map.yaml_set_comment_before_after_key(name, before=comment, indent=FIELD_INDENT)
 
 
-def install() -> None:
-    path = Path(APF_INFO_FILENAME)
+def install(apf_yaml_path: Path | None = None) -> None:
+    # `apf_yaml_path` is used for testing
+    path = apf_yaml_path or Path(APF_INFO_FILENAME)
     config = _load_yaml(path)
     existing = config.get(CONFIG_KEY)
 
