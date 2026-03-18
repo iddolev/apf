@@ -114,8 +114,19 @@ def log_event() -> None:
         f.write(json.dumps(record, ensure_ascii=False) + "\n")
 
 
+def status() -> str:
+    """Return 'enabled' or 'disabled' based on .apf.yaml."""
+    try:
+        is_enabled, _ = load_config()
+        return "enabled" if is_enabled else "disabled"
+    except FileNotFoundError:
+        return "disabled"
+
+
 def main() -> None:
-    if "--install" in sys.argv:
+    if "--status" in sys.argv:
+        print(status())
+    elif "--install" in sys.argv:
         install()
     else:
         log_event()
