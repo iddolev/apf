@@ -26,6 +26,8 @@ This table shows which parts are relevant for which file
 
 ## 1. Why Document Creation Is a Guided *Process*, Not an Agent
 
+<a id="11-context"/>
+
 ### 1.1. Context
 
 Our framework's preparation phase creates four documents in sequence:
@@ -33,9 +35,13 @@ PRD, TSD, implementation plan, and test plan (driven by `starting-point.md`
 and the instruction files under `instructions/creating-docs/`).
 This is a human-led process guided by an LLM, not an autonomous agent pipeline.
 
+<a id="12-decision"/>
+
 ### 1.2. Decision
 
 **Document creation is a guided, interactive process, not an agent or set of agents.**
+
+<a id="13-reasoning"/>
 
 ### 1.3. Reasoning
 
@@ -68,6 +74,8 @@ the right testing strategy -- all derived from the PRD and TSD rather than
 being too generic based on merely an initial brief high level prompt description of the project.
 If agents were created first (or concurrently), they would either be too generic
 or would need to be revised after the documents are finalized.
+
+<a id="14-when-to-revisit"/>
 
 ### 1.4. When to Revisit
 
@@ -106,16 +114,22 @@ relevant decisions, and embedding constraints into task assignments.
 
 ## 3. Why There Is No System Architect Agent
 
+<a id="31-context"/>
+
 ### 3.1. Context
 
 Multi-agent frameworks often include a dedicated **system architect agent**
 responsible for API contract design, data-flow diagrams, Architecture Decision Records (ADRs),
 and technology evaluation. The question is whether our framework needs one too.
 
+<a id="32-decision"/>
+
 ### 3.2. Decision
 
 **No dedicated architect agent.** Architectural decisions during implementation are handled
 by the **tech lead agent**.
+
+<a id="33-reasoning"/>
 
 ### 3.3. Reasoning
 
@@ -169,6 +183,8 @@ Collapsing architectural authority into the tech lead avoids this entirely.
 Adding an architect agent means another agent that needs to load project context.
 The tech lead already has it loaded. No duplication needed.
 
+<a id="34-what-this-means-for-the-tech-lead"/>
+
 ### 3.4. What This Means for the Tech Lead
 
 The tech lead template should include an explicit architectural decision-making mandate:
@@ -176,6 +192,8 @@ when specialist agents encounter architectural ambiguity (TSD gaps, design confl
 cross-cutting concerns), the tech lead is the architectural authority. It analyzes the problem,
 makes or proposes a design decision (in ADR format when appropriate),
 and updates the TSD if needed before dispatching further implementation work.
+
+<a id="35-when-to-revisit"/>
 
 ### 3.5. When to Revisit
 
@@ -191,11 +209,15 @@ solutions]
 
 ## 4. Who Does the Documentation
 
+<a id="41-context"/>
+
 ### 4.1. Context
 
 Documentation agents in multi-agent frameworks often have broad responsibilities
 spanning project docs, API docs, in-repo hygiene, knowledge management, user-facing guides,
 and more. The question is whether our framework needs such an agent.
+
+<a id="42-decision"/>
 
 ### 4.2. Decision
 
@@ -203,12 +225,16 @@ and more. The question is whether our framework needs such an agent.
 by the preparation phase or are out of scope for the current framework.
 The remaining gaps are real but too scattered to justify a single broad-scoped agent.
 
+<a id="43-reasoning"/>
+
 ### 4.3. Reasoning
 
 The tables below map every documentation function (from the todo list's documentation agent survey)
 to where it is currently handled in the framework. This audit reveals that the preparation phase
 and existing agents already cover the most critical items, while the uncovered items fall into
 distinct categories that each need a different solution.
+
+<a id="44-project-documentation"/>
 
 ### 4.4. Project Documentation
 
@@ -221,6 +247,8 @@ distinct categories that each need a different solution.
 | Onboarding guides | **Not covered** -- could be derived from README + project structure + TSD but no process exists |
 | Runbooks (deployment, rollback, incident response) | **Not covered** -- TSD sections on deployment/rollout provide source material but no runbook is generated |
 
+<a id="45-api-interface-documentation"/>
+
 ### 4.5. API & Interface Documentation
 
 | Documentation Function | Current Coverage |
@@ -229,6 +257,8 @@ distinct categories that each need a different solution.
 | SDK/library usage guides | **Not covered** -- relevant only for projects that expose public APIs or SDKs |
 | Integration guides | **Not covered** -- relevant only for projects with third-party integrations |
 | GraphQL/OpenAPI spec maintenance | **Not covered** -- keeping spec files in sync with code requires doc-code sync tooling, not just an agent |
+
+<a id="46-in-repo-documentation-hygiene"/>
 
 ### 4.6. In-Repo Documentation Hygiene
 
@@ -240,6 +270,8 @@ distinct categories that each need a different solution.
 | Template maintenance | **Not covered** -- templates live in this framework repo, not in user projects |
 | Table of contents / index generation | **Not covered** -- a mechanical task better suited to tooling than an agent |
 
+<a id="47-agentic-multi-agent-documentation"/>
+
 ### 4.7. Agentic / Multi-Agent Documentation
 
 | Documentation Function | Current Coverage |
@@ -247,6 +279,8 @@ distinct categories that each need a different solution.
 | Agent instruction files (CLAUDE.md, agent templates, SHARED-AGENT-CONTEXT) | **Preparation phase** -- `claude-preparation.md` creates CLAUDE.md, SHARED-AGENT-CONTEXT, and AGENTS-LIST |
 | Agent memory curation | **Not covered** -- reviewing and cleaning agent memory files for accuracy has no owner |
 | Workflow documentation (agent interactions, pipeline, conventions) | **Not covered** -- how agents interact is implicit in templates but not documented per-project |
+
+<a id="48-knowledge-management"/>
 
 ### 4.8. Knowledge Management
 
@@ -257,6 +291,8 @@ distinct categories that each need a different solution.
 | Decision logs (beyond ADRs) | **Partially covered** -- tech lead records architectural decisions in the TSD; informal decisions during implementation are not captured |
 | Dependency documentation (why chosen, known quirks) | **Partially covered** -- TSD Section 7 (Technology Stack & Environments) documents choices and rationale; runtime quirks discovered during implementation are not captured |
 
+<a id="49-user-facing-documentation"/>
+
 ### 4.9. User-Facing Documentation
 
 | Documentation Function | Current Coverage |
@@ -265,6 +301,8 @@ distinct categories that each need a different solution.
 | Tutorials & walkthroughs | **Not covered** -- same as above |
 | Migration guides (version upgrades) | **Not covered** -- same as above |
 | Configuration reference | **Not covered** -- same as above |
+
+<a id="410-documentation-review-quality"/>
 
 ### 4.10. Documentation Review & Quality
 
@@ -275,6 +313,8 @@ distinct categories that each need a different solution.
 | Clarity & readability review | **Not covered** |
 | Audience appropriateness | **Not covered** |
 
+<a id="411-process-documentation"/>
+
 ### 4.11. Process Documentation
 
 | Documentation Function | Current Coverage |
@@ -284,6 +324,8 @@ distinct categories that each need a different solution.
 | Testing strategy docs | **Covered** -- test plan created in preparation phase (`starting-point.md` step 6, `test-plan-instructions.md`) |
 | Security policies | **Partially covered** -- `SECURITY-CONVENTIONS-template.md` created in preparation phase if needed; does not cover disclosure process or incident response |
 
+<a id="412-diagramming-visual-documentation"/>
+
 ### 4.12. Diagramming & Visual Documentation
 
 | Documentation Function | Current Coverage |
@@ -292,6 +334,8 @@ distinct categories that each need a different solution.
 | Sequence diagrams (key flows) | **Not covered** -- TSD core technical flows section describes them textually but does not generate visual diagrams |
 | ER diagrams (data models) | **Not covered** -- TSD data model section describes schema but does not generate visual diagrams |
 | Flowcharts (decision trees, state machines) | **Not covered** -- TSD may describe state machines textually but does not generate visual diagrams |
+
+<a id="413-analysis"/>
 
 ### 4.13. Analysis
 
@@ -314,6 +358,8 @@ end up too broad to be effective. A focused agent should target cluster 1 --
 post-implementation documentation -- since that is where the framework has a clear gap
 and where an LLM agent adds the most value.
 
+<a id="414-when-to-revisit"/>
+
 ### 4.14. When to Revisit
 
 - When the framework adds a post-implementation phase, a **release documentation agent**
@@ -329,14 +375,20 @@ and where an LLM agent adds the most value.
 
 ## 5. Why Agent Templates Use a General-Then-Specific Approach
 
+<a id="51-context"/>
+
 ### 5.1. Context
 
 When building agents for a multi-project framework, there is a tension between generality and
 specificity.
 
+<a id="52-decision"/>
+
 ### 5.2. Decision
 
 **Use general templates with `<!-- ADAPT -->` markers, instantiated per-project.**
+
+<a id="53-reasoning"/>
 
 ### 5.3. Reasoning
 
@@ -366,6 +418,8 @@ actual patterns, and actual conventions.
 
 ## 6. Adversarial Thinking, and Why It Is a Mode, Not a Separate Agent
 
+<a id="61-context"/>
+
 ### 6.1. Context
 
 LLM-generated code cannot yet be fully trusted. Models may hallucinate APIs
@@ -381,17 +435,23 @@ Automated adversarial thinking is an area where agent-based workflows can delive
 outsized value: the adversarial pass costs minutes of compute, not days of human effort,
 and it never feels pressured to "just finish and move on."
 
+<a id="62-question"/>
+
 ### 6.2. Question
 
 Some frameworks include a dedicated "devil's advocate" or adversarial review agent.
 The question here is whether adversarial review should be a standalone agent or a mode
 that existing specialist agents can activate.
 
+<a id="63-decision"/>
+
 ### 6.3. Decision
 
 **Adversarial thinking is a mode of activation, not a separate agent.**
 It is defined in `ADVERSARIAL-THINKING.md` as a mindset overlay,
 and an agent may be activated in normal mode or adverserial mode.
+
+<a id="64-reasoning"/>
 
 ### 6.4. Reasoning
 
@@ -411,15 +471,21 @@ adversarial agent ever could.
 
 ## 7. Why SOFTWARE-ENGINEERING-PRINCIPLES.md and PROGRAMMING-PRINCIPLES.md Are Separate Files
 
+<a id="71-context"/>
+
 ### 7.1. Context
 
 The framework has two files that govern coding quality:
 `PROGRAMMING-PRINCIPLES.md` (practical rules) and `SOFTWARE-ENGINEERING-PRINCIPLES.md`
 (theoretical foundations).
 
+<a id="72-decision"/>
+
 ### 7.2. Decision
 
 **Keep them as separate files with different agent audiences.**
+
+<a id="73-reasoning"/>
 
 ### 7.3. Reasoning
 
