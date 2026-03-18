@@ -8,5 +8,5 @@ for %%a in (%*) do if "%%a"=="--fetch" (
     exit /b 0
 )
 
-pip install ruamel.yaml
+pip install pyyaml ruamel.yaml
 python apf_install.py %*
