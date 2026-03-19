@@ -53,8 +53,10 @@ PATH_MAP: list[tuple[str, str, bool]] = [
      ".installation/install_claude_code_hook_event_logger.py", True)
 ]
 
-# Note: Deliberately not including .apf in .gitignore
-# because it's supposed to be tracked in the git of the user project
+# The following are supposed to be copied as-is to the user's project
+# and therefore should not also be pushed to the user's project repo.
+# Hence, we deliberately don't including .apf.yaml in .gitignore
+# because .apf.yaml is supposed to be tracked in the git of the user project.
 GITIGNORE_ENTRIES = [
     "apf_install.bat",
     ".installation/"
