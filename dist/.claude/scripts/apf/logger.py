@@ -112,8 +112,13 @@ class Logger(ABC):
         data = self.get_input()
         timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
         record = {"timestamp": timestamp}
-        record.update({k: v for k, v in data.items()
-                       if (not enabled_fields) or k in enabled_fields})
+        if not enabled_fields:
+            # No enabled fields means that no fields were specified (enabled or not)
+            # so all the data should be used
+            # (We assume here there is no case where there are specified fields but all disabled)
+            record.update(data)
+        else:
+            record.update({k: v for k, v in data.items() if k in enabled_fields})
         if dirname := os.path.dirname(self.logfile):
             os.makedirs(dirname, exist_ok=True)
         with open(self.logfile, "a", encoding="utf-8") as f:

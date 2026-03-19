@@ -267,8 +267,8 @@ def update_apf_version(project_dir: Path, new_version: str, *, dry_run: bool) ->
             warn(f"  ⚠️  Could not update version in {APF_INFO_FILE}: {e}")
 
 
-def install_claude_code_hook_event_logger(project_dir: Path, *, dry_run: bool) -> None:
-    """Install the hook event logger into the project's .claude/settings.json."""
+def install_claude_code_hook_event_logger(*, dry_run: bool) -> None:
+    """Install the hook event logger into .claude/settings.json and .apf.yaml."""
     if dry_run:
         print(f"  [dry-run] Would run install_claude_code_hook_event_logger.install()")
         return
@@ -277,6 +277,23 @@ def install_claude_code_hook_event_logger(project_dir: Path, *, dry_run: bool) -
     # only after files are copied when PATH_MAP is processed
     import install_claude_code_hook_event_logger as _installer
     _installer.install()
+
+
+def install_agent_invocation_logger(*, dry_run: bool) -> None:
+    """Install the agent invocation logger into .apf.yaml."""
+    if dry_run:
+        print(f"  [dry-run] Would run agent invocation logger install")
+        return
+    # import here and not at top of class
+    # because install_claude_code_hook_event_logger is obtained
+    # only after files are copied when PATH_MAP is processed
+    import install_claude_code_hook_event_logger as _installer
+    _installer.install()
+    # Make dist/.claude/scripts/apf/ importable
+    PROJECT_ROOT = Path(__file__).resolve().parent.parent
+    sys.path.insert(0, str(PROJECT_ROOT / "dist" / ".claude" / "scripts" / "apf"))
+    from log_agent_invocations import AGENT_INVOCATION_LOGGER
+    AGENT_INVOCATION_LOGGER.install()
 
 
 def copy_path_map(repo_dir: Path, project_dir: Path, *, dry_run: bool) -> None:
@@ -307,6 +324,7 @@ def install(repo_dir: Path, project_dir: Path, new_version: str, *, dry_run: boo
     copy_path_map(repo_dir, project_dir, dry_run=dry_run)
     update_gitignore(project_dir, dry_run=dry_run)
     install_claude_code_hook_event_logger(project_dir, dry_run=dry_run)
+    install_agent_invocations_logger(project_dir, dry_run=dry_run)
     update_apf_version(project_dir, new_version, dry_run=dry_run)
 
 

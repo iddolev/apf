@@ -11,6 +11,8 @@ Usage:
 
 import json
 import os
+import sys
+from pathlib import Path
 
 from common import APF_INFO_FILENAME, cyaml_load, cyaml_save
 
@@ -70,15 +72,7 @@ def hook_already_installed(hook_list: list) -> bool:
                for hook in entry.get("hooks", []))
 
 
-def install_in_apf_yaml() -> None:
-    # TODO: if no key claude_code_hook_event_logger in APF_INFO_FILENAME then add:
-    data = cyaml_load(APF_INFO_FILENAME)
-    if KEY_log_claude_code_events not in data.keys():
-        data[KEY_log_claude_code_events] = {'enabled': False}
-        cyaml_save(APF_INFO_FILENAME, data)
-
-
-def install_in_settings_json() -> None:
+def install_hooks_in_settings() -> None:
     settings = load_settings()
     hooks = settings.setdefault("hooks", {})
     added = []
@@ -97,9 +91,17 @@ def install_in_settings_json() -> None:
         print("Hook event logger already installed for all hook types.")
 
 
+def install_apf_info_section() -> None:
+    # Make dist/.claude/scripts/apf/ importable
+    PROJECT_ROOT = Path(__file__).resolve().parent.parent
+    sys.path.insert(0, str(PROJECT_ROOT / "dist" / ".claude" / "scripts" / "apf"))
+    from log_claude_code_hook_event import CLAUD_CODE_HOOK_EVENT_LOGGER
+    CLAUD_CODE_HOOK_EVENT_LOGGER.install()
+
+
 def install() -> None:
-    install_in_apf_yaml()
-    install_in_settings_json()
+    install_hooks_in_settings()
+    install_apf_info_section()
 
 
 if __name__ == "__main__":

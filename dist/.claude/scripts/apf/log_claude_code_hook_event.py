@@ -34,9 +34,10 @@ class ClaudeCodeHookLogger(Logger):
         return json.load(sys.stdin)
 
 
-if __name__ == "__main__":
-    _logger = ClaudeCodeHookLogger(
+CLAUD_CODE_HOOK_EVENT_LOGGER = ClaudeCodeHookLogger(
         config_key=KEY_log_claude_code_events,
         logfile=LOGFILE,
         field_definitions=FIELD_DEFINITIONS)
-    _logger.main()
+
+if __name__ == "__main__":
+    CLAUD_CODE_HOOK_EVENT_LOGGER.main()

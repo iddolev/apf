@@ -6,6 +6,7 @@ Usage: python .claude/scripts/log_agent_invocations.py "<agent-name>" "<event-ty
 
 import sys
 
+from common import InvalidInputException
 from logger import Logger
 
 
@@ -16,12 +17,14 @@ CONFIG_KEY = "log_agent_invocations"
 class AgentInvocationLogger(Logger):
     def get_input(self) -> dict:
         if len(sys.argv) != 4:
-            raise ValueError(f"Invalid input: {sys.argv[1:]}")
+            raise InvalidInputException(f"Invalid input: {sys.argv[1:]}")
         return dict(zip(['actor', 'event_type', 'message'], sys.argv[1:]))
 
 
+AGENT_INVOCATION_LOGGER = AgentInvocationLogger(
+    config_key=CONFIG_KEY,
+    logfile=LOGFILE)
+
+
 if __name__ == "__main__":
-    _logger = AgentInvocationLogger(
-        config_key=CONFIG_KEY,
-        logfile=LOGFILE)
-    _logger.main()
+    AGENT_INVOCATION_LOGGER.main()

@@ -2,12 +2,17 @@ from pathlib import Path
 
 from ruamel.yaml import YAML, CommentedMap
 
-
 CYAML = CommentedMap
+
 
 APF_INFO_FILENAME = ".apf.yaml"
 
-"""cyaml means yaml with comments preserved.
+
+class InvalidInputException(Exception):
+    pass
+
+
+"""cyaml below means: yaml with comments preserved.
 This is a wrapper around ruaml YAML
 """
 
