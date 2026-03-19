@@ -7,6 +7,7 @@ Receives hook input as JSON on stdin.
 import json
 import sys
 
+from common import InvalidInputException
 from logger import Logger
 
 
@@ -29,13 +30,8 @@ FIELD_DEFINITIONS = [
 class ClaudeCodeHookLogger(Logger):
     def get_input(self) -> dict:
         if len(sys.argv) > 1:
-            raise ValueError(f"Invalid input: {sys.argv[1:]}")
-        try:
-            data: dict = json.load(sys.stdin)
-            return data
-        except json.JSONDecodeError as e:
-            raise json.JSONDecodeError(
-                f"log_hook_event: failed to parse JSON from stdin: {e}", file=sys.stderr)
+            raise InvalidInputException(f"Invalid input: {sys.argv[1:]}")
+        return json.load(sys.stdin)
 
 
 if __name__ == "__main__":

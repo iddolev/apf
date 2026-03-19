@@ -78,7 +78,6 @@ def install_in_apf_yaml() -> None:
         cyaml_save(APF_INFO_FILENAME, data)
 
 
-
 def install_in_settings_json() -> None:
     settings = load_settings()
     hooks = settings.setdefault("hooks", {})

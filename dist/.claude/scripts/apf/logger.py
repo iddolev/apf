@@ -14,7 +14,7 @@ from datetime import datetime, timezone
 from enum import Enum
 from pathlib import Path
 
-from common import CYAML, cyaml_load, cyaml_save, cyaml_add_field, APF_INFO_FILENAME
+from common import CYAML, cyaml_load, cyaml_save, cyaml_add_field, APF_INFO_FILENAME, InvalidInputException
 
 
 class Status(Enum):
@@ -114,7 +114,8 @@ class Logger(ABC):
         record = {"timestamp": timestamp}
         record.update({k: v for k, v in data.items()
                        if (not enabled_fields) or k in enabled_fields})
-        os.makedirs(os.path.dirname(self.logfile), exist_ok=True)
+        if dirname := os.path.dirname(self.logfile):
+            os.makedirs(dirname, exist_ok=True)
         with open(self.logfile, "a", encoding="utf-8") as f:
             f.write(json.dumps(record, ensure_ascii=False) + "\n")
 
@@ -129,10 +130,11 @@ class Logger(ABC):
             print(self.set_enabled(True).value)
         elif "--off" in sys.argv:
             print(self.set_enabled(False).value)
-        elif self.log_event():
-            # Successfully activated
-            pass
         else:
-            print(f"Usage: {Path(sys.argv[0]).name} [--status | --on | --off | --install]",
-                  file=sys.stderr)
-            sys.exit(1)
+            try:
+                self.log_event()
+            except InvalidInputException as e:
+                print(str(e))
+                print(f"Usage: {Path(sys.argv[0]).name} [--status | --on | --off | --install]",
+                      file=sys.stderr)
+                sys.exit(1)
