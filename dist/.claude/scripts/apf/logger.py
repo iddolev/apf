@@ -29,13 +29,14 @@ class Logger(ABC):
         self, *,
         config_key: str,
         logfile: str,
-        field_definitions: list[tuple[str, bool, str]] | None = None,
+        field_definitions: str | None | list[tuple[str, bool, str]] = "*",
         config_filename: str = APF_INFO_FILENAME,
         field_indent: int = 4,
     ) -> None:
         self.config_key = config_key
         self.logfile = logfile
-        self.field_definitions = field_definitions or []
+        # A value of "*" in field_definitions means: match all fields
+        self.field_definitions = "*" if field_definitions is None else field_definitions
         self.config_filename = config_filename
         self.field_indent = field_indent
 
@@ -67,23 +68,30 @@ class Logger(ABC):
         existing: CYAML = config.get(self.config_key)
 
         if not existing:
-            fields_map = CYAML()
-            for name, default, comment in self.field_definitions:
-                cyaml_add_field(fields_map, name, default, comment)
+            if self.field_definitions == "*":
+                fields = "*"
+            else:
+                fields = CYAML()
+                for name, default, comment in self.field_definitions:
+                    cyaml_add_field(fields, name, default, comment)
             config[self.config_key] = CYAML([
                 ("enabled", enable_after_install),
-                ("fields", fields_map),
+                ("fields", fields),
             ])
         else:
-            fields_map: CYAML = existing.get("fields")
-            if not isinstance(fields_map, dict):
+            fields = existing.get("fields")
+            if fields == "*":
+                # Match everything, so no need to mention specific fields
+                return
+            if not isinstance(fields, CYAML):
                 raise ValueError(f"'fields' is missing or corrupt in {self.config_filename}")
-            fields_map_keys = set(fields_map.keys())
-            missing = [(n, d, c) for n, d, c in self.field_definitions if n not in fields_map_keys]
+            fields_keys = set(fields.keys())
+            missing = [(n, d, c) for n, d, c in self.field_definitions if n not in fields_keys]
             if not missing:
                 return
+            # If any fields are missing, add them
             for name, default, comment in missing:
-                cyaml_add_field(fields_map, name, default, comment)
+                cyaml_add_field(fields, name, default, comment)
 
         cyaml_save(path, config)
 
@@ -102,7 +110,7 @@ class Logger(ABC):
 
     @abstractmethod
     def get_input(self) -> dict:
-        raise NotImplementedError()
+        pass
 
     def log_event(self) -> None:
         """If logging is enabled in the config file, read JSON input and append to the log file."""

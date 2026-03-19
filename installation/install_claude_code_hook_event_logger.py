@@ -41,7 +41,29 @@ HOOK_TYPES = [
     "WorktreeRemove",
 ]
 
+"""
+TODO: The schema of settings.json of Claude Code has a top-level keyword "hooks" with:
+"hooks": {
+    <hook_type>: [
+        {
+            "matcher": <expression>
+            "hooks": [
+                {
+                    "type": "command",
+                    "command": <actual_command>
+                }
+            ]
+        },
+        { ... }
+    ],
+    <hook_type2>: [ ... ]
+}
+For more info, see: https://code.claude.com/docs/en/hooks
+"""
+
 HOOK_ENTRY = {
+    # not mentioning a matcher on the next line is the same as "*" i.e. match everything
+    # "matcher": "*"
     "hooks": [
         {
             "type": "command",
