@@ -57,7 +57,7 @@ PATH_MAP: list[tuple[str, str, bool]] = [
 # because it's supposed to be tracked in the git of the user project
 GITIGNORE_ENTRIES = [
     "apf_install.bat",
-    "apf_install.py",
+    ".installation/"
     ".claude/commands/apf/",
     ".claude/scripts/apf/",
 ]
