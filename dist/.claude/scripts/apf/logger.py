@@ -65,33 +65,39 @@ class Logger(ABC):
         except FileNotFoundError:
             return Status.DISABLED
 
+    def _install_on_existing_section(self, existing: CYAML, enable_after_install: bool) -> bool:
+        """Returns True iff there was a change"""
+        changed = False
+        if enable_after_install and existing.get("enabled") is False:
+            existing["enabled"] = True
+            changed = True
+        fields = existing.get("fields")
+        if fields == ALLOW_ALL_FIELDS:
+            # Match everything, so no need to mention specific fields
+            if not changed:
+                return False
+        if not isinstance(fields, CYAML):
+            raise ValueError(f"'fields' is missing or corrupt in {self.config_filepath}")
+        fields_keys = set(fields.keys())
+        missing = [(n, d, c) for n, d, c in self.field_definitions if n not in fields_keys]
+        if not missing:
+            # No missing keys, so no need to re-write fields
+            if not changed:
+                return False
+        else:
+            # If there are missing keys, we add them here, and save below
+            for name, default, comment in missing:
+                cyaml_add_field(fields, name, default, comment)
+
     def install(self, enable_after_install: bool = False) -> None:
         """Add or update the config section in the config file"""
         config = cyaml_load(self.config_filepath)
         existing: CYAML = config.get(self.config_key)
-        changed = False
 
         if existing:
-            if enable_after_install and existing.get("enabled") is False:
-                existing["enabled"] = True
-                changed = True
-            fields = existing.get("fields")
-            if fields == ALLOW_ALL_FIELDS:
-                # Match everything, so no need to mention specific fields
-                if not changed:
-                    return
-            if not isinstance(fields, CYAML):
-                raise ValueError(f"'fields' is missing or corrupt in {self.config_filepath}")
-            fields_keys = set(fields.keys())
-            missing = [(n, d, c) for n, d, c in self.field_definitions if n not in fields_keys]
-            if not missing:
-                # No missing keys, so no need to re-write fields
-                if not changed:
-                    return
-            else:
-                # If there are missing keys, we add them here, and save below
-                for name, default, comment in missing:
-                    cyaml_add_field(fields, name, default, comment)
+            changed = self._install_on_existing_section(existing, enable_after_install)
+            if not changed:
+                return
         else:
             # section doesn't exist, need to create it
             if self.field_definitions == ALLOW_ALL_FIELDS:
