@@ -26,8 +26,6 @@ from urllib.error import URLError
 
 import yaml
 
-import install_claude_code_hook_event_logger
-
 
 # ── Configuration ────────────────────────────────────────────────────────────
 
