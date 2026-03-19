@@ -51,6 +51,8 @@ PATH_MAP: list[tuple[str, str, bool]] = [
     ("dist/.claude/shared",   ".claude/shared",   True),
     (".claude/commands/apf",  ".claude/commands/apf", True),
     (".claude/scripts/apf",   ".claude/scripts/apf",  True),
+    ("installation/install_claude_code_hook_event_logger.py",
+     ".installation/install_claude_code_hook_event_logger.py", True)
 ]
 
 # Note: Deliberately not including .apf in .gitignore

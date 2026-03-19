@@ -1,7 +1,9 @@
 @echo off
 REM This is the file to share with anyone who wants to install APF in their project folder
 
-curl -sL -o apf_install.py https://raw.githubusercontent.com/iddolev/apf/main/installation/apf_install.py
+if not exist ".installation" mkdir ".installation"
+
+curl -sL -o ".installation\apf_install.py" https://raw.githubusercontent.com/iddolev/apf/main/installation/apf_install.py
 
 for %%a in (%*) do if "%%a"=="--fetch" (
     echo Fetched apf_install.py
@@ -9,4 +11,4 @@ for %%a in (%*) do if "%%a"=="--fetch" (
 )
 
 pip install pyyaml ruamel.yaml
-python apf_install.py %*
+python ".installation\apf_install.py" %*
