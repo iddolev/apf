@@ -62,11 +62,9 @@ def save_settings(settings: dict) -> None:
 
 def hook_already_installed(hook_list: list) -> bool:
     """Check if any entry in the hook list already runs our command."""
-    for entry in hook_list:
-        for hook in entry.get("hooks", []):
-            if hook.get("command") == HOOK_COMMAND:
-                return True
-    return False
+    return any(hook.get("command") == HOOK_COMMAND
+               for entry in hook_list
+               for hook in entry.get("hooks", []))
 
 
 def install() -> None:
