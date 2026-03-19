@@ -8,6 +8,7 @@ import sys
 
 from logger import Logger
 
+
 LOGFILE = "logs/agents_invocations_log.jsonl"
 CONFIG_KEY = "log_agent_invocations"
 

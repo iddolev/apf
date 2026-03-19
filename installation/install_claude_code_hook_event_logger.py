@@ -12,6 +12,9 @@ Usage:
 import json
 import os
 
+
+APF_INFO_FILE = ".apf.yaml"
+KEY_log_claude_code_events = "log_claude_code_events"
 SETTINGS_PATH = ".claude/settings.json"
 HOOK_COMMAND = "python .claude/scripts/apf/log_claude_code_hook_event.py"
 
@@ -67,7 +70,15 @@ def hook_already_installed(hook_list: list) -> bool:
                for hook in entry.get("hooks", []))
 
 
-def install() -> None:
+def install_in_apf_yaml() -> None:
+    # TODO: if no key claude_code_hook_event_logger in APF_INFO_FILE then add:
+    data = {}
+    if KEY_log_claude_code_events not in data.keys():
+        data[KEY_log_claude_code_events] = {'enabled': False}
+
+
+
+def install_in_settings_json() -> None:
     settings = load_settings()
     hooks = settings.setdefault("hooks", {})
     added = []
@@ -84,6 +95,11 @@ def install() -> None:
         print(f"Installed hook event logger for {len(added)} hook type(s): {', '.join(added)}")
     else:
         print("Hook event logger already installed for all hook types.")
+
+
+def install() -> None:
+    install_in_apf_yaml()
+    install_in_settings_json()
 
 
 if __name__ == "__main__":

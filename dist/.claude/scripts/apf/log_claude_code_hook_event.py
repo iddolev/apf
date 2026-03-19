@@ -9,8 +9,9 @@ import sys
 
 from logger import Logger
 
+
+KEY_log_claude_code_events = "log_claude_code_events"
 LOGFILE = "tmp/logs/claude_code_hook_events_log.jsonl"
-CONFIG_KEY = "log_claude_code_events"
 FIELD_DEFINITIONS = [
     ("session_id", True, "Unique identifier for the current conversation session"),
     ("transcript_path", False, "Path to the session's transcript JSONL file"),
@@ -39,7 +40,7 @@ class ClaudeCodeHookLogger(Logger):
 
 if __name__ == "__main__":
     _logger = ClaudeCodeHookLogger(
-        config_key=CONFIG_KEY,
+        config_key=KEY_log_claude_code_events,
         logfile=LOGFILE,
         field_definitions=FIELD_DEFINITIONS)
     _logger.main()
