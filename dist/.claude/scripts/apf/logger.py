@@ -30,7 +30,7 @@ class Logger(ABC):
         self, *,
         config_key: str,
         logfile: str,
-        field_definitions: str | None | list[tuple[str, bool, str]] = ALLOW_ALL_FIELDS,
+        field_definitions: str | list[tuple[str, bool, str]] = ALLOW_ALL_FIELDS,
         config_filepath: str = APF_INFO_FILENAME,
         field_indent: int = 4,
     ) -> None:
@@ -59,35 +59,30 @@ class Logger(ABC):
 
     def status(self) -> Status:
         """Return 'enabled' or 'disabled' based on the config file"""
-        try:
-            is_enabled, _ = self.load_config()
-            return Status.ENABLED if is_enabled else Status.DISABLED
-        except FileNotFoundError:
-            return Status.DISABLED
+        is_enabled, _ = self.load_config()
+        return Status.ENABLED if is_enabled else Status.DISABLED
 
     def _install_on_existing_section(self, existing: CYAML, enable_after_install: bool) -> bool:
         """Returns True iff there was a change"""
         changed = False
-        if enable_after_install and existing.get("enabled") is False:
+        if enable_after_install and not existing.get("enabled"):
             existing["enabled"] = True
             changed = True
         fields = existing.get("fields")
         if fields == ALLOW_ALL_FIELDS:
             # Match everything, so no need to mention specific fields
-            if not changed:
-                return False
+            return changed
         if not isinstance(fields, CYAML):
             raise ValueError(f"'fields' is missing or corrupt in {self.config_filepath}")
         fields_keys = set(fields.keys())
         missing = [(n, d, c) for n, d, c in self.field_definitions if n not in fields_keys]
         if not missing:
             # No missing keys, so no need to re-write fields
-            if not changed:
-                return False
-        else:
-            # If there are missing keys, we add them here, and save below
-            for name, default, comment in missing:
-                cyaml_add_field(fields, name, default, comment)
+            return changed
+        # If there are missing keys, we add them here, and save below
+        for name, default, comment in missing:
+            cyaml_add_field(fields, name, default, comment)
+        return True
 
     def install(self, enable_after_install: bool = False) -> None:
         """Add or update the config section in the config file"""
@@ -96,22 +91,22 @@ class Logger(ABC):
 
         if existing:
             changed = self._install_on_existing_section(existing, enable_after_install)
-            if not changed:
-                return
-        else:
-            # section doesn't exist, need to create it
-            if self.field_definitions == ALLOW_ALL_FIELDS:
-                fields = ALLOW_ALL_FIELDS
-            else:
-                # Add all fields
-                fields = CYAML()
-                for name, default, comment in self.field_definitions:
-                    cyaml_add_field(fields, name, default, comment)
-            config[self.config_key] = CYAML([
-                ("enabled", enable_after_install),
-                ("fields", fields),
-            ])
+            if changed:
+                cyaml_save(self.config_filepath, config)
+            return
 
+        # section doesn't exist, need to create it
+        if self.field_definitions == ALLOW_ALL_FIELDS:
+            fields = ALLOW_ALL_FIELDS
+        else:
+            # Add all fields
+            fields = CYAML()
+            for name, default, comment in self.field_definitions:
+                cyaml_add_field(fields, name, default, comment)
+        config[self.config_key] = CYAML([
+            ("enabled", enable_after_install),
+            ("fields", fields),
+        ])
         cyaml_save(self.config_filepath, config)
 
     def set_enabled(self, value: bool) -> Status:
@@ -135,7 +130,8 @@ class Logger(ABC):
             return
         data = self.get_input()
         timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-        record = {"timestamp": timestamp}
+        record = {"_timestamp_": timestamp}
+        # We assume that data doesn't have a field "_timestamp_"
         if enabled_fields == ALLOW_ALL_FIELDS:
             record.update(data)
         else:
@@ -160,7 +156,6 @@ class Logger(ABC):
             try:
                 self.log_event()
             except InvalidInputException as e:
-                print(str(e))
-                print(f"Usage: {Path(sys.argv[0]).name} [--status | --on | --off | --install]",
+                print(f"{str(e)}\nUsage: {Path(sys.argv[0]).name} [--status | --on | --off | --install]",
                       file=sys.stderr)
                 sys.exit(1)

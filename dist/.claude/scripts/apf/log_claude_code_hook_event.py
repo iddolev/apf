@@ -33,11 +33,11 @@ class ClaudeCodeHookLogger(Logger):
             raise InvalidInputException(f"Invalid input: {sys.argv[1:]}")
         return json.load(sys.stdin)
 
-CLAUD_CODE_HOOK_EVENT_LOGGER = ClaudeCodeHookLogger(
+CLAUDE_CODE_HOOK_EVENT_LOGGER = ClaudeCodeHookLogger(
         config_key=KEY_log_claude_code_events,
         logfile=LOGFILE,
         field_definitions=FIELD_DEFINITIONS)
 
 
 if __name__ == "__main__":
-    CLAUD_CODE_HOOK_EVENT_LOGGER.main()
+    CLAUDE_CODE_HOOK_EVENT_LOGGER.main()
