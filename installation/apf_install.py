@@ -270,7 +270,11 @@ def install_claude_code_hook_event_logger(project_dir: Path, *, dry_run: bool) -
     if dry_run:
         print(f"  [dry-run] Would run install_claude_code_hook_event_logger.install()")
         return
-    install_claude_code_hook_event_logger.install()
+    # import here and not at top of class
+    # because install_claude_code_hook_event_logger is obtained
+    # only after files are copied when PATH_MAP is processed
+    import install_claude_code_hook_event_logger as _installer
+    _installer.install()
 
 
 def copy_path_map(repo_dir: Path, project_dir: Path, *, dry_run: bool) -> None:
