@@ -91,29 +91,6 @@ def install(enable_after_install: bool = False, apf_yaml_path: Path | None = Non
         _yaml.dump(config, f)
 
 
-def log_event() -> None:
-    """If log_claude_code_events is enabled in .apf.yaml, add a line to the log file."""
-    is_enabled, enabled_fields = load_config()
-    if not is_enabled:
-        return
-
-    # Data of Claude Code's event
-    try:
-        data: dict = json.load(sys.stdin)
-    except json.JSONDecodeError as e:
-        raise json.JSONDecodeError(f"log_hook_event: failed to parse JSON from stdin: {e}", file=sys.stderr)
-
-    timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    record = {"timestamp": timestamp}
-    record.update({k: v for k, v in data.items() if k in enabled_fields})
-
-    # Create folder if does not exist
-    os.makedirs(os.path.dirname(LOGFILE), exist_ok=True)
-
-    with open(LOGFILE, "a", encoding="utf-8") as f:
-        f.write(json.dumps(record, ensure_ascii=False) + "\n")
-
-
 def status() -> str:
     """Return 'enabled' or 'disabled' based on .apf.yaml."""
     try:
@@ -136,6 +113,29 @@ def set_enabled(enabled: bool, apf_yaml_path: Path | None = None) -> str:
     with open(path, "w", encoding="utf-8") as f:
         _yaml.dump(config, f)
     return "enabled" if enabled else "disabled"
+
+
+def log_event() -> None:
+    """If log_claude_code_events is enabled in .apf.yaml, add a line to the log file."""
+    is_enabled, enabled_fields = load_config()
+    if not is_enabled:
+        return
+
+    # Data of Claude Code's event
+    try:
+        data: dict = json.load(sys.stdin)
+    except json.JSONDecodeError as e:
+        raise json.JSONDecodeError(f"log_hook_event: failed to parse JSON from stdin: {e}", file=sys.stderr)
+
+    timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    record = {"timestamp": timestamp}
+    record.update({k: v for k, v in data.items() if k in enabled_fields})
+
+    # Create folder if does not exist
+    os.makedirs(os.path.dirname(LOGFILE), exist_ok=True)
+
+    with open(LOGFILE, "a", encoding="utf-8") as f:
+        f.write(json.dumps(record, ensure_ascii=False) + "\n")
 
 
 def main() -> None:
