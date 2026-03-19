@@ -26,6 +26,9 @@ from urllib.error import URLError
 
 import yaml
 
+import install_claude_code_hook_event_logger
+
+
 # ── Configuration ────────────────────────────────────────────────────────────
 
 REPO_URL = "https://github.com/iddolev/apf.git"
@@ -260,10 +263,16 @@ def update_apf_version(project_dir: Path, new_version: str, *, dry_run: bool) ->
             warn(f"  ⚠️  Could not update version in {APF_INFO_FILE}: {e}")
 
 
-def install(repo_dir: Path, project_dir: Path, new_version: str, *, dry_run: bool) -> None:
-    """Walk PATH_MAP and copy every framework file into the project."""
-    print(f"\n📦 Installing APF v{new_version} into {project_dir}\n")
+def install_claude_code_hook_event_logger(project_dir: Path, *, dry_run: bool) -> None:
+    """Install the hook event logger into the project's .claude/settings.json."""
+    if dry_run:
+        print(f"  [dry-run] Would run install_claude_code_hook_event_logger.install()")
+        return
+    install_claude_code_hook_event_logger.install()
 
+
+def copy_path_map(repo_dir: Path, project_dir: Path, *, dry_run: bool) -> None:
+    """Walk PATH_MAP and copy every framework file into the project."""
     failed: list[tuple[str, str]] = []
     for src_rel, dest_rel, overwrite in PATH_MAP:
         src = repo_dir / src_rel
@@ -283,12 +292,18 @@ def install(repo_dir: Path, project_dir: Path, new_version: str, *, dry_run: boo
             warn(f"  ❌ Failed to copy {src_rel} → {dest_rel}: {e}")
             failed.append((src_rel, dest_rel))
 
-    update_apf_version(project_dir, new_version, dry_run=dry_run)
-    update_gitignore(project_dir, dry_run=dry_run)
-
     if failed:
         warn(f"\n⚠️  {len(failed)} path(s) failed to copy. "
              "The installation is incomplete — some files may be outdated or missing.")
+
+
+def install(repo_dir: Path, project_dir: Path, new_version: str, *, dry_run: bool) -> None:
+    """Install APF framework files into the project."""
+    print(f"\n📦 Installing APF v{new_version} into {project_dir}\n")
+
+    update_gitignore(project_dir, dry_run=dry_run)
+    install_claude_code_hook_event_logger(project_dir, dry_run=dry_run)
+    update_apf_version(project_dir, new_version, dry_run=dry_run)
 
 
 # ── Entry point ──────────────────────────────────────────────────────────────
