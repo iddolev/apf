@@ -6,6 +6,19 @@ running format_markdown.py on setup-github-ci.md breaks a line incorrectly
 
 ## More concepts
 
+0
+enhance the PRD process
+- if there are already existing materials, take from them
+- at the end, give it to a "prd reviewer expert" with clean slate, to surface more gaps to inquire about 
+
+0
+Ask the coding expert not to create a code file but first create a list of items,
+each item is one element (class, function, global variable), with English description,
+starting with the most important elements, i.e. just up to 3 elements, with signature
+and no implementation, then implement each separately.
+And when implementing one element, immediately check for quality.
+Maybe this will ensure better quality.
+
 1
 Repeatedly and insistently request feedback and fix (but also detect A->B->A->B->A loop of changes). Just like I did for the script, kept getting more and more things to fix.
 Until reach steady state.

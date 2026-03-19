@@ -1,0 +1,18 @@
+frameworks:
+  GSD:
+    repo: https://github.com/gsd-build/get-shit-done
+    processed_version:
+  Paul:
+    repo: https://github.com/ChristopherKahler/paul
+    processed_version:
+  ULW:
+    synonyms: OMO
+    repo: https://github.com/code-yeongyu/oh-my-openagent
+    processed_version:
+  GStack:
+    repo: https://github.com/garrytan/gstack
+    processed_version:
+
+sources:
+  - description: Comparing Paul vs. GSD (by Paul)
+    url: https://github.com/ChristopherKahler/paul/blob/main/PAUL-VS-GSD.md
