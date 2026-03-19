@@ -16,7 +16,6 @@ from pathlib import Path
 
 from common import APF_INFO_FILENAME, cyaml_load, cyaml_save
 
-KEY_log_claude_code_events = "log_claude_code_events"
 SETTINGS_PATH = ".claude/settings.json"
 HOOK_COMMAND = "python .claude/scripts/apf/log_claude_code_hook_event.py"
 
@@ -42,7 +41,8 @@ HOOK_TYPES = [
 ]
 
 """
-TODO: The schema of settings.json of Claude Code has a top-level keyword "hooks" with:
+Background info to help understand HOOK_ENTRY below:
+The schema of settings.json of Claude Code has a top-level keyword "hooks" with:
 "hooks": {
     <hook_type>: [
         {

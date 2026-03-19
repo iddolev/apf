@@ -10,8 +10,8 @@ from common import InvalidInputException
 from logger import Logger
 
 
+KEY_log_agent_invocations = "log_agent_invocations"
 LOGFILE = "logs/agents_invocations_log.jsonl"
-CONFIG_KEY = "log_agent_invocations"
 
 
 class AgentInvocationLogger(Logger):
@@ -22,7 +22,7 @@ class AgentInvocationLogger(Logger):
 
 
 AGENT_INVOCATION_LOGGER = AgentInvocationLogger(
-    config_key=CONFIG_KEY,
+    config_key=KEY_log_agent_invocations,
     logfile=LOGFILE)
 
 

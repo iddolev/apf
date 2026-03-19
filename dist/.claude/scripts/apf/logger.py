@@ -31,27 +31,30 @@ class Logger(ABC):
         config_key: str,
         logfile: str,
         field_definitions: str | None | list[tuple[str, bool, str]] = ALLOW_ALL_FIELDS,
-        config_filename: str = APF_INFO_FILENAME,
+        config_filepath: str = APF_INFO_FILENAME,
         field_indent: int = 4,
     ) -> None:
         self.config_key = config_key
         self.logfile = logfile
         # A value of ALLOW_ALL_FIELDS ("*") in field_definitions means: match all fields
         self.field_definitions = ALLOW_ALL_FIELDS if field_definitions is None else field_definitions
-        self.config_filename = config_filename
+        self.config_filepath = Path(config_filepath)
+        if not self.config_filepath.exists():
+            raise FileNotFoundError(self.config_filepath)
+
         self.field_indent = field_indent
 
-    def load_config(self) -> tuple[bool, set[str]]:
+    def load_config(self) -> tuple[bool, str | set[str]]:
         """Read the config section in the config file and return (enabled, enabled_fields)."""
-        path = Path(self.config_filename)
-        if not path.exists():
-            raise FileNotFoundError(self.config_filename)
-        data = cyaml_load(path).get(self.config_key)
+        data = cyaml_load(self.config_filepath).get(self.config_key)
         if not data:
             return False, set()
         is_enabled = data.get(Status.ENABLED.value, False)
         fields = data.get("fields", {})
-        enabled_fields = {name for name, enabled in fields.items() if enabled is True}
+        if fields == ALLOW_ALL_FIELDS:
+            enabled_fields = fields
+        else:
+            enabled_fields = {name for name, enabled in fields.items() if enabled is True}
         return is_enabled, enabled_fields
 
     def status(self) -> Status:
@@ -62,29 +65,35 @@ class Logger(ABC):
         except FileNotFoundError:
             return Status.DISABLED
 
-    def install(self, enable_after_install: bool = False, apf_yaml_path: Path | None = None) -> None:
+    def install(self, enable_after_install: bool = False) -> None:
         """Add or update the config section in the config file"""
-        path = apf_yaml_path or Path(self.config_filename)
-        config = cyaml_load(path) if path.exists() else {}
+        config = cyaml_load(self.config_filepath)
         existing: CYAML = config.get(self.config_key)
+        changed = False
 
         if existing:
+            if enable_after_install and existing.get("enabled") is False:
+                existing["enabled"] = True
+                changed = True
             fields = existing.get("fields")
             if fields == ALLOW_ALL_FIELDS:
                 # Match everything, so no need to mention specific fields
-                return
+                if not changed:
+                    return
             if not isinstance(fields, CYAML):
-                raise ValueError(f"'fields' is missing or corrupt in {self.config_filename}")
+                raise ValueError(f"'fields' is missing or corrupt in {self.config_filepath}")
             fields_keys = set(fields.keys())
             missing = [(n, d, c) for n, d, c in self.field_definitions if n not in fields_keys]
             if not missing:
-                # No missing keys, so no need to re-write
-                return
-                # But if there are missing keys, we add them here, and save below
+                # No missing keys, so no need to re-write fields
+                if not changed:
+                    return
             else:
+                # If there are missing keys, we add them here, and save below
                 for name, default, comment in missing:
                     cyaml_add_field(fields, name, default, comment)
-        else:  # section doesn't exist, need to create it
+        else:
+            # section doesn't exist, need to create it
             if self.field_definitions == ALLOW_ALL_FIELDS:
                 fields = ALLOW_ALL_FIELDS
             else:
@@ -97,19 +106,16 @@ class Logger(ABC):
                 ("fields", fields),
             ])
 
-        cyaml_save(path, config)
+        cyaml_save(self.config_filepath, config)
 
-    def set_enabled(self, value: bool, apf_yaml_path: Path | None = None) -> Status:
+    def set_enabled(self, value: bool) -> Status:
         """Set logging to enabled or disabled. Return new status."""
-        path = apf_yaml_path or Path(self.config_filename)
-        if not path.exists():
-            raise FileNotFoundError(f"{self.config_filename} not found. Run with --install first.")
-        config = cyaml_load(path)
+        config = cyaml_load(self.config_filepath)
         section = config.get(self.config_key)
         if not section:
-            raise ValueError(f"No {self.config_key} section in {self.config_filename}. Run with --install first.")
+            raise ValueError(f"No {self.config_key} section in {self.config_filepath}. Run with --install first.")
         section["enabled"] = value
-        cyaml_save(path, config)
+        cyaml_save(self.config_filepath, config)
         return Status.ENABLED if value else Status.DISABLED
 
     @abstractmethod
@@ -124,10 +130,7 @@ class Logger(ABC):
         data = self.get_input()
         timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
         record = {"timestamp": timestamp}
-        if not enabled_fields:
-            # No enabled fields means that no fields were specified (enabled or not)
-            # so all the data should be used
-            # (We assume here there is no case where there are specified fields but all disabled)
+        if enabled_fields == ALLOW_ALL_FIELDS:
             record.update(data)
         else:
             record.update({k: v for k, v in data.items() if k in enabled_fields})
