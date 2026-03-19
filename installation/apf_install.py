@@ -277,21 +277,17 @@ def copy_path_map(repo_dir: Path, project_dir: Path, *, dry_run: bool) -> None:
     for src_rel, dest_rel, overwrite in PATH_MAP:
         src = repo_dir / src_rel
         dest = project_dir / dest_rel
-
         if not src.exists():
             warn(f"  ⚠️  Source not found in repo: {src_rel} — skipping")
             continue
-
         if not overwrite and dest.exists():
             print(f"  ⏭️  Already exists, skipping: {dest_rel}")
             continue
-
         try:
             copy_entry(src, dest, dry_run=dry_run)
         except OSError as e:
             warn(f"  ❌ Failed to copy {src_rel} → {dest_rel}: {e}")
             failed.append((src_rel, dest_rel))
-
     if failed:
         warn(f"\n⚠️  {len(failed)} path(s) failed to copy. "
              "The installation is incomplete — some files may be outdated or missing.")
@@ -300,7 +296,7 @@ def copy_path_map(repo_dir: Path, project_dir: Path, *, dry_run: bool) -> None:
 def install(repo_dir: Path, project_dir: Path, new_version: str, *, dry_run: bool) -> None:
     """Install APF framework files into the project."""
     print(f"\n📦 Installing APF v{new_version} into {project_dir}\n")
-
+    copy_path_map(repo_dir, project_dir, dry_run=dry_run)
     update_gitignore(project_dir, dry_run=dry_run)
     install_claude_code_hook_event_logger(project_dir, dry_run=dry_run)
     update_apf_version(project_dir, new_version, dry_run=dry_run)
