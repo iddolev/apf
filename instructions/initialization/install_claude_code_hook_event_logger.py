@@ -1,19 +1,19 @@
 """
 Installs the hook event logger into a project's .claude/settings.json.
 
-For each known hook type, ensures an entry exists that runs log_hook_event.py.
+For each known hook type, ensures an entry exists that runs log_claude_code_hook_event.py.
 Loads the existing settings.json, merges in the hook entries (preserving any
 existing hooks), and writes it back.
 
 Usage:
-    python scripts/install_hook_event_logger.py
+    python .claude/scripts/apf/install_claude_code_hook_event_logger.py
 """
 
 import json
 import os
 
 SETTINGS_PATH = ".claude/settings.json"
-HOOK_COMMAND = "python .claude/scripts/log_hook_event.py"
+HOOK_COMMAND = "python .claude/scripts/apf/log_claude_code_hook_event.py"
 
 HOOK_TYPES = [
     "ConfigChange",
