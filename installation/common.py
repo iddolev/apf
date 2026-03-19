@@ -3,10 +3,9 @@ from pathlib import Path
 from ruamel.yaml import YAML, CommentedMap
 
 
-APF_INFO_FILENAME = ".apf.yaml"
-
 CYAML = CommentedMap
 
+APF_INFO_FILENAME = ".apf.yaml"
 
 """cyaml means yaml with comments preserved.
 This is a wrapper around ruaml YAML

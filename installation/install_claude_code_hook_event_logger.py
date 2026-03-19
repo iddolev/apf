@@ -12,8 +12,8 @@ Usage:
 import json
 import os
 
+from common import APF_INFO_FILENAME, cyaml_load, cyaml_save
 
-APF_INFO_FILE = ".apf.yaml"
 KEY_log_claude_code_events = "log_claude_code_events"
 SETTINGS_PATH = ".claude/settings.json"
 HOOK_COMMAND = "python .claude/scripts/apf/log_claude_code_hook_event.py"
@@ -71,10 +71,11 @@ def hook_already_installed(hook_list: list) -> bool:
 
 
 def install_in_apf_yaml() -> None:
-    # TODO: if no key claude_code_hook_event_logger in APF_INFO_FILE then add:
-    data = {}
+    # TODO: if no key claude_code_hook_event_logger in APF_INFO_FILENAME then add:
+    data = cyaml_load(APF_INFO_FILENAME)
     if KEY_log_claude_code_events not in data.keys():
         data[KEY_log_claude_code_events] = {'enabled': False}
+        cyaml_save(APF_INFO_FILENAME, data)
 
 
 

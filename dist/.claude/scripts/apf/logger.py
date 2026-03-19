@@ -9,11 +9,12 @@ then call methods or wire up main() to sys.argv.
 import json
 import os
 import sys
+from abc import abstractmethod, ABC
 from datetime import datetime, timezone
 from enum import Enum
 from pathlib import Path
 
-from common import CYAML, cyaml_load, cyaml_save, cyaml_add_field
+from common import CYAML, cyaml_load, cyaml_save, cyaml_add_field, APF_INFO_FILENAME
 
 
 class Status(Enum):
@@ -21,7 +22,7 @@ class Status(Enum):
     DISABLED = "disabled"
 
 
-class Logger:
+class Logger(ABC):
     """JSONL event logger whose fields and enabled state are managed via a config yaml"""
 
     def __init__(
@@ -29,7 +30,7 @@ class Logger:
         config_key: str,
         logfile: str,
         field_definitions: list[tuple[str, bool, str]] | None = None,
-        config_filename: str = ".apf.yaml",
+        config_filename: str = APF_INFO_FILENAME,
         field_indent: int = 4,
     ) -> None:
         self.config_key = config_key
@@ -99,6 +100,7 @@ class Logger:
         cyaml_save(path, config)
         return Status.ENABLED if value else Status.DISABLED
 
+    @abstractmethod
     def get_input(self) -> dict:
         raise NotImplementedError()
 

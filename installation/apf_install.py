@@ -26,14 +26,14 @@ from urllib.error import URLError
 
 import yaml
 
+from common import APF_INFO_FILE
+
 
 # ── Configuration ────────────────────────────────────────────────────────────
 
 REPO_URL = "https://github.com/iddolev/apf.git"
 REPO_SLUG = "iddolev/apf"  # for raw.githubusercontent.com
 # TODO: support cloning a specific tag/branch, not only HEAD
-
-APF_INFO_FILE = ".apf.yaml"
 
 # List of:
 # (source path in cloned repo, destination relative to project root, overwrite).
@@ -50,12 +50,14 @@ PATH_MAP: list[tuple[str, str, bool]] = [
     (".claude/commands/apf",  ".claude/commands/apf", True),
     (".claude/scripts/apf",   ".claude/scripts/apf",  True),
     ("installation/install_claude_code_hook_event_logger.py",
-     ".apf_install/install_claude_code_hook_event_logger.py", True)
+     ".apf_install/install_claude_code_hook_event_logger.py", True),
+    ("dist/.claude/scripts/common.py", ".apf_install/common.py", True),
+
 ]
 
 # The following are supposed to be copied as-is to the user's project
 # and therefore should not also be pushed to the user's project repo.
-# Hence, we deliberately don't including .apf.yaml in .gitignore
+# Hence, we deliberately don't include .apf.yaml in .gitignore
 # because .apf.yaml is supposed to be tracked in the git of the user project.
 GITIGNORE_ENTRIES = [
     "apf_install.bat",

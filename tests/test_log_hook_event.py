@@ -8,8 +8,10 @@ import pytest
 from ruamel.yaml import YAML, CommentedMap
 
 # Make dist/.claude/scripts/apf/ importable
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "dist" / ".claude" / "scripts" / "apf"))
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(PROJECT_ROOT / "dist" / ".claude" / "scripts" / "apf"))
 
+from common import APF_INFO_FILENAME
 from log_claude_code_hook_event import ClaudeCodeHookLogger, FIELD_DEFINITIONS, CONFIG_KEY, LOGFILE
 
 _logger = ClaudeCodeHookLogger(config_key=CONFIG_KEY, logfile=LOGFILE, field_definitions=FIELD_DEFINITIONS)
@@ -59,7 +61,7 @@ class TestInstall:
     def test_adds_section_with_comments(self, tmp_path):
         """install() on a file with no log_claude_code_events section
         should add the full section with a comment above each field."""
-        apf_yaml = tmp_path / ".apf.yaml"
+        apf_yaml = tmp_path / APF_INFO_FILENAME
         apf_yaml.write_text("version: 0.1.0\n", encoding="utf-8")
 
         _logger.install(apf_yaml_path=apf_yaml)
@@ -88,7 +90,7 @@ class TestInstall:
 
     def test_enable_after_install(self, tmp_path):
         """install(enable_after_install=True) should set enabled to True."""
-        apf_yaml = tmp_path / ".apf.yaml"
+        apf_yaml = tmp_path / APF_INFO_FILENAME
         apf_yaml.write_text("version: 0.1.0\n", encoding="utf-8")
 
         _logger.install(enable_after_install=True, apf_yaml_path=apf_yaml)
@@ -98,7 +100,7 @@ class TestInstall:
 
     def test_creates_file_when_missing(self, tmp_path):
         """install() should work even if .apf.yaml does not exist yet."""
-        apf_yaml = tmp_path / ".apf.yaml"
+        apf_yaml = tmp_path / APF_INFO_FILENAME
         assert not apf_yaml.exists()
 
         _logger.install(apf_yaml_path=apf_yaml)
@@ -110,7 +112,7 @@ class TestInstall:
 
     def test_idempotent_when_all_fields_present(self, tmp_path):
         """install() on a complete config should not modify the file."""
-        apf_yaml = tmp_path / ".apf.yaml"
+        apf_yaml = tmp_path / APF_INFO_FILENAME
         all_fields = {name: default for name, default, _ in FIELD_DEFINITIONS}
         _write_apf_yaml(apf_yaml, enabled=True, fields=all_fields)
         content_before = apf_yaml.read_text(encoding="utf-8")
@@ -121,7 +123,7 @@ class TestInstall:
 
     def test_adds_missing_fields_to_existing_section(self, tmp_path):
         """install() should add only missing fields to an existing section."""
-        apf_yaml = tmp_path / ".apf.yaml"
+        apf_yaml = tmp_path / APF_INFO_FILENAME
         # Write config with only the first two fields
         partial_fields = {FIELD_DEFINITIONS[0][0]: True, FIELD_DEFINITIONS[1][0]: False}
         _write_apf_yaml(apf_yaml, enabled=True, fields=partial_fields)
@@ -143,7 +145,7 @@ class TestInstall:
 
 class TestLoadConfig:
     def test_enabled_with_fields(self, tmp_path, monkeypatch):
-        apf_yaml = tmp_path / ".apf.yaml"
+        apf_yaml = tmp_path / APF_INFO_FILENAME
         _write_apf_yaml(apf_yaml, enabled=True, fields={"session_id": True, "cwd": False})
         monkeypatch.chdir(tmp_path)
 
@@ -153,7 +155,7 @@ class TestLoadConfig:
         assert enabled_fields == {"session_id"}
 
     def test_disabled(self, tmp_path, monkeypatch):
-        apf_yaml = tmp_path / ".apf.yaml"
+        apf_yaml = tmp_path / APF_INFO_FILENAME
         _write_apf_yaml(apf_yaml, enabled=False, fields={"session_id": True})
         monkeypatch.chdir(tmp_path)
 
@@ -170,7 +172,7 @@ class TestLoadConfig:
 
     def test_missing_section_returns_disabled(self, tmp_path, monkeypatch):
         """If .apf.yaml exists but has no log_claude_code_events section."""
-        apf_yaml = tmp_path / ".apf.yaml"
+        apf_yaml = tmp_path / APF_INFO_FILENAME
         apf_yaml.write_text("version: 0.1.0\n", encoding="utf-8")
         monkeypatch.chdir(tmp_path)
 
@@ -180,7 +182,7 @@ class TestLoadConfig:
         assert enabled_fields == set()
 
     def test_all_fields_enabled(self, tmp_path, monkeypatch):
-        apf_yaml = tmp_path / ".apf.yaml"
+        apf_yaml = tmp_path / APF_INFO_FILENAME
         all_fields = {name: True for name, _, _ in FIELD_DEFINITIONS}
         _write_apf_yaml(apf_yaml, enabled=True, fields=all_fields)
         monkeypatch.chdir(tmp_path)
@@ -196,7 +198,7 @@ class TestLoadConfig:
 
 class TestLogEvent:
     def test_writes_enabled_fields_only(self, tmp_path, monkeypatch):
-        apf_yaml = tmp_path / ".apf.yaml"
+        apf_yaml = tmp_path / APF_INFO_FILENAME
         _write_apf_yaml(
             apf_yaml,
             enabled=True,
@@ -225,7 +227,7 @@ class TestLogEvent:
         assert "extra_field" not in record
 
     def test_skips_when_disabled(self, tmp_path, monkeypatch):
-        apf_yaml = tmp_path / ".apf.yaml"
+        apf_yaml = tmp_path / APF_INFO_FILENAME
         _write_apf_yaml(apf_yaml, enabled=False, fields={"session_id": True})
         monkeypatch.chdir(tmp_path)
         monkeypatch.setattr("sys.argv", [""])
@@ -236,7 +238,7 @@ class TestLogEvent:
         assert not logfile.exists()
 
     def test_appends_to_existing_log(self, tmp_path, monkeypatch):
-        apf_yaml = tmp_path / ".apf.yaml"
+        apf_yaml = tmp_path / APF_INFO_FILENAME
         _write_apf_yaml(apf_yaml, enabled=True, fields={"session_id": True})
         monkeypatch.chdir(tmp_path)
 
@@ -253,7 +255,7 @@ class TestLogEvent:
         assert json.loads(lines[1])["session_id"] == "sess-2"
 
     def test_timestamp_format(self, tmp_path, monkeypatch):
-        apf_yaml = tmp_path / ".apf.yaml"
+        apf_yaml = tmp_path / APF_INFO_FILENAME
         _write_apf_yaml(apf_yaml, enabled=True, fields={"session_id": True})
         monkeypatch.chdir(tmp_path)
         monkeypatch.setattr("sys.argv", [""])
@@ -273,14 +275,14 @@ class TestLogEvent:
 
 class TestStatus:
     def test_returns_enabled(self, tmp_path, monkeypatch):
-        apf_yaml = tmp_path / ".apf.yaml"
+        apf_yaml = tmp_path / APF_INFO_FILENAME
         _write_apf_yaml(apf_yaml, enabled=True, fields={"session_id": True})
         monkeypatch.chdir(tmp_path)
 
         assert _logger.status().value == "enabled"
 
     def test_returns_disabled(self, tmp_path, monkeypatch):
-        apf_yaml = tmp_path / ".apf.yaml"
+        apf_yaml = tmp_path / APF_INFO_FILENAME
         _write_apf_yaml(apf_yaml, enabled=False, fields={"session_id": True})
         monkeypatch.chdir(tmp_path)
 
@@ -297,7 +299,7 @@ class TestStatus:
 
 class TestSetEnabled:
     def test_enables_when_disabled(self, tmp_path):
-        apf_yaml = tmp_path / ".apf.yaml"
+        apf_yaml = tmp_path / APF_INFO_FILENAME
         _write_apf_yaml(apf_yaml, enabled=False, fields={"session_id": True})
 
         result = _logger.set_enabled(True, apf_yaml_path=apf_yaml).value
@@ -307,7 +309,7 @@ class TestSetEnabled:
         assert config[CONFIG_KEY]["enabled"] is True
 
     def test_disables_when_enabled(self, tmp_path):
-        apf_yaml = tmp_path / ".apf.yaml"
+        apf_yaml = tmp_path / APF_INFO_FILENAME
         _write_apf_yaml(apf_yaml, enabled=True, fields={"session_id": True})
 
         result = _logger.set_enabled(False, apf_yaml_path=apf_yaml).value
@@ -317,20 +319,20 @@ class TestSetEnabled:
         assert config[CONFIG_KEY]["enabled"] is False
 
     def test_raises_when_file_missing(self, tmp_path):
-        apf_yaml = tmp_path / ".apf.yaml"
+        apf_yaml = tmp_path / APF_INFO_FILENAME
 
         with pytest.raises(FileNotFoundError):
             _logger.set_enabled(True, apf_yaml_path=apf_yaml)
 
     def test_raises_when_section_missing(self, tmp_path):
-        apf_yaml = tmp_path / ".apf.yaml"
+        apf_yaml = tmp_path / APF_INFO_FILENAME
         apf_yaml.write_text("version: 0.1.0\n", encoding="utf-8")
 
         with pytest.raises(ValueError):
             _logger.set_enabled(True, apf_yaml_path=apf_yaml)
 
     def test_on_is_idempotent(self, tmp_path):
-        apf_yaml = tmp_path / ".apf.yaml"
+        apf_yaml = tmp_path / APF_INFO_FILENAME
         _write_apf_yaml(apf_yaml, enabled=True, fields={"session_id": True})
 
         result = _logger.set_enabled(True, apf_yaml_path=apf_yaml).value
@@ -340,7 +342,7 @@ class TestSetEnabled:
         assert config[CONFIG_KEY]["enabled"] is True
 
     def test_off_is_idempotent(self, tmp_path):
-        apf_yaml = tmp_path / ".apf.yaml"
+        apf_yaml = tmp_path / APF_INFO_FILENAME
         _write_apf_yaml(apf_yaml, enabled=False, fields={"session_id": True})
 
         result = _logger.set_enabled(False, apf_yaml_path=apf_yaml).value
