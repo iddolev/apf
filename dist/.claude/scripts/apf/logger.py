@@ -14,7 +14,8 @@ from datetime import datetime, timezone
 from enum import Enum
 from pathlib import Path
 
-from common import CYAML, cyaml_load, cyaml_save, cyaml_add_field, APF_INFO_FILENAME, InvalidInputException
+from common import CYAML, cyaml_load, cyaml_save, cyaml_add_field, APF_INFO_FILENAME, \
+    InvalidInputException, ALLOW_ALL_FIELDS
 
 
 class Status(Enum):
@@ -29,14 +30,14 @@ class Logger(ABC):
         self, *,
         config_key: str,
         logfile: str,
-        field_definitions: str | None | list[tuple[str, bool, str]] = "*",
+        field_definitions: str | None | list[tuple[str, bool, str]] = ALLOW_ALL_FIELDS,
         config_filename: str = APF_INFO_FILENAME,
         field_indent: int = 4,
     ) -> None:
         self.config_key = config_key
         self.logfile = logfile
-        # A value of "*" in field_definitions means: match all fields
-        self.field_definitions = "*" if field_definitions is None else field_definitions
+        # A value of ALLOW_ALL_FIELDS ("*") in field_definitions means: match all fields
+        self.field_definitions = ALLOW_ALL_FIELDS if field_definitions is None else field_definitions
         self.config_filename = config_filename
         self.field_indent = field_indent
 
@@ -67,20 +68,9 @@ class Logger(ABC):
         config = cyaml_load(path) if path.exists() else {}
         existing: CYAML = config.get(self.config_key)
 
-        if not existing:
-            if self.field_definitions == "*":
-                fields = "*"
-            else:
-                fields = CYAML()
-                for name, default, comment in self.field_definitions:
-                    cyaml_add_field(fields, name, default, comment)
-            config[self.config_key] = CYAML([
-                ("enabled", enable_after_install),
-                ("fields", fields),
-            ])
-        else:
+        if existing:
             fields = existing.get("fields")
-            if fields == "*":
+            if fields == ALLOW_ALL_FIELDS:
                 # Match everything, so no need to mention specific fields
                 return
             if not isinstance(fields, CYAML):
@@ -88,10 +78,24 @@ class Logger(ABC):
             fields_keys = set(fields.keys())
             missing = [(n, d, c) for n, d, c in self.field_definitions if n not in fields_keys]
             if not missing:
+                # No missing keys, so no need to re-write
                 return
-            # If any fields are missing, add them
-            for name, default, comment in missing:
-                cyaml_add_field(fields, name, default, comment)
+                # But if there are missing keys, we add them here, and save below
+            else:
+                for name, default, comment in missing:
+                    cyaml_add_field(fields, name, default, comment)
+        else:  # section doesn't exist, need to create it
+            if self.field_definitions == ALLOW_ALL_FIELDS:
+                fields = ALLOW_ALL_FIELDS
+            else:
+                # Add all fields
+                fields = CYAML()
+                for name, default, comment in self.field_definitions:
+                    cyaml_add_field(fields, name, default, comment)
+            config[self.config_key] = CYAML([
+                ("enabled", enable_after_install),
+                ("fields", fields),
+            ])
 
         cyaml_save(path, config)
 

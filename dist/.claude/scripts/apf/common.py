@@ -2,8 +2,10 @@ from pathlib import Path
 
 from ruamel.yaml import YAML, CommentedMap
 
+
 CYAML = CommentedMap
 
+ALLOW_ALL_FIELDS = "*"
 
 APF_INFO_FILENAME = ".apf.yaml"
 
