@@ -20,7 +20,7 @@ SENTINEL_FILEPATH = f"{APF_FOLDER}/.{KEY_log_claude_code_hook_event}"
 # The code in HOOK_COMMAND activates a .bat script instead of python log_claude_code_hook_event.py
 # to prevent expensive invocation of python when SENTINEL_FILENAME has "off" or is missing.
 # Only when logging is enabled, the python script is invoked.
-HOOK_COMMAND = f".claude/scripts/apf/log_claude_code_hook_event.bat"
+HOOK_COMMAND = fr".claude\scripts\apf\{KEY_log_claude_code_hook_event}.bat"
 
 HOOK_TYPES = [
     "ConfigChange",
