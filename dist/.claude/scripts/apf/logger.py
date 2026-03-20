@@ -88,22 +88,34 @@ class Logger(ABC):
             cyaml_add_field(existing, name, default, comment, indent=self.field_indent)
         return True
 
-    def set_enabled(self, value: bool) -> None:
+    def is_installed(self) -> bool:
+        """Return True iff the logger has been installed (config section exists and sentinel file exists)."""
+        if self.sentinel_filepath and not self.sentinel_filepath.exists():
+            return False
+        return self.config_key in cyaml_load(self.config_filepath)
+
+    def set_enabled(self, value: bool, *, _during_install: bool = False) -> None:
         """TODO: Add docstring"""
         if not self.is_installed():
-            name = self.config_key.replace('_', '-')
-            warn(f"You must install {name} before you can turn it on or off.\n"
-                 f"Run: /{name} install")
-            exit(1)
+            if _during_install:
+                # This is ok - during install, we want to create the sentinel and set it to "off"
+                assert not value
+                pass
+            else:
+                # Not during install, can't set value if not yet installed
+                name = self.config_key.replace('_', '-')
+                warn(f"You must install {name} before you can turn it on or off.\n"
+                     f"Run: /{name} install")
+                exit(1)
         if self.sentinel_filepath:
             os.makedirs(self.sentinel_filepath.parent, exist_ok=True)
             self.sentinel_filepath.write_text("on" if value else "off", encoding="utf-8")
 
     def install(self) -> None:
         """Add or update the sentinel and the config section in the config file"""
-        # This forces the sentinel file to exist if it's defined
+        # Ensure the sentinel file exists (defaulting to "off") if it's defined but missing
         if self.status() is Status.DISABLED:
-            self.set_enabled(False)
+            self.set_enabled(False, _during_install=True)
 
         config = cyaml_load(self.config_filepath)
         existing: CYAML = config.get(self.config_key)
