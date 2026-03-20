@@ -89,10 +89,11 @@ class Logger(ABC):
             os.makedirs(self.sentinel_filepath.parent, exist_ok=True)
             self.sentinel_filepath.write_text("on" if value else "off", encoding="utf-8")
 
-    def install(self, enable_after_install: bool = False) -> None:
+    def install(self) -> None:
         """Add or update the sentinel and the config section in the config file"""
-        if enable_after_install and self.status() is Status.DISABLED:
-            self.set_enabled(True)
+        # This forces the sentinel file to exist if it's defined
+        if self.status() is Status.DISABLED:
+            self.set_enabled(False)
 
         config = cyaml_load(self.config_filepath)
         existing: CYAML = config.get(self.config_key)
