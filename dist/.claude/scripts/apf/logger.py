@@ -54,26 +54,31 @@ class Logger(ABC):
             raise FileNotFoundError(self.config_filepath)
         self.sentinel_filepath = Path(sentinel_filepath) if sentinel_filepath else None
 
-    def load_config(self) -> str | set[str]:
-        """Read the config section in the config file and return (enabled, enabled_fields)."""
+    def load_config(self) -> str | tuple[bool, dict[str, bool]]:
+        """Read the config section and return the field selection config.
+
+        Returns:
+            ALLOW_ALL_FIELDS if do_all is true.
+            (default, fields) otherwise, where:
+                default=False: include only fields with value=true in fields
+                default=True:  include all fields except those with value=false in fields
+        """
         data = yaml_load(self.config_filepath).get(self.config_key)
         if not data:
             print(f"Warning: {self.config_key} section missing "
                   f"from config file {self.config_filepath}, "
                   f"so no logging will occur", file=sys.stderr)
-            return set()
+            return False, {}
         if data.get("do_all"):
             return ALLOW_ALL_FIELDS
+        default = bool(data.get("default"))
         fields = data.get("fields")
         if fields is None:
             print(f"Warning: 'fields' missing from {self.config_key} section "
                   f"in config file {self.config_filepath}, "
                   f"so no logging will occur", file=sys.stderr)
-            return set()
-        if fields == ALLOW_ALL_FIELDS:
-            return fields
-        enabled_fields = {f["name"] for f in fields if f.get("value") is True}
-        return enabled_fields
+            return False, {}
+        return default, fields
 
     def status(self) -> Status:
         """Return ENABLED, DISABLED, or NOT_INSTALLED."""
@@ -154,19 +159,26 @@ class Logger(ABC):
         """If logging is enabled, read JSON input and append to the log file."""
         if self.status() != Status.ENABLED:
             return
-        enabled_fields = self.load_config()
-        if not enabled_fields:
-            warn(f"Warning: all fields are disabled in section {self.config_key} "
-                 f"in config file {self.config_filepath}, so logging is effectively disabled")
-            return
+        config = self.load_config()
         data = self.get_input()
         timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
         record = {"_timestamp_": timestamp}
         # We assume that data doesn't have a field "_timestamp_"
-        if enabled_fields == ALLOW_ALL_FIELDS:
+        if config == ALLOW_ALL_FIELDS:
             record.update(data)
         else:
-            record.update({k: v for k, v in data.items() if k in enabled_fields})
+            assert isinstance(config, tuple) and len(config) == 2
+            default, fields = config
+            if not default and not fields:
+                warn(f"Warning: all fields are disabled in section {self.config_key} "
+                     f"in config file {self.config_filepath}, so logging is effectively disabled")
+                return
+            if default:
+                # All keys missing from the config file should be included
+                record.update({k: v for k, v in data.items() if fields.get(k, True)})
+            else:
+                # All keys missing from the config file should be excluded
+                record.update({k: v for k, v in data.items() if fields.get(k, False)})
         if dirname := os.path.dirname(self.logfile):
             os.makedirs(dirname, exist_ok=True)
         with open(self.logfile, "a", encoding="utf-8") as f:
