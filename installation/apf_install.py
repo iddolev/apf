@@ -27,6 +27,8 @@ from urllib.error import URLError
 import yaml
 
 
+# Although the following 3 variables appear in dist/.claude/scripts/apf/common.py
+# this file cannot be accessed here, as it can be copied only during copy_path_map()
 APF_FOLDER = ".apf"
 APF_INFO_FILENAME = ".apf.yaml"
 APF_INFO_FILEPATH = f"{APF_FOLDER}/{APF_INFO_FILENAME}"
@@ -49,10 +51,6 @@ PATH_MAP: list[tuple[str, str, bool]] = [
     ("dist/.claude/shared",   ".claude/shared",          True),
     (".claude/commands/apf",  ".claude/commands/apf",    True),
     (".claude/scripts/apf",   ".claude/scripts/apf",     True),
-    ("installation/install_claude_code_hook_event_logger.py",
-     ".apf/install_claude_code_hook_event_logger.py",    True),
-    ("dist/.claude/scripts/common.py", ".apf/common.py", True),
-
 ]
 
 # The following are supposed to be copied as-is to the user's project
