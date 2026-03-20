@@ -58,6 +58,7 @@ PATH_MAP: list[tuple[str, str, bool]] = [
 # Hence, we deliberately don't include .apf.yaml in .gitignore
 # because .apf.yaml is supposed to be tracked in the git of the user project.
 GITIGNORE_ENTRIES = [
+    "apf_install.bat",
     ".apf/",
     ".claude/commands/apf/",
     ".claude/scripts/apf/",
