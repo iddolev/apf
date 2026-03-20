@@ -75,18 +75,18 @@ class Logger(ABC):
         """
         data = yaml_load(self.config_filepath).get(self.config_key)
         if not data:
-            print(f"Warning: {self.config_key} section missing "
-                  f"from config file {self.config_filepath}, "
-                  f"so no logging will occur", file=sys.stderr)
+            warn(f"Warning: {self.config_key} section missing "
+                 f"from config file {self.config_filepath}, "
+                 f"so no logging will occur")
             return False, {}
         if data.get("do_all"):
             return ALLOW_ALL_FIELDS
         default = bool(data.get("default"))
         fields = data.get("fields")
         if fields is None:
-            print(f"Warning: 'fields' missing from {self.config_key} section "
-                  f"in config file {self.config_filepath}, "
-                  f"so no logging will occur", file=sys.stderr)
+            warn(f"Warning: 'fields' missing from {self.config_key} section "
+                 f"in config file {self.config_filepath}, "
+                 f"so no logging will occur")
             return False, {}
         if fields == ALLOW_ALL_FIELDS:
             return ALLOW_ALL_FIELDS
@@ -247,6 +247,5 @@ class Logger(ABC):
             try:
                 self.log_event()
             except InvalidInputException as e:
-                print(f"{str(e)}\nUsage: {Path(sys.argv[0]).name} [--status | --on | --off | --install]",
-                      file=sys.stderr)
+                warn(f"{str(e)}\nUsage: {Path(sys.argv[0]).name} [--status | --on | --off | --install]")
                 sys.exit(1)
