@@ -148,8 +148,11 @@ def fetch_remote_version() -> str:
     raise ValueError(f"Remote {APF_INFO_FILEPATH} is missing a 'version' field")
 
 
-def copy_file(src: Path, dest: Path, *, dry_run: bool) -> None:
-    """Copy a single file from *src* to *dest*, always overwriting."""
+def copy_file(src: Path, dest: Path, *, overwrite: bool, dry_run: bool) -> None:
+    """Copy a single file from *src* to *dest*. Skips if dest exists and overwrite is False."""
+    if not overwrite and dest.exists():
+        print(f"  ⏭️  Already exists, skipping: {dest}")
+        return
     if dry_run:
         print(f"  [dry-run] Would copy {src.name} → {dest}")
         return
@@ -158,16 +161,16 @@ def copy_file(src: Path, dest: Path, *, dry_run: bool) -> None:
     print(f"  📄 Copied → {dest}")
 
 
-def copy_entry(src: Path, dest: Path, *, dry_run: bool) -> None:
+def copy_entry(src: Path, dest: Path, *, overwrite: bool, dry_run: bool) -> None:
     """Process a path from PATH_MAP. For directories, rglob finds all files
     at every depth; parent dirs are created on demand by copy_file."""
     if src.is_dir():
         for descendant in sorted(src.rglob("*")):
             if descendant.is_file():
                 rel = descendant.relative_to(src)
-                copy_file(descendant, dest / rel, dry_run=dry_run)
+                copy_file(descendant, dest / rel, overwrite=overwrite, dry_run=dry_run)
     else:
-        copy_file(src, dest, dry_run=dry_run)
+        copy_file(src, dest, overwrite=overwrite, dry_run=dry_run)
 
 
 def _is_apf_repo(project_dir: Path) -> bool:
@@ -274,11 +277,8 @@ def copy_path_map(repo_dir: Path, project_dir: Path, *, dry_run: bool) -> None:
         if not src.exists():
             warn(f"  ⚠️  Source not found in repo: {src_rel} — skipping")
             continue
-        if not overwrite and dest.exists():
-            print(f"  ⏭️  Already exists, skipping: {dest_rel}")
-            continue
         try:
-            copy_entry(src, dest, dry_run=dry_run)
+            copy_entry(src, dest, overwrite=overwrite, dry_run=dry_run)
         except OSError as e:
             warn(f"  ❌ Failed to copy {src_rel} → {dest_rel}: {e}")
             failed.append((src_rel, dest_rel))
