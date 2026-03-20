@@ -78,7 +78,8 @@ class Logger(ABC):
                   f"in config file {self.config_filepath}, "
                   f"so no logging will occur", file=sys.stderr)
             return False, {}
-        return default, fields
+        fields_as_dict = {item['name']: item['value'] for item in fields}
+        return default, fields_as_dict
 
     def status(self) -> Status:
         """Return ENABLED, DISABLED, or NOT_INSTALLED."""
