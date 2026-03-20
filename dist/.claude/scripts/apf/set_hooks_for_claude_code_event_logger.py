@@ -11,16 +11,15 @@ Usage:
 
 import json
 import os
-import sys
-from pathlib import Path
 
-from common import APF_FOLDER, APF_INFO_FILENAME, cyaml_load, cyaml_save
+from common import APF_FOLDER
 
 SETTINGS_PATH = ".claude/settings.json"
 SENTINEL_FILE = f"{APF_FOLDER}/.log_claude_code_hook_event"
-# The code in HOOK_COMMAND reaches activation of python only if SENTINEL_FILE exists and with value "on"
-# This is to prevent expensive invocation of python when SENTINEL_FILE has "off" or is missing
-HOOK_COMMAND = f"grep -qx on {SENTINEL_FILE} 2>/dev/null && python .claude/scripts/apf/log_claude_code_hook_event.py"
+# The code in HOOK_COMMAND reaches activation of python only if SENTINEL_FILE exists
+# and its content is "on".
+# This is intended to prevent expensive invocation of python when SENTINEL_FILE has "off" or is missing
+HOOK_COMMAND = f"findstr /x \"on\" {SENTINEL_FILE} >nul 2>&1 && python .claude/scripts/apf/log_claude_code_hook_event.py"
 
 HOOK_TYPES = [
     "ConfigChange",
@@ -114,11 +113,3 @@ def install_hooks_in_settings() -> None:
         print(f"Installed hook event logger for {len(added)} hook type(s): {', '.join(added)}")
     else:
         print("Hook event logger already installed for all hook types.")
-
-
-def install() -> None:
-    install_hooks_in_settings()
-
-
-if __name__ == "__main__":
-    install()
