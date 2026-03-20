@@ -47,18 +47,15 @@ class Logger(ABC):
         self.field_indent = field_indent
         self.sentinel_filepath = Path(sentinel_filepath) if sentinel_filepath else None
 
-    def load_config(self) -> tuple[bool, str | set[str]]:
+    def load_config(self) -> str | set[str]:
         """Read the config section in the config file and return (enabled, enabled_fields)."""
         data = cyaml_load(self.config_filepath).get(self.config_key)
         if not data:
-            return False, set()
-        is_enabled = data.get(Status.ENABLED.value, False)
-        fields = data.get("fields", {})
-        if fields == ALLOW_ALL_FIELDS:
-            enabled_fields = fields
-        else:
-            enabled_fields = {name for name, enabled in fields.items() if enabled is True}
-        return is_enabled, enabled_fields
+            return set()
+        if data == ALLOW_ALL_FIELDS:
+            return data
+        enabled_fields = {name for name, enabled in data.items() if enabled is True}
+        return enabled_fields
 
     def status(self) -> Status:
         """Return Status based on the sentinel file"""
@@ -121,10 +118,10 @@ class Logger(ABC):
         pass
 
     def log_event(self) -> None:
-        """If logging is enabled in the config file, read JSON input and append to the log file."""
-        is_enabled, enabled_fields = self.load_config()
-        if not is_enabled:
+        """If logging is enabled, read JSON input and append to the log file."""
+        if self.status() == Status.DISABLED:
             return
+        enabled_fields = self.load_config()
         data = self.get_input()
         timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
         record = {"_timestamp_": timestamp}
