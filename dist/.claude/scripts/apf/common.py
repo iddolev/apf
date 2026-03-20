@@ -1,3 +1,4 @@
+import sys
 from pathlib import Path
 
 from ruamel.yaml import YAML, CommentedMap
@@ -14,6 +15,11 @@ APF_INFO_FILEPATH = f"{APF_FOLDER}/{APF_INFO_FILENAME}"
 
 class InvalidInputException(Exception):
     pass
+
+
+def warn(*args, **kwargs) -> None:
+    """Print to stderr."""
+    print(*args, file=sys.stderr, **kwargs)
 
 
 """cyaml below means: yaml with comments preserved.
