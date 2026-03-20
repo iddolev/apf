@@ -13,6 +13,8 @@ import json
 import os
 
 from common import APF_FOLDER
+from log_claude_code_hook_event import KEY_log_claude_code_hook_events
+
 
 SETTINGS_PATH = ".claude/settings.json"
 SENTINEL_FILE = f"{APF_FOLDER}/.log_claude_code_hook_event"
@@ -89,27 +91,71 @@ def save_settings(settings: dict) -> None:
         f.write("\n")
 
 
-def hook_already_installed(hook_list: list) -> bool:
-    """Check if any entry in the hook list already runs our command."""
-    return any(hook.get("command") == HOOK_COMMAND
-               for entry in hook_list
-               for hook in entry.get("hooks", []))
+LEGACY_SENTINEL = KEY_log_claude_code_hook_events
+
+
+def divide_entries_of_hook(entries: list) -> tuple[list, list, list]:
+    # Each entry in `entries` has the format:
+    # {
+    #     "match": <expr>    -- optional
+    #     "hooks": [
+    #         {
+    #             "type": "command"
+    #             "command": <command>
+    #         }
+    #     ]
+    # }
+    exact = []
+    related = []
+    unrelated = []
+    for entry in entries:
+        hooks_of_entry = entry.get("hooks", [])
+        if any(h.get("command") == HOOK_COMMAND for h in hooks_of_entry):
+            exact.append(entry)
+        elif any(LEGACY_SENTINEL in h.get("command", "") for h in hooks_of_entry):
+            # This is a previous version of the command - it should be removed
+            related.append(entry)
+        else:
+            unrelated.append(entry)
+    return exact, related, unrelated
 
 
 def install_hooks_in_settings() -> None:
     settings = load_settings()
     hooks = settings.setdefault("hooks", {})
+    existing = []
     added = []
+    removed = []
+    total_removed_commands = 0
 
     for hook_type in HOOK_TYPES:
-        existing = hooks.get(hook_type, [])
-        if not hook_already_installed(existing):
-            existing.append(HOOK_ENTRY)
-            hooks[hook_type] = existing
+        entries = hooks.get(hook_type, [])
+        exact, related, unrelated = divide_entries_of_hook(entries)
+        cleaned = unrelated + exact
+        if exact:
+            existing.append(hook_type)
+        else:
+            cleaned.append(HOOK_ENTRY)
             added.append(hook_type)
+        if related:
+            # This is a previous version of the command - it should be removed
+            total_removed_commands += len(related)
+            removed.append(hook_type)
+        hooks[hook_type] = cleaned
 
-    if added:
+    if added or removed:
+        # At least one entry was added or removed, so need to save the modifications
         save_settings(settings)
-        print(f"Installed hook event logger for {len(added)} hook type(s): {', '.join(added)}")
+
+    if removed:
+        print(f"Removed {total_removed_commands} legacy command(s) "
+              f"in {len(removed)} hook type(s): {', '.join(removed)}.")
+    if existing:
+        if len(existing) == len(HOOK_TYPES):
+            print("Hook event logger already installed for all hook types.")
+        else:
+            print(f"The command was already installed for {len(existing)} hook type(s): {', '.join(existing)}.")
+    if added:
+        print(f"Installed hook event logger for {len(added)} hook type(s): {', '.join(added)}.")
     else:
-        print("Hook event logger already installed for all hook types.")
+        print("No command was added for any hook type.")
