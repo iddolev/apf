@@ -62,6 +62,8 @@ class Logger(ABC):
                   f"from config file {self.config_filepath}, "
                   f"so no logging will occur", file=sys.stderr)
             return set()
+        if data.get("do_all"):
+            return ALLOW_ALL_FIELDS
         fields = data.get("fields")
         if fields is None:
             print(f"Warning: 'fields' missing from {self.config_key} section "
