@@ -12,15 +12,15 @@ Usage:
 import json
 import os
 
-from common import KEY_log_claude_code_hook_events
+from common import KEY_log_claude_code_hook_event, APF_FOLDER
 
 
 SETTINGS_PATH = ".claude/settings.json"
-SENTINEL_FILENAME = KEY_log_claude_code_hook_events
+SENTINEL_FILEPATH = f"{APF_FOLDER}/{KEY_log_claude_code_hook_event}.py"
 # The code in HOOK_COMMAND reaches activation of python only if SENTINEL_FILENAME exists and its content is "on".
 # This is intended to prevent expensive invocation of python when SENTINEL_FILENAME has "off" or is missing.
 # The part "|| exist 0" means that if logging is not enabled, exit with code 0 and not error.
-HOOK_COMMAND = f"findstr /x \"on\" {SENTINEL_FILENAME} >nul 2>&1 || exit 0 && python .claude/scripts/apf/log_claude_code_hook_event.py"
+HOOK_COMMAND = f"findstr /x \"on\" {SENTINEL_FILEPATH} >nul 2>&1 || exit 0 && python .claude/scripts/apf/log_claude_code_hook_event.py"
 
 HOOK_TYPES = [
     "ConfigChange",
@@ -90,7 +90,7 @@ def save_settings(settings: dict) -> None:
         f.write("\n")
 
 
-LEGACY_SENTINEL = KEY_log_claude_code_hook_events
+LEGACY_SENTINEL = KEY_log_claude_code_hook_event
 
 
 def divide_entries_of_hook(entries: list) -> tuple[list, list, list]:

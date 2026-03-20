@@ -7,12 +7,12 @@ Receives hook input as JSON on stdin.
 import json
 import sys
 
-from common import InvalidInputException, APF_FOLDER, KEY_log_claude_code_hook_events
+from common import InvalidInputException, APF_FOLDER, KEY_log_claude_code_hook_event
 from logger import Logger
 from set_hooks_for_claude_code_event_logger import install_hooks_in_settings
 
 
-LOGFILE = f"logs/{KEY_log_claude_code_hook_events}.jsonl"
+LOGFILE = f"logs/{KEY_log_claude_code_hook_event}.jsonl"
 FIELD_DEFINITIONS = [
     ("session_id", True, "Unique identifier for the current conversation session"),
     ("transcript_path", False, "Path to the session's transcript JSONL file"),
@@ -39,10 +39,10 @@ class ClaudeCodeHookLogger(Logger):
 
 
 CLAUDE_CODE_HOOK_EVENT_LOGGER = ClaudeCodeHookLogger(
-        config_key=KEY_log_claude_code_hook_events,
+        config_key=KEY_log_claude_code_hook_event,
         logfile=LOGFILE,
         field_definitions=FIELD_DEFINITIONS,
-        sentinel_filepath=f"{APF_FOLDER}/.{KEY_log_claude_code_hook_events}")
+        sentinel_filepath=f"{APF_FOLDER}/.{KEY_log_claude_code_hook_event}")
 
 
 if __name__ == "__main__":
