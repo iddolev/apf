@@ -10,5 +10,5 @@ for %%a in (%*) do if "%%a"=="--fetch" (
     exit /b 0
 )
 
-pip install pyyaml ruamel.yaml
+pip install pyyaml
 python ".apf\apf_install.py" %*
