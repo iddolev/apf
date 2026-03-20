@@ -14,7 +14,7 @@ from datetime import datetime, timezone
 from enum import Enum
 from pathlib import Path
 
-from common import CYAML, cyaml_load, cyaml_save, APF_INFO_FILEPATH, \
+from common import yaml_load, yaml_save, APF_INFO_FILEPATH, \
     InvalidInputException, ALLOW_ALL_FIELDS, warn
 
 
@@ -56,7 +56,7 @@ class Logger(ABC):
 
     def load_config(self) -> str | set[str]:
         """Read the config section in the config file and return (enabled, enabled_fields)."""
-        data = cyaml_load(self.config_filepath).get(self.config_key)
+        data = yaml_load(self.config_filepath).get(self.config_key)
         if not data:
             print(f"Warning: {self.config_key} section missing "
                   f"from config file {self.config_filepath}, "
@@ -77,15 +77,15 @@ class Logger(ABC):
         """Return ENABLED, DISABLED, or NOT_INSTALLED."""
         if self.sentinel_filepath and not self.sentinel_filepath.exists():
             return Status.NOT_INSTALLED
-        if self.config_key not in cyaml_load(self.config_filepath):
+        if self.config_key not in yaml_load(self.config_filepath):
             return Status.NOT_INSTALLED
         if self.sentinel_filepath and self.sentinel_filepath.read_text().strip() == "on":
             return Status.ENABLED
         return Status.DISABLED
 
-    def _install_on_existing_section(self, existing: str | CYAML) -> bool:
+    def _install_on_existing_section(self, existing) -> bool:
         """Returns True iff there was a change"""
-        if not isinstance(existing, CYAML):
+        if not isinstance(existing, dict):
             raise ValueError(f"Section '{self.config_key}' is missing or corrupt in {self.config_filepath}")
         fields = existing.get("fields")
         if fields == ALLOW_ALL_FIELDS:
@@ -125,12 +125,12 @@ class Logger(ABC):
             os.makedirs(self.sentinel_filepath.parent, exist_ok=True)
             self.sentinel_filepath.write_text("off\n", encoding="utf-8")
 
-        config = cyaml_load(self.config_filepath)
-        existing: CYAML = config.get(self.config_key)
+        config = yaml_load(self.config_filepath)
+        existing = config.get(self.config_key)
         if existing:
             changed = self._install_on_existing_section(existing)
             if changed:
-                cyaml_save(self.config_filepath, config)
+                yaml_save(self.config_filepath, config)
             return
 
         # section doesn't exist, need to create it
@@ -140,12 +140,9 @@ class Logger(ABC):
             if not isinstance(self.field_definitions, list):
                 raise RuntimeError("field_definitions is not a list")
             fields = list(self.field_definitions)
-        section = CYAML()
-        section["do_all"] = False
-        section["default"] = False
-        section["fields"] = fields
+        section = {"do_all": False, "default": False, "fields": fields}
         config[self.config_key] = section
-        cyaml_save(self.config_filepath, config)
+        yaml_save(self.config_filepath, config)
 
     @abstractmethod
     def get_input(self) -> dict:

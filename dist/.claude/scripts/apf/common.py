@@ -1,10 +1,8 @@
 import sys
 from pathlib import Path
 
-from ruamel.yaml import YAML, CommentedMap
+import yaml
 
-
-CYAML = CommentedMap
 
 ALLOW_ALL_FIELDS = "*"
 
@@ -24,24 +22,10 @@ def warn(*args, **kwargs) -> None:
     print(*args, file=sys.stderr, **kwargs)
 
 
-"""cyaml below means: yaml with comments preserved.
-This is a wrapper around ruaml YAML
-"""
+def yaml_load(path: Path) -> dict:
+    return yaml.safe_load(path.read_text(encoding="utf-8")) or {}
 
 
-def cyaml_load(path: Path) -> CYAML:
-    """Load a yaml file, preserving comments and formatting."""
-    return YAML().load(path.read_text(encoding="utf-8")) or CYAML()
-
-
-def cyaml_save(path: Path, data: CYAML) -> None:
+def yaml_save(path: Path, data: dict) -> None:
     with open(path, "w", encoding="utf-8") as f:
-        YAML().dump(data, f)
-
-
-def cyaml_add_field(cyaml: CYAML, key: str, value,
-                    comment: str | None = None, indent: int = 4) -> None:
-    """Add a field to a cyaml with a comment above the field."""
-    cyaml[key] = value
-    kwargs = dict(before=comment) if comment else {}
-    cyaml.yaml_set_comment_before_after_key(key, indent=indent, **kwargs)
+        yaml.dump(data, f, allow_unicode=True)
