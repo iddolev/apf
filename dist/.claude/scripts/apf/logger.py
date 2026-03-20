@@ -112,14 +112,14 @@ class Logger(ABC):
             exit(1)
         if self.sentinel_filepath:
             os.makedirs(self.sentinel_filepath.parent, exist_ok=True)
-            self.sentinel_filepath.write_text("on" if value else "off", encoding="utf-8")
+            self.sentinel_filepath.write_text("on\n" if value else "off\n", encoding="utf-8")
 
     def install(self) -> None:
         """Add or update the sentinel and the config section in the config file"""
         # Ensure the sentinel file exists (defaulting to "off") if it's defined but missing
         if self.sentinel_filepath and not self.sentinel_filepath.exists():
             os.makedirs(self.sentinel_filepath.parent, exist_ok=True)
-            self.sentinel_filepath.write_text("off", encoding="utf-8")
+            self.sentinel_filepath.write_text("off\n", encoding="utf-8")
 
         config = cyaml_load(self.config_filepath)
         existing: CYAML = config.get(self.config_key)
