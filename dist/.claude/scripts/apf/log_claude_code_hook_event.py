@@ -9,7 +9,7 @@ import sys
 
 from common import InvalidInputException, APF_FOLDER, KEY_log_claude_code_hook_event
 from logger import Logger
-from set_hooks_for_claude_code_event_logger import install_hooks_in_settings
+from set_hooks_for_claude_code_event_logger import HooksInstaller
 
 
 LOGFILE = f"logs/{KEY_log_claude_code_hook_event[4:]}.jsonl"
@@ -55,7 +55,7 @@ class ClaudeCodeHookLogger(Logger):
 
     def install(self) -> None:
         super().install()
-        install_hooks_in_settings()
+        HooksInstaller().install_hooks_in_settings_file()
 
 
 CLAUDE_CODE_HOOK_EVENT_LOGGER = ClaudeCodeHookLogger(

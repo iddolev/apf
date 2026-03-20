@@ -76,85 +76,91 @@ HOOK_ENTRY = {
 }
 
 
-def load_settings() -> dict:
-    if os.path.exists(SETTINGS_PATH):
-        with open(SETTINGS_PATH, encoding="utf-8") as f:
-            return json.load(f)
-    return {}
-
-
-def save_settings(settings: dict) -> None:
-    os.makedirs(os.path.dirname(SETTINGS_PATH), exist_ok=True)
-    with open(SETTINGS_PATH, "w", encoding="utf-8") as f:
-        json.dump(settings, f, indent=2, ensure_ascii=False)
-        f.write("\n")
-
-
 LEGACY_DETECTOR = KEY_log_claude_code_hook_event
 
 
-def divide_entries_of_hook(entries: list) -> tuple[list, list, list]:
-    # Each entry in `entries` has the format:
-    # {
-    #     "match": <expr>    -- optional
-    #     "hooks": [
-    #         {
-    #             "type": "command"
-    #             "command": <command>
-    #         }
-    #     ]
-    # }
-    exact = []
-    related = []
-    unrelated = []
-    for entry in entries:
-        hooks_of_entry = entry.get("hooks", [])
-        if any(h.get("command") == HOOK_COMMAND for h in hooks_of_entry):
-            exact.append(entry)
-        elif any(LEGACY_DETECTOR in h.get("command", "") for h in hooks_of_entry):
-            # This is a previous version of the command - it should be removed
-            related.append(entry)
-        else:
-            unrelated.append(entry)
-    return exact, related, unrelated
+class HooksInstaller:
+    def __init__(self, field_indent: int = 2):
+        self._field_indent = field_indent
+        self._settings: dict | None = None
+        self._hooks: dict | None = None
+        self._existing = []
+        self._added = []
+        self._removed = []
+        self._total_removed_commands = 0
 
+    def _load_settings(self) -> None:
+        if os.path.exists(SETTINGS_PATH):
+            with open(SETTINGS_PATH, encoding="utf-8") as f:
+                self._settings = json.load(f)
 
-def install_hooks_in_settings() -> None:
-    settings = load_settings()
-    hooks = settings.setdefault("hooks", {})
-    existing = []
-    added = []
-    removed = []
-    total_removed_commands = 0
+    def _save_settings(self) -> None:
+        os.makedirs(os.path.dirname(SETTINGS_PATH), exist_ok=True)
+        with open(SETTINGS_PATH, "w", encoding="utf-8") as f:
+            json.dump(self._settings, f, indent=self._field_indent, ensure_ascii=False)
+            f.write("\n")
 
-    for hook_type in HOOK_TYPES:
-        entries = hooks.get(hook_type, [])
-        exact, related, unrelated = divide_entries_of_hook(entries)
+    @staticmethod
+    def _divide_entries_of_hook(entries: list) -> tuple[list, list, list]:
+        # Each entry in `entries` has the format:
+        # {
+        #     "match": <expr>    -- optional
+        #     "hooks": [
+        #         {
+        #             "type": "command"
+        #             "command": <command>
+        #         }
+        #     ]
+        # }
+        exact = []
+        related = []
+        unrelated = []
+        for entry in entries:
+            hooks_of_entry = entry.get("hooks", [])
+            if any(h.get("command") == HOOK_COMMAND for h in hooks_of_entry):
+                exact.append(entry)
+            elif any(LEGACY_DETECTOR in h.get("command", "") for h in hooks_of_entry):
+                # This is a previous version of the command - it should be removed
+                related.append(entry)
+            else:
+                unrelated.append(entry)
+        return exact, related, unrelated
+
+    def _process_hook_type(self, hook_type: str) -> None:
+        entries = self._hooks.get(hook_type, [])
+        exact, related, unrelated = self._divide_entries_of_hook(entries)
         cleaned = unrelated + exact
         if exact:
-            existing.append(hook_type)
+            self._existing.append(hook_type)
         else:
             cleaned.append(HOOK_ENTRY)
-            added.append(hook_type)
+            self._added.append(hook_type)
         if related:
             # This is a previous version of the command - it should be removed
-            total_removed_commands += len(related)
-            removed.append(hook_type)
-        hooks[hook_type] = cleaned
+            self._total_removed_commands += len(related)
+            self._removed.append(hook_type)
+        self._hooks[hook_type] = cleaned
 
-    if added or removed:
-        # At least one entry was added or removed, so need to save the modifications
-        save_settings(settings)
-
-    if removed:
-        print(f"Removed {total_removed_commands} legacy command(s) "
-              f"in {len(removed)} hook type(s): {', '.join(removed)}.")
-    if existing:
-        if len(existing) == len(HOOK_TYPES):
-            print("Hook event logger already installed for all hook types.")
+    def _print_summary(self) -> None:
+        if self._removed:
+            print(f"Removed {self._total_removed_commands} legacy command(s) "
+                  f"in {len(self._removed)} hook type(s): {', '.join(self._removed)}.")
+        if self._existing:
+            if len(self._existing) == len(HOOK_TYPES):
+                print("Hook event logger already installed for all hook types.")
+            else:
+                print(f"The command was already installed for {len(self._existing)} hook type(s): {', '.join(self._existing)}.")
+        if self._added:
+            print(f"Installed hook event logger for {len(self._added)} hook type(s): {', '.join(self._added)}.")
         else:
-            print(f"The command was already installed for {len(existing)} hook type(s): {', '.join(existing)}.")
-    if added:
-        print(f"Installed hook event logger for {len(added)} hook type(s): {', '.join(added)}.")
-    else:
-        print("No command was added for any hook type.")
+            print("No command was added for any hook type.")
+
+    def install_hooks_in_settings_file(self) -> None:
+        self._load_settings()
+        self._hooks = self._settings.setdefault("hooks", {})
+        for hook_type in HOOK_TYPES:
+            self._process_hook_type(hook_type)
+        if self._added or self._removed:
+            # At least one entry was added or removed, so need to save the modifications
+            self._save_settings()
+        self._print_summary()
