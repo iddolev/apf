@@ -36,8 +36,18 @@ class Logger(ABC):
         field_indent: int = 4,
         sentinel_filepath: str | None = None,
     ) -> None:
-        """TODO: Write docstring explaining each parameter
-        including: A value of ALLOW_ALL_FIELDS ("*") in field_definitions means: match all fields
+        """
+        :param config_key: Key in the config YAML file that holds this logger's fields settings.
+        :param logfile: Path to the JSONL file where events are appended.
+        :param field_definitions: Either ALLOW_ALL_FIELDS ("*") to log every field in the input,
+            or a list of (name, default_enabled, comment) tuples that define which fields
+            are available, their default enabled state in the config file,
+            and a comment that is placed one line above the name: value line.
+        :param config_filepath: Path to the YAML config file (default: .apf/.apf.yaml).
+        :param field_indent: Indentation used when writing field comments to the config YAML.
+        :param sentinel_filepath: Optional path to a file whose content ("on"/"off") controls
+            whether logging is active. If None, the logger has no sentinel and is always
+            considered enabled once installed.
         """
         self.config_key = config_key
         self.logfile = logfile
@@ -91,7 +101,10 @@ class Logger(ABC):
         return True
 
     def set_enabled(self, value: bool) -> None:
-        """TODO: Add docstring"""
+        """Enable or disable logging by writing "on"/"off" to the sentinel file.
+        Exits with an error if the logger has not been installed yet.
+        Has no effect if no sentinel_filepath was configured.
+        """
         if self.status() == Status.NOT_INSTALLED:
             name = self.config_key.replace('_', '-')
             warn(f"You must install {name} before you can turn it on or off.\n"
