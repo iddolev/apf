@@ -90,6 +90,11 @@ class Logger(ABC):
 
     def set_enabled(self, value: bool) -> None:
         """TODO: Add docstring"""
+        if not self.is_installed():
+            name = self.config_key.replace('_', '-')
+            warn(f"You must install {name} before you can turn it on or off.\n"
+                 f"Run: /name install")
+            exit(1)
         if self.sentinel_filepath:
             os.makedirs(self.sentinel_filepath.parent, exist_ok=True)
             self.sentinel_filepath.write_text("on" if value else "off", encoding="utf-8")
