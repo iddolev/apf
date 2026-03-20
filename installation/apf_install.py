@@ -238,7 +238,7 @@ def update_apf_version(project_dir: Path, new_version: str, *, dry_run: bool) ->
     """Update the version line in the project's .apf.yaml, preserving comments and formatting."""
     apf_path = project_dir / APF_INFO_FILEPATH
     if not apf_path.exists():
-        return
+        raise FileNotFoundError(f"Missing file: {apf_path}")
     try:
         content = apf_path.read_text(encoding="utf-8")
     except OSError as e:
@@ -342,6 +342,25 @@ def confirm_install(current_version: str | None, new_version: str,
         return False
 
 
+def print_version_info(project_dir: Path) -> None:
+    """Print installed and latest APF versions, then exit."""
+    apf_path = project_dir / APF_INFO_FILEPATH
+    if apf_path.exists():
+        try:
+            local = read_apf_version(apf_path)
+            print(f"Installed: v{local}")
+        except ValueError as e:
+            warn(f"❌ {e}")
+            sys.exit(1)
+    else:
+        print("Installed: (not installed)")
+    try:
+        remote = fetch_remote_version()
+        print(f"Latest:    v{remote}")
+    except ValueError:
+        print("Latest:    (unable to fetch)")
+
+
 def main() -> None:
     args = parse_args()
     project_dir = args.target.resolve() if args.target else Path.cwd()
@@ -351,21 +370,7 @@ def main() -> None:
 
     # --version: show installed and latest versions, then exit.
     if args.version:
-        apf_path = project_dir / APF_INFO_FILEPATH
-        if apf_path.exists():
-            try:
-                local = read_apf_version(apf_path)
-                print(f"Installed: v{local}")
-            except ValueError as e:
-                warn(f"❌ {e}")
-                sys.exit(1)
-        else:
-            print("Installed: (not installed)")
-        try:
-            remote = fetch_remote_version()
-            print(f"Latest:    v{remote}")
-        except ValueError:
-            print("Latest:    (unable to fetch)")
+        print_version_info(project_dir)
         return
 
     if _is_apf_repo(project_dir):
