@@ -66,9 +66,15 @@ class Logger(ABC):
                   f"from config file {self.config_filepath}, "
                   f"so no logging will occur", file=sys.stderr)
             return set()
-        if data == ALLOW_ALL_FIELDS:
-            return data
-        enabled_fields = {name for name, enabled in data.items() if enabled is True}
+        fields = data.get("fields")
+        if fields is None:
+            print(f"Warning: 'fields' missing from {self.config_key} section "
+                  f"in config file {self.config_filepath}, "
+                  f"so no logging will occur", file=sys.stderr)
+            return set()
+        if fields == ALLOW_ALL_FIELDS:
+            return fields
+        enabled_fields = {name for name, enabled in fields.items() if enabled is True}
         return enabled_fields
 
     def status(self) -> Status:
@@ -83,12 +89,15 @@ class Logger(ABC):
 
     def _install_on_existing_section(self, existing: str | CYAML) -> bool:
         """Returns True iff there was a change"""
-        if existing == ALLOW_ALL_FIELDS:
+        if not isinstance(existing, CYAML):
+            raise ValueError(f"Section '{self.config_key}' is missing or corrupt in {self.config_filepath}")
+        fields = existing.get("fields")
+        if fields == ALLOW_ALL_FIELDS:
             # Match everything, so no need to mention specific fields
             return False
-        if not isinstance(existing, CYAML):
+        if not isinstance(fields, CYAML):
             raise ValueError(f"'fields' is missing or corrupt in {self.config_filepath}")
-        fields_keys = set(existing.keys())
+        fields_keys = set(fields.keys())
         if not isinstance(self.field_definitions, list):
             raise RuntimeError("field_definitions is not a list")
         missing = [(n, d, c) for n, d, c in self.field_definitions if n not in fields_keys]
@@ -97,7 +106,7 @@ class Logger(ABC):
             return False
         # If there are missing keys, we add them here, and save below
         for name, default, comment in missing:
-            cyaml_add_field(existing, name, default, comment, indent=self.field_indent)
+            cyaml_add_field(fields, name, default, comment, indent=self.field_indent)
         return True
 
     def set_enabled(self, value: bool) -> None:
@@ -139,7 +148,11 @@ class Logger(ABC):
                 raise RuntimeError("field_definitions is not a list")
             for name, default, comment in self.field_definitions:
                 cyaml_add_field(fields, name, default, comment, indent=self.field_indent)
-        config[self.config_key] = fields
+        section = CYAML()
+        section["do_all"] = False
+        section["default"] = False
+        section["fields"] = fields
+        config[self.config_key] = section
         cyaml_save(self.config_filepath, config)
 
     @abstractmethod
