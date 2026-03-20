@@ -16,7 +16,7 @@ LOGFILE = f"logs/{KEY_log_agent_invocations[4:]}.jsonl"
 class AgentInvocationLogger(Logger):
     def get_input(self) -> dict:
         # Information on the invocation is obtained from sys.argv:
-        # actor, event_type, message, optional invocation_id_field, optional invocation_id_value
+        # actor, event_type, message, invocation_id_field, optional invocation_id_value
         if not (5 <= len(sys.argv) <= 6):
             raise InvalidInputException(f"Invalid input (must have 4 or 5 args): {sys.argv[1:]}")
         ret = {'actor': sys.argv[1],

@@ -180,24 +180,25 @@ class Logger(ABC):
         _fix_event_id({'fx': 'abc'}) -> <unique_id> {'fx': 'abc'}
         _fix_event_id({'fx': 'abc',
                        '_event_id_field': 'my_name'})
-                       -> <unique_id> {'fx': 'abc', 'my_name' <the same unique_id>}
+                       -> <unique_id> {'fx': 'abc', 'my_name': <the same unique_id>}
         _fix_event_id({'fx': 'abc',
-                       '_event_id_field': 'my_name'},
-                       '_event_id_value': 'my_value')
-                       -> <my_value> {'fx': 'abc', 'my_name' <my_value>}
+                       '_event_id_field': 'my_name',
+                       '_event_id_value': 'my_value'})
+                       -> <my_value> {'fx': 'abc', 'my_name': <my_value>}
         """
         if EVENT_ID_FIELD not in data.keys():
             assert EVENT_ID_VALUE not in data.keys()
             return self._generate_id(), data
         ret = {}
         data_ = data.copy()
-        event_id_field = data_.pop(EVENT_ID_FIELD)
+        id_field_name = data_.pop(EVENT_ID_FIELD)
         if EVENT_ID_VALUE in data_.keys():
-            ret[event_id_field] = data_.pop(EVENT_ID_VALUE)
+            the_value = data_.pop(EVENT_ID_VALUE)
         else:
-            ret[event_id_field] = self._generate_id()
-        ret.update(data)
-        return data[event_id_field]
+            the_value = self._generate_id()
+        ret[id_field_name] = the_value
+        ret.update(data_)
+        return the_value, ret
 
     def log_event(self) -> None:
         """If logging is enabled, read JSON input and append to the log file."""

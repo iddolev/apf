@@ -51,8 +51,6 @@ class ClaudeCodeHookLogger(Logger):
     def get_input(self) -> dict:
         # Information on the invoked hook is obtained from stdin in a JSON format
         if len(sys.argv) > 1:
-            # Except for the flags specified in super().log_event(),
-            # there must not be any other values
             raise InvalidInputException(f"Invalid input: {sys.argv[1:]}")
         return json.load(sys.stdin)
 
