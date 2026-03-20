@@ -7,11 +7,11 @@ Receives hook input as JSON on stdin.
 import json
 import sys
 
-from common import InvalidInputException, APF_FOLDER
+from common import InvalidInputException, APF_FOLDER, KEY_log_claude_code_hook_events
 from logger import Logger
 from set_hooks_for_claude_code_event_logger import install_hooks_in_settings
 
-KEY_log_claude_code_hook_events = "log_claude_code_hook_events"
+
 LOGFILE = f"logs/{KEY_log_claude_code_hook_events}.jsonl"
 FIELD_DEFINITIONS = [
     ("session_id", True, "Unique identifier for the current conversation session"),

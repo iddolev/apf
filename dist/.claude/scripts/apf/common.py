@@ -12,6 +12,8 @@ APF_FOLDER = ".apf"
 APF_INFO_FILENAME = ".apf.yaml"
 APF_INFO_FILEPATH = f"{APF_FOLDER}/{APF_INFO_FILENAME}"
 
+KEY_log_claude_code_hook_events = "log_claude_code_hook_events"
+
 
 class InvalidInputException(Exception):
     pass

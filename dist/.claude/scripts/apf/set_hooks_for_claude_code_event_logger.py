@@ -12,8 +12,7 @@ Usage:
 import json
 import os
 
-from common import APF_FOLDER
-from log_claude_code_hook_event import KEY_log_claude_code_hook_events
+from common import APF_FOLDER, KEY_log_claude_code_hook_events
 
 
 SETTINGS_PATH = ".claude/settings.json"
