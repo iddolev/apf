@@ -116,17 +116,8 @@ def install_hooks_in_settings() -> None:
         print("Hook event logger already installed for all hook types.")
 
 
-def install_apf_info_section() -> None:
-    # Make dist/.claude/scripts/apf/ importable
-    PROJECT_ROOT = Path(__file__).resolve().parent.parent
-    sys.path.insert(0, str(PROJECT_ROOT / "dist" / ".claude" / "scripts" / "apf"))
-    from log_claude_code_hook_event import CLAUDE_CODE_HOOK_EVENT_LOGGER
-    CLAUDE_CODE_HOOK_EVENT_LOGGER.install()
-
-
 def install() -> None:
     install_hooks_in_settings()
-    install_apf_info_section()
 
 
 if __name__ == "__main__":

@@ -24,7 +24,7 @@ class AgentInvocationLogger(Logger):
 AGENT_INVOCATION_LOGGER = AgentInvocationLogger(
     config_key=KEY_log_agent_invocations,
     logfile=LOGFILE,
-    sentinel_file=f"{APF_FOLDER}/.{KEY_log_agent_invocations}")
+    sentinel_filepath=f"{APF_FOLDER}/.{KEY_log_agent_invocations}")
 
 
 if __name__ == "__main__":

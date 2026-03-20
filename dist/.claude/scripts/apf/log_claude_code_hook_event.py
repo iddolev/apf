@@ -33,11 +33,12 @@ class ClaudeCodeHookLogger(Logger):
             raise InvalidInputException(f"Invalid input: {sys.argv[1:]}")
         return json.load(sys.stdin)
 
+
 CLAUDE_CODE_HOOK_EVENT_LOGGER = ClaudeCodeHookLogger(
         config_key=KEY_log_claude_code_events,
         logfile=LOGFILE,
         field_definitions=FIELD_DEFINITIONS,
-        sentinel_file=f"{APF_FOLDER}/.{KEY_log_claude_code_events}")
+        sentinel_filepath=f"{APF_FOLDER}/.{KEY_log_claude_code_events}")
 
 
 if __name__ == "__main__":
