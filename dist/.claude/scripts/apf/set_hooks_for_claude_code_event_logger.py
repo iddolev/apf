@@ -16,7 +16,7 @@ from common import KEY_log_claude_code_hook_event, APF_FOLDER
 
 
 SETTINGS_PATH = ".claude/settings.json"
-SENTINEL_FILEPATH = f"{APF_FOLDER}/{KEY_log_claude_code_hook_event}.py"
+SENTINEL_FILEPATH = f"{APF_FOLDER}/.{KEY_log_claude_code_hook_event}"
 # The code in HOOK_COMMAND reaches activation of python only if SENTINEL_FILENAME exists and its content is "on".
 # This is intended to prevent expensive invocation of python when SENTINEL_FILENAME has "off" or is missing.
 # The part "|| exist 0" means that if logging is not enabled, exit with code 0 and not error.
@@ -90,7 +90,7 @@ def save_settings(settings: dict) -> None:
         f.write("\n")
 
 
-LEGACY_SENTINEL = KEY_log_claude_code_hook_event
+LEGACY_DETECTOR = KEY_log_claude_code_hook_event
 
 
 def divide_entries_of_hook(entries: list) -> tuple[list, list, list]:
@@ -111,7 +111,7 @@ def divide_entries_of_hook(entries: list) -> tuple[list, list, list]:
         hooks_of_entry = entry.get("hooks", [])
         if any(h.get("command") == HOOK_COMMAND for h in hooks_of_entry):
             exact.append(entry)
-        elif any(LEGACY_SENTINEL in h.get("command", "") for h in hooks_of_entry):
+        elif any(LEGACY_DETECTOR in h.get("command", "") for h in hooks_of_entry):
             # This is a previous version of the command - it should be removed
             related.append(entry)
         else:
