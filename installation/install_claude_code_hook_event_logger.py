@@ -18,6 +18,8 @@ from common import APF_FOLDER, APF_INFO_FILENAME, cyaml_load, cyaml_save
 
 SETTINGS_PATH = ".claude/settings.json"
 SENTINEL_FILE = f"{APF_FOLDER}/.log_claude_code_hook_event"
+# The code in HOOK_COMMAND reaches activation of python only if SENTINEL_FILE exists and with value "on"
+# This is to prevent expensive invocation of python when SENTINEL_FILE has "off" or is missing
 HOOK_COMMAND = f"grep -qx on {SENTINEL_FILE} 2>/dev/null && python .claude/scripts/apf/log_claude_code_hook_event.py"
 
 HOOK_TYPES = [

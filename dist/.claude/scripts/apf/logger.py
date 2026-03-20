@@ -33,18 +33,19 @@ class Logger(ABC):
         field_definitions: str | list[tuple[str, bool, str]] = ALLOW_ALL_FIELDS,
         config_filepath: str = APF_INFO_FILEPATH,
         field_indent: int = 4,
-        sentinel_file: str | None = None,
+        sentinel_filepath: str | None = None,
     ) -> None:
-        """TODO: Write docstring explaining each parameter"""
+        """TODO: Write docstring explaining each parameter
+        including: A value of ALLOW_ALL_FIELDS ("*") in field_definitions means: match all fields
+        """
         self.config_key = config_key
         self.logfile = logfile
-        # A value of ALLOW_ALL_FIELDS ("*") in field_definitions means: match all fields
         self.field_definitions = field_definitions
         self.config_filepath = Path(config_filepath)
         if not self.config_filepath.exists():
             raise FileNotFoundError(self.config_filepath)
         self.field_indent = field_indent
-        self.sentinel_file = Path(sentinel_file) if sentinel_file else None
+        self.sentinel_filepath = Path(sentinel_filepath) if sentinel_filepath else None
 
     def load_config(self) -> tuple[bool, str | set[str]]:
         """Read the config section in the config file and return (enabled, enabled_fields)."""
@@ -60,42 +61,48 @@ class Logger(ABC):
         return is_enabled, enabled_fields
 
     def status(self) -> Status:
-        """Return 'enabled' or 'disabled' based on the config file"""
-        is_enabled, _ = self.load_config()
-        return Status.ENABLED if is_enabled else Status.DISABLED
+        """Return Status based on the sentinel file"""
+        if not self.sentinel_filepath or not self.sentinel_filepath.exists():
+            return Status.DISABLED
+        if self.sentinel_filepath.read_text().strip() == "on":
+            return Status.ENABLED
+        else:
+            return Status.DISABLED
 
-    def _install_on_existing_section(self, existing: CYAML, enable_after_install: bool) -> bool:
+    def _install_on_existing_section(self, existing: str | CYAML) -> bool:
         """Returns True iff there was a change"""
-        changed = False
-        if enable_after_install and not existing.get("enabled"):
-            existing["enabled"] = True
-            changed = True
-        fields = existing.get("fields")
-        if fields == ALLOW_ALL_FIELDS:
+        if existing == ALLOW_ALL_FIELDS:
             # Match everything, so no need to mention specific fields
-            return changed
-        if not isinstance(fields, CYAML):
+            return False
+        if not isinstance(existing, CYAML):
             raise ValueError(f"'fields' is missing or corrupt in {self.config_filepath}")
-        fields_keys = set(fields.keys())
+        fields_keys = set(existing.keys())
         missing = [(n, d, c) for n, d, c in self.field_definitions if n not in fields_keys]
         if not missing:
             # No missing keys, so no need to re-write fields
-            return changed
+            return False
         # If there are missing keys, we add them here, and save below
         for name, default, comment in missing:
-            cyaml_add_field(fields, name, default, comment)
+            cyaml_add_field(existing, name, default, comment)
         return True
 
+    def set_enabled(self, value: bool) -> None:
+        """TODO: Add docstring"""
+        if self.sentinel_filepath:
+            os.makedirs(self.sentinel_filepath.parent, exist_ok=True)
+            self.sentinel_filepath.write_text("on" if value else "off", encoding="utf-8")
+
     def install(self, enable_after_install: bool = False) -> None:
-        """Add or update the config section in the config file"""
+        """Add or update the sentinel and the config section in the config file"""
+        if enable_after_install and self.status() is Status.DISABLED:
+            self.set_enabled(True)
+
         config = cyaml_load(self.config_filepath)
         existing: CYAML = config.get(self.config_key)
-
         if existing:
-            changed = self._install_on_existing_section(existing, enable_after_install)
+            changed = self._install_on_existing_section(existing)
             if changed:
                 cyaml_save(self.config_filepath, config)
-            self._write_sentinel(bool(existing.get("enabled", False)))
             return
 
         # section doesn't exist, need to create it
@@ -106,30 +113,8 @@ class Logger(ABC):
             fields = CYAML()
             for name, default, comment in self.field_definitions:
                 cyaml_add_field(fields, name, default, comment)
-        config[self.config_key] = CYAML([
-            ("enabled", enable_after_install),
-            ("fields", fields),
-        ])
+        config[self.config_key] = fields
         cyaml_save(self.config_filepath, config)
-        self._write_sentinel(enable_after_install)
-
-    def _write_sentinel(self, enabled: bool) -> None:
-        """TODO: Add docstring"""
-        if self.sentinel_file is None:
-            return
-        os.makedirs(self.sentinel_file.parent, exist_ok=True)
-        self.sentinel_file.write_text("on\n" if enabled else "off\n", encoding="utf-8")
-
-    def set_enabled(self, value: bool) -> Status:
-        """Set logging to enabled or disabled. Return new status."""
-        config = cyaml_load(self.config_filepath)
-        section = config.get(self.config_key)
-        if not section:
-            raise ValueError(f"No {self.config_key} section in {self.config_filepath}. Run with --install first.")
-        section["enabled"] = value
-        cyaml_save(self.config_filepath, config)
-        self._write_sentinel(value)
-        return Status.ENABLED if value else Status.DISABLED
 
     @abstractmethod
     def get_input(self) -> dict:
@@ -161,9 +146,11 @@ class Logger(ABC):
             self.install()
             print("installed")
         elif "--on" in sys.argv:
-            print(self.set_enabled(True).value)
+            self.set_enabled(True)
+            print(Status.ENABLED.value)
         elif "--off" in sys.argv:
-            print(self.set_enabled(False).value)
+            self.set_enabled(False)
+            print(Status.DISABLED.value)
         else:
             try:
                 self.log_event()
