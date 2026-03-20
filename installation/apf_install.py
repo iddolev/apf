@@ -28,6 +28,8 @@ import yaml
 
 
 APF_FOLDER = ".apf"
+APF_INFO_FILENAME = ".apf.yaml"
+APF_INFO_FILEPATH = f"{APF_FOLDER}/{APF_INFO_FILENAME}"
 
 REPO_URL = "https://github.com/iddolev/apf.git"
 REPO_SLUG = "iddolev/apf"  # for raw.githubusercontent.com
@@ -138,14 +140,14 @@ def read_apf_version(path: Path) -> str:
 def fetch_remote_version() -> str:
     """Fetch .apf from remote repo and return version"""
     try:
-        url = f"https://raw.githubusercontent.com/{REPO_SLUG}/main/dist/{APF_INFO_FILE}"
+        url = f"https://raw.githubusercontent.com/{REPO_SLUG}/main/dist/{APF_INFO_FILEPATH}"
         with urlopen(url, timeout=10) as resp:
             data = yaml.safe_load(resp.read().decode()) or {}
     except (URLError, UnicodeDecodeError, yaml.YAMLError) as e:
         raise ValueError("Could not fetch remote version from GitHub (check network)") from e
     if v := data.get("version"):
         return v
-    raise ValueError(f"Remote {APF_INFO_FILE} is missing a 'version' field")
+    raise ValueError(f"Remote {APF_INFO_FILEPATH} is missing a 'version' field")
 
 
 def copy_file(src: Path, dest: Path, *, dry_run: bool) -> None:
@@ -236,13 +238,13 @@ _VERSION_RE = re.compile(r"^version\s*:")
 
 def update_apf_version(project_dir: Path, new_version: str, *, dry_run: bool) -> None:
     """Update the version line in the project's .apf.yaml, preserving comments and formatting."""
-    apf_path = project_dir / APF_INFO_FILE
+    apf_path = project_dir / APF_INFO_FILEPATH
     if not apf_path.exists():
         return
     try:
         content = apf_path.read_text(encoding="utf-8")
     except OSError as e:
-        warn(f"  ⚠️  Could not read {APF_INFO_FILE}: {e}")
+        warn(f"  ⚠️  Could not read {APF_INFO_FILEPATH}: {e}")
         return
 
     lines = content.splitlines(keepends=True)
@@ -256,13 +258,13 @@ def update_apf_version(project_dir: Path, new_version: str, *, dry_run: bool) ->
     else:
         return
     if dry_run:
-        print(f"  [dry-run] Would update version to {new_version} in {APF_INFO_FILE}")
+        print(f"  [dry-run] Would update version to {new_version} in {APF_INFO_FILEPATH}")
     else:
-        print(f"  📄 Updated version to {new_version} in {APF_INFO_FILE}")
+        print(f"  📄 Updated version to {new_version} in {APF_INFO_FILEPATH}")
         try:
             apf_path.write_text("".join(lines), encoding="utf-8")
         except OSError as e:
-            warn(f"  ⚠️  Could not update version in {APF_INFO_FILE}: {e}")
+            warn(f"  ⚠️  Could not update version in {APF_INFO_FILEPATH}: {e}")
 
 
 def copy_path_map(repo_dir: Path, project_dir: Path, *, dry_run: bool) -> None:
@@ -310,7 +312,7 @@ def resolve_versions(project_dir: Path, *, force: bool) -> tuple[str | None, str
     print(f"   Latest: v{new_version}")
 
     current_version = None
-    apf_path = project_dir / APF_INFO_FILE
+    apf_path = project_dir / APF_INFO_FILEPATH
     if apf_path.exists():
         try:
             current_version = read_apf_version(apf_path)
@@ -351,7 +353,7 @@ def main() -> None:
 
     # --version: show installed and latest versions, then exit.
     if args.version:
-        apf_path = project_dir / APF_INFO_FILE
+        apf_path = project_dir / APF_INFO_FILEPATH
         if apf_path.exists():
             try:
                 local = read_apf_version(apf_path)
@@ -389,7 +391,7 @@ def main() -> None:
     else:
         print()
         print(f"🏁 APF v{new_version} installed successfully.")
-        warn(f"⚠️ IMPORTANT NOTE: You should commit {APF_INFO_FILE} to your repo, "
+        warn(f"⚠️ IMPORTANT NOTE: You should commit {APF_INFO_FILEPATH} to your repo, "
              f"to remember the relevant APF info.")
 
 
