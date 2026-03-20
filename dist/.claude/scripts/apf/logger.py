@@ -21,6 +21,7 @@ from common import CYAML, cyaml_load, cyaml_save, cyaml_add_field, APF_INFO_FILE
 class Status(Enum):
     ENABLED = "enabled"
     DISABLED = "disabled"
+    NOT_INSTALLED = "not_installed"
 
 
 class Logger(ABC):
@@ -61,13 +62,14 @@ class Logger(ABC):
         return enabled_fields
 
     def status(self) -> Status:
-        """Return Status based on the sentinel file"""
-        if not self.sentinel_filepath or not self.sentinel_filepath.exists():
-            return Status.DISABLED
-        if self.sentinel_filepath.read_text().strip() == "on":
+        """Return ENABLED, DISABLED, or NOT_INSTALLED."""
+        if self.sentinel_filepath and not self.sentinel_filepath.exists():
+            return Status.NOT_INSTALLED
+        if self.config_key not in cyaml_load(self.config_filepath):
+            return Status.NOT_INSTALLED
+        if self.sentinel_filepath and self.sentinel_filepath.read_text().strip() == "on":
             return Status.ENABLED
-        else:
-            return Status.DISABLED
+        return Status.DISABLED
 
     def _install_on_existing_section(self, existing: str | CYAML) -> bool:
         """Returns True iff there was a change"""
@@ -88,25 +90,13 @@ class Logger(ABC):
             cyaml_add_field(existing, name, default, comment, indent=self.field_indent)
         return True
 
-    def is_installed(self) -> bool:
-        """Return True iff the logger has been installed (config section exists and sentinel file exists)."""
-        if self.sentinel_filepath and not self.sentinel_filepath.exists():
-            return False
-        return self.config_key in cyaml_load(self.config_filepath)
-
-    def set_enabled(self, value: bool, *, _during_install: bool = False) -> None:
+    def set_enabled(self, value: bool) -> None:
         """TODO: Add docstring"""
-        if not self.is_installed():
-            if _during_install:
-                # This is ok - during install, we want to create the sentinel and set it to "off"
-                assert not value
-                pass
-            else:
-                # Not during install, can't set value if not yet installed
-                name = self.config_key.replace('_', '-')
-                warn(f"You must install {name} before you can turn it on or off.\n"
-                     f"Run: /{name} install")
-                exit(1)
+        if self.status() == Status.NOT_INSTALLED:
+            name = self.config_key.replace('_', '-')
+            warn(f"You must install {name} before you can turn it on or off.\n"
+                 f"Run: /{name} install")
+            exit(1)
         if self.sentinel_filepath:
             os.makedirs(self.sentinel_filepath.parent, exist_ok=True)
             self.sentinel_filepath.write_text("on" if value else "off", encoding="utf-8")
@@ -114,8 +104,9 @@ class Logger(ABC):
     def install(self) -> None:
         """Add or update the sentinel and the config section in the config file"""
         # Ensure the sentinel file exists (defaulting to "off") if it's defined but missing
-        if self.status() is Status.DISABLED:
-            self.set_enabled(False, _during_install=True)
+        if self.sentinel_filepath and not self.sentinel_filepath.exists():
+            os.makedirs(self.sentinel_filepath.parent, exist_ok=True)
+            self.sentinel_filepath.write_text("off", encoding="utf-8")
 
         config = cyaml_load(self.config_filepath)
         existing: CYAML = config.get(self.config_key)
@@ -144,7 +135,7 @@ class Logger(ABC):
 
     def log_event(self) -> None:
         """If logging is enabled, read JSON input and append to the log file."""
-        if self.status() == Status.DISABLED:
+        if self.status() != Status.ENABLED:
             return
         enabled_fields = self.load_config()
         if not enabled_fields:
