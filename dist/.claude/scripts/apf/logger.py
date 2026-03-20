@@ -229,6 +229,8 @@ class Logger(ABC):
             os.makedirs(dirname, exist_ok=True)
         with open(self.logfile, "a", encoding="utf-8") as f:
             f.write(json.dumps(record, ensure_ascii=False) + "\n")
+        # Final writing of invocation id to stdout
+        print(event_id)
 
     def main(self) -> None:
         """CLI entry point: dispatch --status, --install, --on, --off, or log from stdin."""
