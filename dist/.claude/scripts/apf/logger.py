@@ -168,7 +168,7 @@ class Logger(ABC):
 
     @staticmethod
     def _generate_id() -> str:
-        return str(uuid.uuid4())
+        return uuid.uuid4().hex[:16]
 
     def _fix_event_id(self, data: dict) -> tuple[str, dict]:
         """If data contains EVENT_ID_FIELD and possibly EVENT_ID_VALUE,
