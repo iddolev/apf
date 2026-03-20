@@ -83,6 +83,8 @@ class Logger(ABC):
                   f"in config file {self.config_filepath}, "
                   f"so no logging will occur", file=sys.stderr)
             return False, {}
+        if fields == ALLOW_ALL_FIELDS:
+            return ALLOW_ALL_FIELDS
         fields_as_dict = {item['name']: item['value'] for item in fields}
         return default, fields_as_dict
 
