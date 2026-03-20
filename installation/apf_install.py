@@ -26,10 +26,8 @@ from urllib.error import URLError
 
 import yaml
 
-from common import APF_INFO_FILE
 
-
-# ── Configuration ────────────────────────────────────────────────────────────
+APF_FOLDER = ".apf"
 
 REPO_URL = "https://github.com/iddolev/apf.git"
 REPO_SLUG = "iddolev/apf"  # for raw.githubusercontent.com
@@ -42,15 +40,15 @@ REPO_SLUG = "iddolev/apf"  # for raw.githubusercontent.com
 # destination does not yet exist).
 # Directories are copied recursively; files are copied individually.
 PATH_MAP: list[tuple[str, str, bool]] = [
-    (f"dist/{APF_INFO_FILE}", APF_INFO_FILE, False),
-    ("dist/CLAUDE.md",        "CLAUDE.md",        True),
-    ("dist/.claude/commands", ".claude/commands",  True),
-    ("dist/.claude/scripts",  ".claude/scripts",   True),
-    ("dist/.claude/shared",   ".claude/shared",   True),
-    (".claude/commands/apf",  ".claude/commands/apf", True),
-    (".claude/scripts/apf",   ".claude/scripts/apf",  True),
+    (f"dist/{APF_FOLDER}",    APF_FOLDER,                False),
+    ("dist/CLAUDE.md",        "CLAUDE.md",               True),
+    ("dist/.claude/commands", ".claude/commands",        True),
+    ("dist/.claude/scripts",  ".claude/scripts",         True),
+    ("dist/.claude/shared",   ".claude/shared",          True),
+    (".claude/commands/apf",  ".claude/commands/apf",    True),
+    (".claude/scripts/apf",   ".claude/scripts/apf",     True),
     ("installation/install_claude_code_hook_event_logger.py",
-     ".apf/install_claude_code_hook_event_logger.py", True),
+     ".apf/install_claude_code_hook_event_logger.py",    True),
     ("dist/.claude/scripts/common.py", ".apf/common.py", True),
 
 ]
@@ -295,9 +293,6 @@ def install(repo_dir: Path, project_dir: Path, new_version: str, *, dry_run: boo
     copy_path_map(repo_dir, project_dir, dry_run=dry_run)
     update_gitignore(project_dir, dry_run=dry_run)
     update_apf_version(project_dir, new_version, dry_run=dry_run)
-
-
-# ── Entry point ──────────────────────────────────────────────────────────────
 
 
 def resolve_versions(project_dir: Path, *, force: bool) -> tuple[str | None, str]:
