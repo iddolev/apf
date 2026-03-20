@@ -11,7 +11,7 @@ from logger import Logger
 
 
 KEY_log_agent_invocations = "log_agent_invocations"
-LOGFILE = "logs/agents_invocations_log.jsonl"
+LOGFILE = f"logs/{KEY_log_agent_invocations[4:]}.jsonl"
 
 
 class AgentInvocationLogger(Logger):
