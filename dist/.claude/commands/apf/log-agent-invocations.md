@@ -13,11 +13,11 @@ The argument is: $ARGUMENTS
 If the argument is empty or not one of `status`, `on`, `off`, or `install`, tell the user:
 "Usage: /apf:log-agent-invocations <status|on|off|install>" and STOP.
 
-1. If .apf.yaml does not exist, STOP (unless the argument is `install`).
+1. If `.apf/.apf.yaml` does not exist, STOP (unless the argument is `install`).
 2. Run the Python script with the argument:
 
 ```bash
-python dist/.claude/scripts/apf/log_agent_invocations.py --$ARGUMENTS
+python .claude/scripts/apf/log_agent_invocations.py --$ARGUMENTS
 ```
 
 3. Report the result to the user.
