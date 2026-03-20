@@ -61,6 +61,7 @@ GITIGNORE_ENTRIES = [
     ".apf/",
     ".claude/commands/apf/",
     ".claude/scripts/apf/",
+    ".claude/shared",
 ]
 
 

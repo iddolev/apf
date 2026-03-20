@@ -15,7 +15,12 @@ from enum import Enum
 from pathlib import Path
 
 from common import yaml_load, yaml_save, APF_INFO_FILEPATH, \
-    InvalidInputException, ALLOW_ALL_FIELDS, warn
+    InvalidInputException, ALLOW_ALL_FIELDS, warn, save_text
+
+
+def debug(item) -> None:
+    with open("logs/debug.txt", "a") as f:
+        f.write(f"{datetime.now()}\n{item}\n")
 
 
 class Status(Enum):
@@ -123,15 +128,13 @@ class Logger(ABC):
                  f"Run: /{name} install")
             exit(1)
         if self.sentinel_filepath:
-            os.makedirs(self.sentinel_filepath.parent, exist_ok=True)
-            self.sentinel_filepath.write_text("on\n" if value else "off\n", encoding="utf-8")
+            save_text("on\n" if value else "off\n", self.sentinel_filepath)
 
     def install(self) -> None:
         """Add or update the sentinel and the config section in the config file"""
         # Ensure the sentinel file exists (defaulting to "off") if it's defined but missing
         if self.sentinel_filepath and not self.sentinel_filepath.exists():
-            os.makedirs(self.sentinel_filepath.parent, exist_ok=True)
-            self.sentinel_filepath.write_text("off\n", encoding="utf-8")
+            save_text("off\n", self.sentinel_filepath)
 
         config = yaml_load(self.config_filepath)
         existing = config.get(self.config_key)

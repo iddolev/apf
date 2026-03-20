@@ -1,3 +1,4 @@
+import os
 import sys
 from pathlib import Path
 
@@ -20,6 +21,11 @@ class InvalidInputException(Exception):
 def warn(*args, **kwargs) -> None:
     """Print to stderr."""
     print(*args, file=sys.stderr, **kwargs)
+
+
+def save_text(text: str, filepath: Path) -> None:
+    os.makedirs(filepath.parent, exist_ok=True)
+    filepath.write_text(text, encoding="utf-8")
 
 
 def yaml_load(path: Path) -> dict:
