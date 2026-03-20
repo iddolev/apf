@@ -15,21 +15,21 @@ In any agent you which to log, add the following line to the agent's description
 The project maintains a running log `logs/agents_invocations_log.jsonl` of agent invocations. 
 Each line is a JSON record with a timestamp, agent name, and message.
 
-You, as an agent, are instructed to add entries to this log file, 
+You, as an agent, are to add entries to this log file using the following instructions, 
 so that the human user can review what really happened during a session.
 
 ## Instructions
 
-**Whenever you receive focus (either directly from the human user or when you are invoked by another agent)**, run:
+**Whenever you receive focus (either directly from the human user or when you are invoked by another agent)**, check whether .apf/:
 
 ```
-python .claude/scripts/apf/log_agent_invocations.py "<your-agent-name>" "agent-start" "<brief description of the task and input you received>"
+.claude/scripts/apf/log_agent_invocations.bat "<your-agent-name>" "agent-start" "<brief description of the task and input you received>"
 ```
 
 **Whenever you are about to relinquish your execution (when you return focus to whoever called you)**, run:
 
 ```
-python .claude/scripts/log_agent_invocations.py "<your-agent-name>" "agent-stop" "<brief summary of what you did and the outcome so far>"
+.claude/scripts/apf/log_agent_invocations.py "<your-agent-name>" "agent-stop" "<brief summary of what you did and the outcome so far>"
 ```
 
 Keep messages short (1-2 sentences). 
