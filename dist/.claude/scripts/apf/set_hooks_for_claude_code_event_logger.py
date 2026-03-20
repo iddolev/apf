@@ -17,10 +17,10 @@ from common import KEY_log_claude_code_hook_event, APF_FOLDER
 
 SETTINGS_PATH = ".claude/settings.json"
 SENTINEL_FILEPATH = f"{APF_FOLDER}/.{KEY_log_claude_code_hook_event}"
-# The code in HOOK_COMMAND reaches activation of python only if SENTINEL_FILENAME exists and its content is "on".
-# This is intended to prevent expensive invocation of python when SENTINEL_FILENAME has "off" or is missing.
-# The part "|| exist 0" means that if logging is not enabled, exit with code 0 and not error.
-HOOK_COMMAND = f"findstr /x \"on\" {SENTINEL_FILEPATH} >nul 2>&1 || exit 0 && python .claude/scripts/apf/log_claude_code_hook_event.py"
+# The code in HOOK_COMMAND activates a .bat script instead of python log_claude_code_hook_event.py
+# to prevent expensive invocation of python when SENTINEL_FILENAME has "off" or is missing.
+# Only when logging is enabled, the python script is invoked.
+HOOK_COMMAND = f".claude/scripts/apf/log_claude_code_hook_event.bat"
 
 HOOK_TYPES = [
     "ConfigChange",
