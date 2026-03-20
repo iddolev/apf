@@ -29,7 +29,7 @@ so that the human user can review what really happened during a session.
 **Whenever you are about to relinquish your execution (when you return focus to whoever called you)**, run:
 
 ```
-.claude/scripts/apf/log_agent_invocations.py "<your-agent-name>" "agent-stop" "<brief summary of what you did and the outcome so far>"
+.claude/scripts/apf/log_agent_invocations.bat "<your-agent-name>" "agent-stop" "<brief summary of what you did and the outcome so far>"
 ```
 
 Keep messages short (1-2 sentences). 
