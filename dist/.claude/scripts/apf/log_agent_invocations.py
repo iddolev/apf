@@ -6,7 +6,7 @@ Usage: python .claude/scripts/log_agent_invocations.py "<agent-name>" "<event-ty
 
 import sys
 
-from common import InvalidInputException
+from common import InvalidInputException, APF_FOLDER
 from logger import Logger
 
 
@@ -23,7 +23,8 @@ class AgentInvocationLogger(Logger):
 
 AGENT_INVOCATION_LOGGER = AgentInvocationLogger(
     config_key=KEY_log_agent_invocations,
-    logfile=LOGFILE)
+    logfile=LOGFILE,
+    sentinel_file=f"{APF_FOLDER}/.{KEY_log_agent_invocations}")
 
 
 if __name__ == "__main__":

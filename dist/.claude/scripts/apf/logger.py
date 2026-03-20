@@ -14,7 +14,7 @@ from datetime import datetime, timezone
 from enum import Enum
 from pathlib import Path
 
-from common import CYAML, cyaml_load, cyaml_save, cyaml_add_field, APF_INFO_FILENAME, \
+from common import CYAML, cyaml_load, cyaml_save, cyaml_add_field, APF_INFO_FILEPATH, \
     InvalidInputException, ALLOW_ALL_FIELDS
 
 
@@ -31,18 +31,20 @@ class Logger(ABC):
         config_key: str,
         logfile: str,
         field_definitions: str | list[tuple[str, bool, str]] = ALLOW_ALL_FIELDS,
-        config_filepath: str = APF_INFO_FILENAME,
+        config_filepath: str = APF_INFO_FILEPATH,
         field_indent: int = 4,
+        sentinel_file: str | None = None,
     ) -> None:
+        """TODO: Write docstring explaining each parameter"""
         self.config_key = config_key
         self.logfile = logfile
         # A value of ALLOW_ALL_FIELDS ("*") in field_definitions means: match all fields
-        self.field_definitions = ALLOW_ALL_FIELDS if field_definitions is None else field_definitions
+        self.field_definitions = field_definitions
         self.config_filepath = Path(config_filepath)
         if not self.config_filepath.exists():
             raise FileNotFoundError(self.config_filepath)
-
         self.field_indent = field_indent
+        self.sentinel_file = Path(sentinel_file) if sentinel_file else None
 
     def load_config(self) -> tuple[bool, str | set[str]]:
         """Read the config section in the config file and return (enabled, enabled_fields)."""
@@ -93,6 +95,7 @@ class Logger(ABC):
             changed = self._install_on_existing_section(existing, enable_after_install)
             if changed:
                 cyaml_save(self.config_filepath, config)
+            self._write_sentinel(bool(existing.get("enabled", False)))
             return
 
         # section doesn't exist, need to create it
@@ -108,6 +111,14 @@ class Logger(ABC):
             ("fields", fields),
         ])
         cyaml_save(self.config_filepath, config)
+        self._write_sentinel(enable_after_install)
+
+    def _write_sentinel(self, enabled: bool) -> None:
+        """TODO: Add docstring"""
+        if self.sentinel_file is None:
+            return
+        os.makedirs(self.sentinel_file.parent, exist_ok=True)
+        self.sentinel_file.write_text("on\n" if enabled else "off\n", encoding="utf-8")
 
     def set_enabled(self, value: bool) -> Status:
         """Set logging to enabled or disabled. Return new status."""
@@ -117,6 +128,7 @@ class Logger(ABC):
             raise ValueError(f"No {self.config_key} section in {self.config_filepath}. Run with --install first.")
         section["enabled"] = value
         cyaml_save(self.config_filepath, config)
+        self._write_sentinel(value)
         return Status.ENABLED if value else Status.DISABLED
 
     @abstractmethod

@@ -50,8 +50,8 @@ PATH_MAP: list[tuple[str, str, bool]] = [
     (".claude/commands/apf",  ".claude/commands/apf", True),
     (".claude/scripts/apf",   ".claude/scripts/apf",  True),
     ("installation/install_claude_code_hook_event_logger.py",
-     ".apf_install/install_claude_code_hook_event_logger.py", True),
-    ("dist/.claude/scripts/common.py", ".apf_install/common.py", True),
+     ".apf/install_claude_code_hook_event_logger.py", True),
+    ("dist/.claude/scripts/common.py", ".apf/common.py", True),
 
 ]
 
@@ -61,7 +61,7 @@ PATH_MAP: list[tuple[str, str, bool]] = [
 # because .apf.yaml is supposed to be tracked in the git of the user project.
 GITIGNORE_ENTRIES = [
     "apf_install.bat",
-    ".apf_install/"
+    ".apf/"
     ".claude/commands/apf/",
     ".claude/scripts/apf/",
 ]

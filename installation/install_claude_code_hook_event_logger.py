@@ -14,10 +14,11 @@ import os
 import sys
 from pathlib import Path
 
-from common import APF_INFO_FILENAME, cyaml_load, cyaml_save
+from common import APF_FOLDER, APF_INFO_FILENAME, cyaml_load, cyaml_save
 
 SETTINGS_PATH = ".claude/settings.json"
-HOOK_COMMAND = "python .claude/scripts/apf/log_claude_code_hook_event.py"
+SENTINEL_FILE = f"{APF_FOLDER}/.log_claude_code_hook_event"
+HOOK_COMMAND = f"grep -qx on {SENTINEL_FILE} 2>/dev/null && python .claude/scripts/apf/log_claude_code_hook_event.py"
 
 HOOK_TYPES = [
     "ConfigChange",
