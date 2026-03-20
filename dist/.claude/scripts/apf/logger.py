@@ -14,7 +14,7 @@ from datetime import datetime, timezone
 from enum import Enum
 from pathlib import Path
 
-from common import CYAML, cyaml_load, cyaml_save, cyaml_add_field, APF_INFO_FILEPATH, \
+from common import CYAML, cyaml_load, cyaml_save, APF_INFO_FILEPATH, \
     InvalidInputException, ALLOW_ALL_FIELDS, warn
 
 
@@ -31,20 +31,17 @@ class Logger(ABC):
         self, *,
         config_key: str,
         logfile: str,
-        field_definitions: str | list[tuple[str, bool, str]] = ALLOW_ALL_FIELDS,
+        field_definitions: str | list[dict] = ALLOW_ALL_FIELDS,
         config_filepath: str = APF_INFO_FILEPATH,
-        field_indent: int = 4,
         sentinel_filepath: str | None = None,
     ) -> None:
         """
         :param config_key: Key in the config YAML file that holds this logger's fields settings.
         :param logfile: Path to the JSONL file where events are appended.
         :param field_definitions: Either ALLOW_ALL_FIELDS ("*") to log every field in the input,
-            or a list of (name, default_enabled, comment) tuples that define which fields
-            are available, their default enabled state in the config file,
-            and a comment that is placed one line above the name: value line.
+            or a list of dicts with "name", "value", and "comment" keys that
+            define which fields are available and their enabled state in the config file.
         :param config_filepath: Path to the YAML config file (default: .apf/.apf.yaml).
-        :param field_indent: Indentation used when writing field comments to the config YAML.
         :param sentinel_filepath: Optional path to a file whose content ("on"/"off") controls
             whether logging is active. If None, the logger has no sentinel and is always
             considered enabled once installed.
@@ -55,7 +52,6 @@ class Logger(ABC):
         self.config_filepath = Path(config_filepath)
         if not self.config_filepath.exists():
             raise FileNotFoundError(self.config_filepath)
-        self.field_indent = field_indent
         self.sentinel_filepath = Path(sentinel_filepath) if sentinel_filepath else None
 
     def load_config(self) -> str | set[str]:
@@ -74,7 +70,7 @@ class Logger(ABC):
             return set()
         if fields == ALLOW_ALL_FIELDS:
             return fields
-        enabled_fields = {name for name, enabled in fields.items() if enabled is True}
+        enabled_fields = {f["name"] for f in fields if f.get("value") is True}
         return enabled_fields
 
     def status(self) -> Status:
@@ -95,18 +91,17 @@ class Logger(ABC):
         if fields == ALLOW_ALL_FIELDS:
             # Match everything, so no need to mention specific fields
             return False
-        if not isinstance(fields, CYAML):
+        if not isinstance(fields, list):
             raise ValueError(f"'fields' is missing or corrupt in {self.config_filepath}")
-        fields_keys = set(fields.keys())
         if not isinstance(self.field_definitions, list):
             raise RuntimeError("field_definitions is not a list")
-        missing = [(n, d, c) for n, d, c in self.field_definitions if n not in fields_keys]
+        existing_names = {f["name"] for f in fields}
+        missing = [f for f in self.field_definitions if f["name"] not in existing_names]
         if not missing:
             # No missing keys, so no need to re-write fields
             return False
         # If there are missing keys, we add them here, and save below
-        for name, default, comment in missing:
-            cyaml_add_field(fields, name, default, comment, indent=self.field_indent)
+        fields.extend(missing)
         return True
 
     def set_enabled(self, value: bool) -> None:
@@ -142,12 +137,9 @@ class Logger(ABC):
         if self.field_definitions == ALLOW_ALL_FIELDS:
             fields = ALLOW_ALL_FIELDS
         else:
-            # Add all fields
-            fields = CYAML()
             if not isinstance(self.field_definitions, list):
                 raise RuntimeError("field_definitions is not a list")
-            for name, default, comment in self.field_definitions:
-                cyaml_add_field(fields, name, default, comment, indent=self.field_indent)
+            fields = list(self.field_definitions)
         section = CYAML()
         section["do_all"] = False
         section["default"] = False
