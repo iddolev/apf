@@ -9,6 +9,7 @@ then call methods or wire up main() to sys.argv.
 import json
 import os
 import sys
+import uuid
 from abc import abstractmethod, ABC
 from datetime import datetime, timezone
 from enum import Enum
@@ -161,15 +162,23 @@ class Logger(ABC):
     def get_input(self) -> dict:
         pass
 
-    def log_event(self) -> None:
+    @staticmethod
+    def _generate_id() -> str:
+        return str(uuid.uuid4())
+
+    def log_event(self, id_field: str = "", id_value: str = "") -> None:
         """If logging is enabled, read JSON input and append to the log file."""
         if self.status() != Status.ENABLED:
             return
         config = self.load_config()
         data = self.get_input()
         timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-        record = {"_timestamp_": timestamp}
         # We assume that data doesn't have a field "_timestamp_"
+        record = {"_timestamp_": timestamp}
+        if id_field:
+            if not id_value:
+                id_value = self._generate_id()
+            record[id_field] = id_value
         if config == ALLOW_ALL_FIELDS:
             record.update(data)
         else:
@@ -204,8 +213,22 @@ class Logger(ABC):
             self.set_enabled(False)
             print(Status.DISABLED.value)
         else:
+            args = sys.argv[1:]
+            def _get_arg(flag: str) -> str:
+                if flag not in args:
+                    return ""
+                i = args.index(flag)
+                if i == len(args) - 1:
+                    print(f"Warning: {flag} is missing a value. Ignoring it.", file=sys.stderr)
+                    return ""
+                return args[i + 1]
+            id_field = _get_arg("--id_field")
+            id_value = _get_arg("--id_value")
+            if id_value and not id_field:
+                print(f"Warning: --id_value was provided without --id_field. Ignoring it.",
+                      file=sys.stderr)
             try:
-                self.log_event()
+                self.log_event(id_field=id_field, id_value=id_value)
             except InvalidInputException as e:
                 print(f"{str(e)}\nUsage: {Path(sys.argv[0]).name} [--status | --on | --off | --install]",
                       file=sys.stderr)
