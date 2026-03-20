@@ -7,8 +7,7 @@ Usage: python .claude/scripts/log_agent_invocations.py "<agent-name>" "<event-ty
 import sys
 
 from common import InvalidInputException, APF_FOLDER, ALLOW_ALL_FIELDS
-from logger import Logger
-
+from logger import Logger, EVENT_ID_FIELD, EVENT_ID_VALUE
 
 KEY_log_agent_invocations = "log_agent_invocations"
 LOGFILE = f"logs/{KEY_log_agent_invocations[4:]}.jsonl"
@@ -16,9 +15,17 @@ LOGFILE = f"logs/{KEY_log_agent_invocations[4:]}.jsonl"
 
 class AgentInvocationLogger(Logger):
     def get_input(self) -> dict:
-        if len(sys.argv) != 4:
-            raise InvalidInputException(f"Invalid input: {sys.argv[1:]}")
-        return dict(zip(['actor', 'event_type', 'message'], sys.argv[1:]))
+        # Information on the invocation is obtained from sys.argv:
+        # actor, event_type, message, optional invocation_id_field, optional invocation_id_value
+        if not (5 <= len(sys.argv) <= 6):
+            raise InvalidInputException(f"Invalid input (must have 4 or 5 args): {sys.argv[1:]}")
+        ret = {'actor': sys.argv[1],
+               'event_type': sys.argv[2],
+               'message': sys.argv[3],
+               EVENT_ID_FIELD: sys.argv[4]}
+        if len(sys.argv) == 6:
+            ret[EVENT_ID_VALUE] = sys.argv[5]
+        return ret
 
 
 AGENT_INVOCATION_LOGGER = AgentInvocationLogger(

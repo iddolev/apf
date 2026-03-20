@@ -19,6 +19,10 @@ from common import yaml_load, yaml_save, APF_INFO_FILEPATH, \
     InvalidInputException, ALLOW_ALL_FIELDS, warn, save_text
 
 
+EVENT_ID_FIELD = '_event_id_field'
+EVENT_ID_VALUE = '_event_id_value'
+
+
 def debug(item) -> None:
     with open("logs/debug.txt", "a") as f:
         f.write(f"{datetime.now()}\n{item}\n")
@@ -166,21 +170,47 @@ class Logger(ABC):
     def _generate_id() -> str:
         return str(uuid.uuid4())
 
-    def log_event(self, id_field: str = "", id_value: str = "") -> None:
+    def _fix_event_id(self, data: dict) -> tuple[str, dict]:
+        """If data contains EVENT_ID_FIELD and possibly EVENT_ID_VALUE,
+        remove them and set the value of the field names by EVENT_ID_FIELD
+        to be the value of the field EVENT_ID_VALUE.
+        If EVENT_ID_VALUE is not in `data`, generates a unique id,
+        which is the first element of the returned tuple.
+        Examples will make it clear:
+        _fix_event_id({'fx': 'abc'}) -> <unique_id> {'fx': 'abc'}
+        _fix_event_id({'fx': 'abc',
+                       '_event_id_field': 'my_name'})
+                       -> <unique_id> {'fx': 'abc', 'my_name' <the same unique_id>}
+        _fix_event_id({'fx': 'abc',
+                       '_event_id_field': 'my_name'},
+                       '_event_id_value': 'my_value')
+                       -> <my_value> {'fx': 'abc', 'my_name' <my_value>}
+        """
+        if EVENT_ID_FIELD not in data.keys():
+            assert EVENT_ID_VALUE not in data.keys()
+            return self._generate_id(), data
+        ret = {}
+        data_ = data.copy()
+        event_id_field = data_.pop(EVENT_ID_FIELD)
+        if EVENT_ID_VALUE in data_.keys():
+            ret[event_id_field] = data_.pop(EVENT_ID_VALUE)
+        else:
+            ret[event_id_field] = self._generate_id()
+        ret.update(data)
+        return data[event_id_field]
+
+    def log_event(self) -> None:
         """If logging is enabled, read JSON input and append to the log file."""
         if self.status() != Status.ENABLED:
             return
         config = self.load_config()
         data = self.get_input()
+        event_id, data_ = self._fix_event_id(data)
         timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
         # We assume that data doesn't have a field "_timestamp_"
         record = {"_timestamp_": timestamp}
-        if id_field:
-            if not id_value:
-                id_value = self._generate_id()
-            record[id_field] = id_value
         if config == ALLOW_ALL_FIELDS:
-            record.update(data)
+            record.update(data_)
         else:
             assert isinstance(config, tuple) and len(config) == 2
             default, fields = config
@@ -190,10 +220,10 @@ class Logger(ABC):
                 return
             if default:
                 # All keys missing from the config file should be included
-                record.update({k: v for k, v in data.items() if fields.get(k, True)})
+                record.update({k: v for k, v in data_.items() if fields.get(k, True)})
             else:
                 # All keys missing from the config file should be excluded
-                record.update({k: v for k, v in data.items() if fields.get(k, False)})
+                record.update({k: v for k, v in data_.items() if fields.get(k, False)})
         if dirname := os.path.dirname(self.logfile):
             os.makedirs(dirname, exist_ok=True)
         with open(self.logfile, "a", encoding="utf-8") as f:
@@ -213,22 +243,8 @@ class Logger(ABC):
             self.set_enabled(False)
             print(Status.DISABLED.value)
         else:
-            args = sys.argv[1:]
-            def _get_arg(flag: str) -> str:
-                if flag not in args:
-                    return ""
-                i = args.index(flag)
-                if i == len(args) - 1:
-                    print(f"Warning: {flag} is missing a value. Ignoring it.", file=sys.stderr)
-                    return ""
-                return args[i + 1]
-            id_field = _get_arg("--id_field")
-            id_value = _get_arg("--id_value")
-            if id_value and not id_field:
-                print(f"Warning: --id_value was provided without --id_field. Ignoring it.",
-                      file=sys.stderr)
             try:
-                self.log_event(id_field=id_field, id_value=id_value)
+                self.log_event()
             except InvalidInputException as e:
                 print(f"{str(e)}\nUsage: {Path(sys.argv[0]).name} [--status | --on | --off | --install]",
                       file=sys.stderr)
