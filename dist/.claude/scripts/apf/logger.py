@@ -93,7 +93,7 @@ class Logger(ABC):
         if not self.is_installed():
             name = self.config_key.replace('_', '-')
             warn(f"You must install {name} before you can turn it on or off.\n"
-                 f"Run: /name install")
+                 f"Run: /{name} install")
             exit(1)
         if self.sentinel_filepath:
             os.makedirs(self.sentinel_filepath.parent, exist_ok=True)
