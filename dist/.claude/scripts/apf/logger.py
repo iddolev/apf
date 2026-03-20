@@ -15,7 +15,7 @@ from enum import Enum
 from pathlib import Path
 
 from common import CYAML, cyaml_load, cyaml_save, cyaml_add_field, APF_INFO_FILEPATH, \
-    InvalidInputException, ALLOW_ALL_FIELDS
+    InvalidInputException, ALLOW_ALL_FIELDS, warn
 
 
 class Status(Enum):
@@ -51,6 +51,9 @@ class Logger(ABC):
         """Read the config section in the config file and return (enabled, enabled_fields)."""
         data = cyaml_load(self.config_filepath).get(self.config_key)
         if not data:
+            print(f"Warning: {self.config_key} section missing "
+                  f"from config file {self.config_filepath}, "
+                  f"so no logging will occur", file=sys.stderr)
             return set()
         if data == ALLOW_ALL_FIELDS:
             return data
@@ -74,13 +77,15 @@ class Logger(ABC):
         if not isinstance(existing, CYAML):
             raise ValueError(f"'fields' is missing or corrupt in {self.config_filepath}")
         fields_keys = set(existing.keys())
+        if not isinstance(self.field_definitions, list):
+            raise RuntimeError("field_definitions is not a list")
         missing = [(n, d, c) for n, d, c in self.field_definitions if n not in fields_keys]
         if not missing:
             # No missing keys, so no need to re-write fields
             return False
         # If there are missing keys, we add them here, and save below
         for name, default, comment in missing:
-            cyaml_add_field(existing, name, default, comment)
+            cyaml_add_field(existing, name, default, comment, indent=self.field_indent)
         return True
 
     def set_enabled(self, value: bool) -> None:
@@ -109,8 +114,10 @@ class Logger(ABC):
         else:
             # Add all fields
             fields = CYAML()
+            if not isinstance(self.field_definitions, list):
+                raise RuntimeError("field_definitions is not a list")
             for name, default, comment in self.field_definitions:
-                cyaml_add_field(fields, name, default, comment)
+                cyaml_add_field(fields, name, default, comment, indent=self.field_indent)
         config[self.config_key] = fields
         cyaml_save(self.config_filepath, config)
 
@@ -123,6 +130,10 @@ class Logger(ABC):
         if self.status() == Status.DISABLED:
             return
         enabled_fields = self.load_config()
+        if not enabled_fields:
+            warn(f"Warning: all fields are disabled in section {self.config_key} "
+                 f"in config file {self.config_filepath}, so logging is effectively disabled")
+            return
         data = self.get_input()
         timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
         record = {"_timestamp_": timestamp}
