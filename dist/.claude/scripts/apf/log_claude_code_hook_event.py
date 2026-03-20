@@ -11,8 +11,8 @@ from common import InvalidInputException, APF_FOLDER
 from logger import Logger
 
 
-KEY_log_claude_code_events = "log_claude_code_events"
-LOGFILE = "logs/claude_code_hook_events_log.jsonl"
+KEY_log_claude_code_hook_events = "log_claude_code_hook_events"
+LOGFILE = f"logs/{KEY_log_claude_code_hook_events}.jsonl"
 FIELD_DEFINITIONS = [
     ("session_id", True, "Unique identifier for the current conversation session"),
     ("transcript_path", False, "Path to the session's transcript JSONL file"),
@@ -35,10 +35,10 @@ class ClaudeCodeHookLogger(Logger):
 
 
 CLAUDE_CODE_HOOK_EVENT_LOGGER = ClaudeCodeHookLogger(
-        config_key=KEY_log_claude_code_events,
+        config_key=KEY_log_claude_code_hook_events,
         logfile=LOGFILE,
         field_definitions=FIELD_DEFINITIONS,
-        sentinel_filepath=f"{APF_FOLDER}/.{KEY_log_claude_code_events}")
+        sentinel_filepath=f"{APF_FOLDER}/.{KEY_log_claude_code_hook_events}")
 
 
 if __name__ == "__main__":
