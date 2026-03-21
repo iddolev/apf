@@ -44,15 +44,15 @@ REPO_SLUG = "iddolev/apf"  # for raw.githubusercontent.com
 # destination does not yet exist).
 # Directories are copied recursively; files are copied individually.
 PATH_MAP: list[tuple[str, str, bool]] = [
-    (f"dist/{APF_FOLDER}",    APF_FOLDER,                False),
-    ("dist/README.apf.md",    "README.apf.md",           True),
-    ("dist/CLAUDE.apf.md",    "CLAUDE.apf.md",           True),
-    ("dist/.claude/commands", ".claude/commands",        True),
-    ("dist/.claude/scripts",  ".claude/scripts",         True),
-    ("dist/.claude/shared",   ".claude/shared",          True),
-    (".claude/commands/apf",  ".claude/commands/apf",    True),
-    (".claude/scripts/apf",   ".claude/scripts/apf",     True),
-    ("templates/", ".apf/preparation/templates",         True),
+    (f"dist/{APF_FOLDER}",    APF_FOLDER,                   False),
+    ("dist/README.apf.md",    "README.apf.md",              True),
+    ("dist/CLAUDE.apf.md",    "CLAUDE.apf.md",              True),
+    ("dist/.claude/commands", ".claude/commands",           True),
+    ("dist/.claude/scripts",  ".claude/scripts",            True),
+    ("dist/.claude/shared",   ".claude/shared",             True),
+    (".claude/commands/apf",  ".claude/commands/apf",       True),
+    (".claude/scripts/apf",   ".claude/scripts/apf",        True),
+    ("templates/",            ".apf/preparation/templates", True),
 ]
 
 # The following are supposed to be copied as-is to the user's project

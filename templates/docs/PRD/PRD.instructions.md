@@ -55,7 +55,7 @@ The end result must:
 
 ## State Tracking
 
-Consult the latest `STATE/STATE-v*.md` and update it as needed.
+Consult the latest `.apf/STATE-v*.md` file and update it as needed.
 
 ## Naming convention
 
@@ -94,7 +94,7 @@ Then check whether the latest PRD's Status (in Section 1, Document Control) is *
 
 - **If the latest PRD IS Approved:** tell the user that the latest PRD
   (`v{version}`) is complete and approved.
-  - If all checkboxes in the latest `STATE/STATE-v*.md` are `[v]` then
+  - If all checkboxes in the latest `STATE` file are `[v]` then
     ask the user whether they want to start a PRD for the next version.
     If yes, ask what the next version number should be (suggest
     incrementing, e.g. `v0.1` -> `0.2`), then start Phase A for the new PRD.
@@ -341,7 +341,7 @@ When the PRD is ready:
 - Ensure companion documents are linked where applicable (Tech Spec, QA/test plan,
   Analytics/Tracking Plan, Launch Runbook) or explicitly marked `[TBD]`.
 - If they approve, update `Status`, `Last Updated`, and add an entry to `Appendix → Change Log`.
-  Update the latest `STATE/STATE-v*.md`.
+  Update the latest `.apf/STATE-v*.md`.
 
 Run `/format-markdown <prd-file>` on the PRD file.
 

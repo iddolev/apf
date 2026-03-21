@@ -55,7 +55,7 @@ The end result must:
 
 ## State Tracking
 
-Consult the latest `STATE/STATE-v*.md` and update it as needed.
+Consult the latest `.apf/STATE-v*.md` and update it as needed.
 
 <a id="naming-convention"/>
 
@@ -82,7 +82,7 @@ field, and:
   written incrementally, its filled-in sections are the primary indicator of progress).
   Continue from the appropriate point.
 - **If Approved:** tell the user the plan is complete.
-  If all checkboxes in the latest `STATE/STATE-v*.md` are `[v]` then
+  If all checkboxes in the latest `.apf/STATE-v*.md` are `[v]` then
   ask the user if they want to revise it or start an implementation plan for a different version.
 
 ## Codebase discovery
@@ -307,7 +307,7 @@ If issues are found, present them and resolve with the user before asking for ap
 
 Then ask the user to set the status: Draft -> In Review -> Approved.
 
-When approved, update the latest `STATE/STATE-v*.md`.
+When approved, update the latest `.apf/STATE-v*.md`.
 
 Run `/format-markdown <plan-file>` on the implementation plan file.
 

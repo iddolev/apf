@@ -47,7 +47,7 @@ instructions/
 │       ├── tech-lead.template.md                  — Tech lead agent definition
 │       └── backend-specialist.template.md         — Backend specialist agent definition
 └── state/
-    └── FRAMEWORK-STATE-template.yaml            — State tracking for the preparation workflow
+    └── STATE.template.yaml            — State tracking for the preparation workflow
 ```
 
 ### What I Think
