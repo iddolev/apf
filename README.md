@@ -65,6 +65,7 @@ dist/                            — Files copied as-is into the user project
 ├── .apf
 ├── .claude
 ├── rules
+├── docs-and-agents-process.md
 └── README.apf.md
 
 templates/                       — Files instantiated per project
@@ -72,19 +73,24 @@ templates/                       — Files instantiated per project
 │   ├── PRD/                     — PRD template + instructions
 │   ├── TSD/                     — TSD template + instructions
 │   ├── implementation-plan/     — Implementation plan template + instructions
-│   ├── test-plan/               — Test plan template + instructions
+│   └── test-plan/               — Test plan template + instructions
+├── .claude/
+│   └── agents/                  — Agent definition templates
 ├── rules
 ├── STATE
+├── CLAUDE.template.md
+├── PROJECT-STRUCTURE.template.md
 └── README.template.md
 
 .claude/                         — Entities for Claude Code
 │                                  either for this project, not to be copied to the user project
 │                                  or for both this project and the user project
 │                                  - these are placed under "apf" subfolder.
-│                                  Entities that are only for the usre project and not APF itself
+│                                  Entities that are only for the user project and not APF itself
 │                                  sit under dist/.claude/ and templates/.claude/
 ├── commands                     — Slash commands
 ├── scripts                      — Python scripts backing the slash commands
+├── skills                       — Skills
 └── ...                          — APF-only config — not copied to user project
 
 installation/
@@ -106,7 +112,7 @@ tests/                           — Tests for APF scripts
 
 ### Download
 
-To install APF in your new or existing project, download [this file](https://github.com/iddolev/apf/blob/main/installation/apf_install.bat) and run it, 
+To install APF in your new or existing project, download [this file](https://github.com/iddolev/apf/blob/main/installation/apf_install.bat) and run it,
 or download it using `curl`:
 
 ```bash
@@ -135,7 +141,7 @@ Once download is complete, give an LLM (Cursor with Claude Sonnet, or Claude Cod
 
 ## Demo
 
-To help you better understand how APF works, 
+To help you better understand how APF works,
 you can look at the [apf-demo](https://github.com/iddolev/apf-demo) repo.
 This repo is the result of installing APF into it, and running it to create a small toy project.
 
