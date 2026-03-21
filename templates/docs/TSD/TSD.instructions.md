@@ -6,7 +6,7 @@ purpose: "Instructions for an LLM to read an approved PRD and produce a lean, pr
 TSD."
 inputs:
   - "An approved PRD from /docs/specs/PRD_v{version}.md"
-  - "/instructions/TSD/TSD.template.md (reference menu of possible sections)"
+  - "/instructions/TSD/TSD.md.tmpl (reference menu of possible sections)"
 outputs:
   - "A completed TSD markdown document named TSD_v{version}.md in /docs/specs/"
 ---
@@ -35,7 +35,7 @@ answers "how and with what." The implementation plan (a separate companion docum
 answers "in what order."
 
 The critical principle: **write only what this project actually needs.** The reference
-template at `instructions/TSD/TSD.template.md` is a menu of everything a TSD *could*
+template at `instructions/TSD/TSD.md.tmpl` is a menu of everything a TSD *could*
 contain. Most projects need a fraction of it. E.g. a solo-developer local MVP does
 not need capacity planning, compliance matrices, or chaos testing sections. A
 distributed multi-team system does. Your job is to assess scope and write accordingly.
@@ -354,7 +354,7 @@ Run `/format-markdown <tsd-file>` on the TSD file.
 
 # Section writing guidance
 
-When writing each section, use the TSD-template (`instructions/TSD/TSD.template.md`)
+When writing each section, use the TSD-template (`instructions/TSD/TSD.md.tmpl`)
 as inspiration for what level of detail to include. Below is guidance on how to
 approach each section when you include it.
 
