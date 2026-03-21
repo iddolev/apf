@@ -2,8 +2,8 @@
 last_update: 2026-03-21
 author: Iddo Lev
 LLM-co-author: claude-Opus-4.6
-comment: | 
-  This script is meant to be copied to the user's project. 
+comment: |
+  This script is meant to be copied to the user's project.
   Do not run it in the APF agentic-programming project itself.
 ---
 
@@ -16,7 +16,7 @@ This document describes a section of the main preparation process file (`prepara
 Look for files matching the pattern `.apf/STATE-v{version}.md`.
 According to the content of the highest version STATE file, go to the appropriate stage
 below and follow the relevant instructions.
-Consult and update the STATE file as you progress through each doc.
+After completing each item, mark its checkbox as `[v]` in the STATE file before proceeding.
 
 1. PRD: using `.apf/preparation/templates/docs/PRD/PRD.instructions.md`
 2. TSD: using `.apf/preparation/templates/docs/TSD/TSD.instructions.md`
@@ -52,8 +52,8 @@ and adapt `<!-- ADAPT -->` sections to match the project.
    `.apf/preparation/templates/PROJECT-STRUCTURE.template.md` —
    derive from the TSD's architecture and the implementation plan's work breakdown.
    Place the result at `docs/PROJECT-STRUCTURE.md`.
-6. `README`: Recommend to the user to allow automatic creation of 
-   the project's README.md based on the docs, and ask whether they approve. 
+6. `README`: Offer to auto-generate the project's README.md based on the docs, and ask for
+   approval.
    If yes, then instantiate `.apf/preparation/templates/README.template.md` according to its
-   `<!-- ADAPT -->` markers, using information from the other documents. 
+   `<!-- ADAPT -->` markers, using information from the other documents.
    Place the result as `README.md` in the project root folder.
