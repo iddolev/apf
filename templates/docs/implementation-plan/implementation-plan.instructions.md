@@ -8,7 +8,8 @@ inputs:
   - "The corresponding PRD from /docs/specs/PRD_v{version}.md (for scope reference)"
   - "/instructions/implementation-plan/implementation-plan.template.md (document structure)"
 outputs:
-  - "A completed implementation plan markdown document named implementation-plan_v{version}.md in /docs/plans/"
+  - "A completed implementation plan markdown document named implementation-plan_v{version}.md in
+    /docs/plans/"
 ---
 
 ## Table of Contents
@@ -37,12 +38,14 @@ and what depends on what."
 
 The end result must:
 
-- Be created in `project_root/docs/plans/implementation-plan_v{version}.md` (version matches the TSD it derives from).
+- Be created in `project_root/docs/plans/implementation-plan_v{version}.md` (version matches the TSD
+  it derives from).
 - Break the TSD's architecture into concrete, sequenced work packages.
 - Identify dependencies between work packages so the build order is clear.
 - Define milestones with exit criteria so progress is measurable.
 - Identify the critical path so the team knows what cannot slip.
-- Be actionable enough that a developer or coding agent could pick up work packages and start building.
+- Be actionable enough that a developer or coding agent could pick up work packages and start
+  building.
 
 ---
 
@@ -50,21 +53,11 @@ The end result must:
 
 # Technical instructions
 
-## STATE.apf.yaml
+## State Tracking
 
-You must always consult the file @STATE/STATE.apf.yaml.
-Don't forget to always update the "stage" and "phase" fields in @STATE/STATE.apf.yaml to
-reflect the state of the preparation process.
-
-If stage == "implementation-plan" then continue in #naming-convention and onwards (resume from
-whatever phase is recorded). Otherwise:
-
-If stage == "TSD" and phase != "completed" then this "implementation-plan.instructions.md"
-script has been activated incorrectly. Tell that to the user and stop.
-If stage == "TSD" and phase == "completed" then:
-set "stage" to "implementation-plan"
-set "phase" to "Phase A"
-and continue here.
+Find the latest `STATE/STATE-v*.md` file.
+Mark the Implementation Plan checkbox as `[.]` (in progress) when you begin.
+Mark the Implementation Plan checkbox as `[v]` (done) when the plan is approved.
 
 <a id="naming-convention"/>
 
@@ -76,12 +69,14 @@ Implementation plan files are named `implementation-plan_v{version}.md` and stor
 
 ## Continuation
 
-Whenever you start following these instructions, check whether any `implementation-plan_v*.md` files already exist in
+Whenever you start following these instructions, check whether any `implementation-plan_v*.md` files
+already exist in
 `docs/plans/`.
 
 **If no implementation plan exists for the current TSD version:** start the process from Phase A.
 
-**If an implementation plan already exists for the current TSD version:** tell the user you found it, check its Status
+**If an implementation plan already exists for the current TSD version:** tell the user you found
+it, check its Status
 field, and:
 
 - **If Draft or In Review:** resume where you left off. Inspect which sections are already
@@ -89,7 +84,7 @@ field, and:
   written incrementally, its filled-in sections are the primary indicator of progress).
   Continue from the appropriate point.
 - **If Approved:** tell the user the plan is complete.
-  If FRAMEWORK-STATE.md shows that the SDLC status is "completed" then
+  If all checkboxes in the latest `STATE/STATE-v*.md` are `[v]` then
   ask the user if they want to revise it or start an implementation plan for a different version.
 
 ## Codebase discovery
@@ -124,7 +119,8 @@ Concretely:
 - **During Phase B**, update the file after completing each major section (e.g., after
   defining the work packages for Phase 1, save before moving on to Phase 2). This way,
   if the conversation is interrupted, all completed sections are already persisted.
-- When updating, modify only the relevant lines — never re-create the file from scratch after the initial creation.
+- When updating, modify only the relevant lines — never re-create the file from scratch after the
+  initial creation.
 
 ---
 
@@ -199,10 +195,13 @@ The implementation plan's primary reader is a **developer** (or coding agent) wh
 know what to build next, and a **project lead** who needs to track progress. Write
 accordingly:
 
-- Be **sequenced**: make the build order unambiguous. A developer should never wonder "what should I work on next?"
+- Be **sequenced**: make the build order unambiguous. A developer should never wonder "what should I
+  work on next?"
 - Be **dependency-aware**: every work package that depends on another should say so explicitly.
-- Be **milestone-driven**: group work packages into milestones with clear exit criteria so progress is measurable.
-- Be **actionable**: each work package should be concrete enough to start working on without further planning.
+- Be **milestone-driven**: group work packages into milestones with clear exit criteria so progress
+  is measurable.
+- Be **actionable**: each work package should be concrete enough to start working on without further
+  planning.
 
 ---
 
@@ -239,7 +238,8 @@ accordingly:
   this architecture pattern scale?") belong in the TSD's Risks section, not here. If a
   TSD risk affects effort estimates or sequencing, account for it in the work package
   estimates and dependencies, but do not duplicate the risk description.
-- **No hallucinations**: do not invent effort estimates, dependencies, or constraints not grounded in the TSD.
+- **No hallucinations**: do not invent effort estimates, dependencies, or constraints not grounded
+  in the TSD.
 - **Keep it current**: if the plan is updated (e.g., after TSD changes), update the Change Log.
 
 ---
@@ -249,8 +249,6 @@ accordingly:
 # Workflow
 
 ## Phase A — TSD analysis
-
-Update @STATE/STATE.apf.yaml: set phase to "Phase A" (if not already).
 
 1. Read the approved TSD (`docs/specs/TSD_v{version}.md`).
 2. Skim the PRD (`docs/specs/PRD_v{version}.md`) for scope context.
@@ -267,13 +265,12 @@ Update @STATE/STATE.apf.yaml: set phase to "Phase A" (if not already).
 7. Present the user with a brief summary:
    - The major phases you plan to organize work into.
    - The approximate number of work packages.
-   - Any sequencing questions (e.g., "Should frontend work start in parallel with backend, or after backend is
+   - Any sequencing questions (e.g., "Should frontend work start in parallel with backend, or after
+     backend is
      functional?").
 8. Wait for the user to confirm or adjust before drafting.
 
 ## Phase B — Draft the plan
-
-Update @STATE/STATE.apf.yaml: set phase to "Phase B".
 
 Write the implementation plan section by section, **updating the file on disk after each
 major section is completed**:
@@ -290,14 +287,10 @@ implementation plan. Please review the sequencing, effort estimates, and milesto
 
 ## Phase C — Iterate on feedback
 
-Update @STATE/STATE.apf.yaml: set phase to "Phase C".
-
 - Address the user's feedback by updating specific sections.
 - If the TSD changes, update affected work packages accordingly.
 
 ## Phase D — Sign-off
-
-Update @STATE/STATE.apf.yaml: set phase to "Phase D".
 
 Before asking for approval, verify:
 
@@ -316,7 +309,7 @@ If issues are found, present them and resolve with the user before asking for ap
 
 Then ask the user to set the status: Draft -> In Review -> Approved.
 
-When approved, update @STATE/STATE.apf.yaml: set phase to "completed".
+When approved, mark the Implementation Plan checkbox as `[v]` in the latest `STATE/STATE-v*.md`.
 
 Run `/format-markdown <plan-file>` on the implementation plan file.
 

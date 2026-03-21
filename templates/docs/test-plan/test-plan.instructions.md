@@ -2,11 +2,13 @@
 date: 2026-03-05
 author: "Iddo Lev"
 LLM-author: claude-Opus-4.6
-purpose: "Instructions for an LLM to read an approved TSD and PRD and produce a project-appropriate test plan."
+purpose: "Instructions for an LLM to read an approved TSD and PRD and produce a project-appropriate
+test plan."
 inputs:
   - "An approved TSD from /docs/specs/TSD_v{version}.md"
   - "The corresponding PRD from /docs/specs/PRD_v{version}.md (for requirements traceability)"
-  - "The implementation plan from /docs/plans/implementation-plan_v{version}.md (for work package dependencies)"
+  - "The implementation plan from /docs/plans/implementation-plan_v{version}.md (for work package
+    dependencies)"
   - "/instructions/test-plan/test-plan.template.md (reference menu of possible sections)"
 outputs:
   - "A completed test plan markdown document named test-plan_v{version}.md in /docs/plans/"
@@ -43,11 +45,14 @@ does. Your job is to assess scope and write accordingly.
 
 The end result must:
 
-- Be created in `project_root/docs/plans/test-plan_v{version}.md` (version matches the TSD it derives from).
-- Cover every testing concern that is **relevant** to this project's scope, complexity, and constraints.
+- Be created in `project_root/docs/plans/test-plan_v{version}.md` (version matches the TSD it
+  derives from).
+- Cover every testing concern that is **relevant** to this project's scope, complexity, and
+  constraints.
 - Omit sections that add no value for this project (do not include them with "N/A").
 - Trace PRD requirements to test cases so nothing falls through the cracks.
-- Be specific enough that a developer or QA engineer could execute the test plan without guessing intent.
+- Be specific enough that a developer or QA engineer could execute the test plan without guessing
+  intent.
 
 ---
 
@@ -55,22 +60,11 @@ The end result must:
 
 # Technical instructions
 
-## STATE.apf.yaml
+## State Tracking
 
-You must always consult the file @STATE/STATE.apf.yaml.
-Don't forget to always update the "stage" and "phase" fields in @STATE/STATE.apf.yaml to
-reflect the state of the preparation process.
-
-If stage == "test-plan" then continue in #naming-convention and onwards (resume from
-whatever phase is recorded). Otherwise:
-
-If stage == "implementation-plan" and phase != "completed" then this
-"test-plan.instructions.md" script has been activated incorrectly. Tell that to the user
-and stop.
-If stage == "implementation-plan" and phase == "completed" then:
-set "stage" to "test-plan"
-set "phase" to "Phase A"
-and continue here.
+Find the latest `STATE/STATE-v*.md` file.
+Mark the Test Plan checkbox as `[.]` (in progress) when you begin.
+Mark the Test Plan checkbox as `[v]` (done) when the test plan is approved.
 
 <a id="naming-convention"/>
 
@@ -82,24 +76,27 @@ Test plan files are named `test-plan_v{version}.md` and stored in
 
 ## Continuation
 
-Whenever you start following these instructions, check whether any `test-plan_v*.md` files already exist in
+Whenever you start following these instructions, check whether any `test-plan_v*.md` files already
+exist in
 `docs/plans/`.
 
 **If no test plan exists for the current TSD version:** start the process from Phase A.
 
-**If a test plan already exists for the current TSD version:** tell the user you found it, check its Status field, and:
+**If a test plan already exists for the current TSD version:** tell the user you found it, check its
+Status field, and:
 
 - **If Draft or In Review:** resume where you left off. Inspect which sections are already
   filled vs. still `[TBD]` to determine where the drafting left off (since the file is
   written incrementally, its filled-in sections are the primary indicator of progress).
   Continue from the appropriate point.
 - **If Approved:** tell the user the test plan is complete.
-  If FRAMEWORK-STATE.md shows that the SDLC status is "completed" then
+  If all checkboxes in the latest `STATE/STATE-v*.md` are `[v]` then
   ask the user if they want to revise it or start a test plan for a different version.
 
 ## Codebase discovery
 
-Before drafting the test plan, check whether a codebase already exists in the repository. If it does:
+Before drafting the test plan, check whether a codebase already exists in the repository. If it
+does:
 
 1. Scan the project's entire source code, test suites, configuration files, and existing
    documentation.
@@ -127,7 +124,8 @@ Concretely:
 - **During Phase B**, update the file after completing each section (e.g., after writing
   the Test Strategy, save it before moving on to Test Cases). This way, if the
   conversation is interrupted, all completed sections are already persisted.
-- When updating, modify only the relevant lines — never re-create the file from scratch after the initial creation.
+- When updating, modify only the relevant lines — never re-create the file from scratch after the
+  initial creation.
 
 ---
 
@@ -161,14 +159,19 @@ Use this assessment to select which sections to include:
 
 ### Include when relevant
 
-- **Requirements Traceability** — when the PRD has many requirements that need explicit coverage tracking.
-- **Test Environments & Data** — when tests require specific environment setup, seed data, or external stubs.
-- **Performance & Load Testing** — when the PRD specifies SLOs or the system handles significant load.
-- **Security Testing** — when the project has authentication, authorization, PII, or compliance requirements.
+- **Requirements Traceability** — when the PRD has many requirements that need explicit coverage
+  tracking.
+- **Test Environments & Data** — when tests require specific environment setup, seed data, or
+  external stubs.
+- **Performance & Load Testing** — when the PRD specifies SLOs or the system handles significant
+  load.
+- **Security Testing** — when the project has authentication, authorization, PII, or compliance
+  requirements.
 - **Accessibility Testing** — when the PRD specifies accessibility requirements.
 - **Entry & Exit Criteria** — when there is a formal release process or QA hand-off.
 - **Defect Management** — when there is a team with a bug triage process.
-- **Glossary** — when the test plan introduces testing-specific terminology that readers may not recognize.
+- **Glossary** — when the test plan introduces testing-specific terminology that readers may not
+  recognize.
 
 ### Rarely needed
 
@@ -187,7 +190,8 @@ quality. Write accordingly:
 
 - Be **concrete**: specific test cases with expected behavior, not vague "test the happy path."
 - Be **traceable**: every test case should connect to a requirement or architectural concern.
-- Be **practical**: tooling and mocking choices should be compatible with the technology stack defined in the TSD.
+- Be **practical**: tooling and mocking choices should be compatible with the technology stack
+  defined in the TSD.
 - Be **right-sized**: a solo-dev MVP needs a test checklist, not a 50-page QA plan.
 
 ---
@@ -227,8 +231,6 @@ quality. Write accordingly:
 
 ## Phase A — TSD/PRD analysis & scope assessment
 
-Update @STATE/STATE.apf.yaml: set phase to "Phase A" (if not already).
-
 1. Read the approved TSD (`docs/specs/TSD_v{version}.md`).
 2. Read the PRD (`docs/specs/PRD_v{version}.md`) for requirements context.
 3. Read the implementation plan (`docs/plans/implementation-plan_v{version}.md`) to
@@ -250,8 +252,6 @@ Update @STATE/STATE.apf.yaml: set phase to "Phase A" (if not already).
 
 ## Phase B — Draft the test plan
 
-Update @STATE/STATE.apf.yaml: set phase to "Phase B".
-
 Write the test plan section by section, **updating the file on disk after each section is
 completed**:
 
@@ -269,14 +269,10 @@ After all sections are drafted, present the plan to the user and ask:
 
 ## Phase C — Iterate on feedback
 
-Update @STATE/STATE.apf.yaml: set phase to "Phase C".
-
 - Address the user's feedback by updating specific sections.
 - If the TSD or PRD changes, update affected test cases accordingly.
 
 ## Phase D — Quality check & sign-off
-
-Update @STATE/STATE.apf.yaml: set phase to "Phase D".
 
 Before asking for approval, verify:
 
@@ -296,7 +292,7 @@ If issues are found, present them and resolve with the user before asking for ap
 
 Then ask the user to set the status: Draft -> In Review -> Approved.
 
-When approved, update @STATE/STATE.apf.yaml: set phase to "completed".
+When approved, mark the Test Plan checkbox as `[v]` in the latest `STATE/STATE-v*.md`.
 
 Run `/format-markdown <test-plan-file>` on the test plan file.
 

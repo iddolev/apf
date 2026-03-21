@@ -42,9 +42,11 @@ distributed multi-team system does. Your job is to assess scope and write accord
 The end result must:
 
 - Be created in `project_root/docs/specs/TSD_v{version}.md` (version matches the PRD it implements).
-- Cover every technical concern that is **relevant** to this project's scope, complexity, and constraints.
+- Cover every technical concern that is **relevant** to this project's scope, complexity, and
+  constraints.
 - Omit sections that add no value for this project (do not include them with "N/A").
-- Replace `[TBD]` with concrete decisions wherever possible; use `[TBD]` only for genuinely unresolved items, and track
+- Replace `[TBD]` with concrete decisions wherever possible; use `[TBD]` only for genuinely
+  unresolved items, and track
   those in Open Questions.
 - Be specific enough that a developer or a coding agent (e.g. Claude Code) could
   implement from it without guessing architectural intent.
@@ -55,21 +57,11 @@ The end result must:
 
 # Technical instructions
 
-## STATE.apf.yaml
+## State Tracking
 
-You must always consult the file @STATE/STATE.apf.yaml.
-Don't forget to always update the "stage" and "phase" fields in
-@STATE/STATE.apf.yaml to reflect the state of the preparation process.
-
-If stage == "TSD" then continue in #naming-convention and onwards (resume from
-whatever phase is recorded). Otherwise:
-
-If stage == "PRD" and phase != "completed" then this "TSD.instructions.md" script
-has been activated incorrectly. Tell that to the user and stop.
-If stage == "PRD" and phase == "completed" then:
-set "stage" to "TSD"
-set "phase" to "Phase A"
-and continue here.
+Find the latest `STATE/STATE-v*.md` file.
+Mark the TSD checkbox as `[.]` (in progress) when you begin.
+Mark the TSD checkbox as `[v]` (done) when the TSD is approved.
 
 <a id="naming-convention"/>
 
@@ -81,18 +73,20 @@ The version matches the PRD version it implements (e.g., `TSD_v0.1.md` implement
 
 ## Continuation
 
-Whenever you start following these instructions, check whether any `TSD_v*.md` files already exist in `docs/specs/`.
+Whenever you start following these instructions, check whether any `TSD_v*.md` files already exist
+in `docs/specs/`.
 
 **If no TSD exists for the current PRD version:** start the process from Phase A.
 
-**If a TSD already exists for the current PRD version:** tell the user you found it, check its Status field, and:
+**If a TSD already exists for the current PRD version:** tell the user you found it, check its
+Status field, and:
 
 - **If Draft or In Review:** resume where you left off. Inspect which sections are
   already filled vs. still `[TBD]` to determine where the drafting left off (since
   the file is written incrementally, its filled-in sections are the primary
   indicator of progress). Continue from the appropriate point.
 - **If Approved:** tell the user the TSD is complete.
-  If FRAMEWORK-STATE.md shows that the SDLC status is "completed" then then
+  If all checkboxes in the latest `STATE/STATE-v*.md` are `[v]` then
   ask the user if they want to revise it or start a TSD for a different PRD version.
 
 ## Codebase discovery
@@ -108,7 +102,8 @@ Before writing the TSD, check whether a codebase already exists in the repositor
    components are **reused as-is**, which are **modified**, and which are **new**.
 4. Reference existing code paths, file names, and module boundaries so the TSD is
    grounded in the real codebase, not an idealized design.
-5. Use the "Current State & Baseline" section of the TSD template to document the existing system before proposing
+5. Use the "Current State & Baseline" section of the TSD template to document the existing system
+   before proposing
    changes.
 
 ## Incremental writing (critical)
@@ -128,7 +123,8 @@ Concretely:
   writing Architecture Overview, save it before moving on to Technology Stack).
   This way, if the conversation is interrupted, all completed sections are already
   persisted.
-- When updating, modify only the relevant lines — never re-create the file from scratch after the initial creation.
+- When updating, modify only the relevant lines — never re-create the file from scratch after the
+  initial creation.
 
 ---
 
@@ -170,18 +166,24 @@ TSD-template sections to when they are needed:
 ### Include when relevant
 
 - **PRD Traceability** — when the PRD has many requirements that need explicit mapping.
-- **Data Model & Storage** — when there is persistent data (schemas, indexes, access patterns, retention).
-- **API & Interface Contracts** — when there are APIs consumed by other systems or a frontend (endpoint specs, auth,
+- **Data Model & Storage** — when there is persistent data (schemas, indexes, access patterns,
+  retention).
+- **API & Interface Contracts** — when there are APIs consumed by other systems or a frontend
+  (endpoint specs, auth,
   error format, versioning).
 - **Events & Async Processing** — when the system uses message queues, events, or background jobs.
-- **Business Rules & Validation** — when there are non-trivial validation rules or algorithms beyond simple input
+- **Business Rules & Validation** — when there are non-trivial validation rules or algorithms beyond
+  simple input
   checks.
 - **State Machines** — when entities have meaningful lifecycles with state transitions.
-- **Security & Privacy** — when the project handles auth, PII, multi-tenancy, or has compliance requirements.
-- **Performance & Scalability** — when the PRD specifies SLOs, handles significant load, or has cost constraints.
+- **Security & Privacy** — when the project handles auth, PII, multi-tenancy, or has compliance
+  requirements.
+- **Performance & Scalability** — when the PRD specifies SLOs, handles significant load, or has cost
+  constraints.
 - **Caching Strategy** — when performance targets require caching.
 - **Observability** — when the project needs logging, metrics, tracing, alerting, or dashboards.
-- **Deployment & Rollout** — when deployment involves CI/CD, feature flags, rollout phases, or rollback plans.
+- **Deployment & Rollout** — when deployment involves CI/CD, feature flags, rollout phases, or
+  rollback plans.
 - **Migration & Compatibility** — when replacing or evolving an existing system.
 - **Analytics Instrumentation** — when the PRD specifies analytics events or experiments.
 
@@ -221,11 +223,14 @@ Assume the TSD's primary reader is a **developer** or an AI coding agent
 (e.g. Claude Code) who will implement the system. Write accordingly:
 
 - Be **concrete**: exact endpoints, schemas, error codes, config keys — not hand-wavy descriptions.
-- Be **opinionated**: make decisions, don't list options without choosing. If a decision needs user input, ask for it.
-- Be **implementation-ready**: a developer should be able to start coding from this document without needing to make
+- Be **opinionated**: make decisions, don't list options without choosing. If a decision needs user
+  input, ask for it.
+- Be **implementation-ready**: a developer should be able to start coding from this document without
+  needing to make
   architectural decisions on the fly.
 - Use **code blocks** for schemas, API examples, config formats, and directory structures.
-- Keep it **DRY**: reference the PRD for business context; do not duplicate "what" and "why" — only add "how."
+- Keep it **DRY**: reference the PRD for business context; do not duplicate "what" and "why" — only
+  add "how."
 
 ---
 
@@ -275,8 +280,6 @@ Assume the TSD's primary reader is a **developer** or an AI coding agent
 
 ## Phase A — PRD analysis & scope assessment
 
-Update @STATE/STATE.apf.yaml: set phase to "Phase A" (if not already).
-
 1. Read the approved PRD (`docs/specs/PRD_v{version}.md`).
 2. If a codebase already exists, perform codebase discovery (see Technical
    instructions → Codebase discovery): scan the entire codebase (source, tests,
@@ -296,14 +299,13 @@ Update @STATE/STATE.apf.yaml: set phase to "Phase A" (if not already).
 
 ## Phase B — Draft the TSD
 
-Update @STATE/STATE.apf.yaml: set phase to "Phase B".
-
 Write the TSD section by section, **updating the file on disk after each section is
 completed**. For each included section:
 
 - Write real content, not placeholders.
 - Where you need to make a choice (framework, library, pattern), propose one with a brief rationale.
-- Where you genuinely cannot decide without user input, use `[TBD — needs input: brief description of what's needed]`
+- Where you genuinely cannot decide without user input, use `[TBD — needs input: brief description
+  of what's needed]`
   and add it to Open Questions.
 - **Save the section to the TSD file before moving on to the next section.** This
   ensures all completed work is persisted even if the conversation is interrupted.
@@ -312,22 +314,20 @@ completed**. For each included section:
   entry in the traceability table. Flag any missing requirements and resolve them
   before moving on.
 
-After all sections are drafted, present the TSD to the user (or point them to the file in the IDE) and ask:
+After all sections are drafted, present the TSD to the user (or point them to the file in the IDE)
+and ask:
 
-- "Here is the complete TSD draft. Please review and let me know what needs changes — especially the architectural
+- "Here is the complete TSD draft. Please review and let me know what needs changes — especially the
+  architectural
   decisions and technology choices."
 
 ## Phase C — Iterate on feedback
-
-Update @STATE/STATE.apf.yaml: set phase to "Phase C".
 
 - Address the user's feedback by updating specific sections.
 - If the user raises new technical questions, resolve them and update the TSD.
 - Keep iterations focused — update only what changed, don't rewrite the whole document.
 
 ## Phase D — Quality check & sign-off
-
-Update @STATE/STATE.apf.yaml: set phase to "Phase D".
 
 Before asking for approval, verify:
 
@@ -345,7 +345,7 @@ If issues are found, present them and resolve with the user before asking for ap
 
 Then ask the user to set the TSD status: Draft -> In Review -> Approved.
 
-When approved, update @STATE/STATE.apf.yaml: set phase to "completed".
+When approved, mark the TSD checkbox as `[v]` in the latest `STATE/STATE-v*.md`.
 
 Run `/format-markdown <tsd-file>` on the TSD file.
 
@@ -360,12 +360,15 @@ as inspiration for what level of detail to include. Below is guidance on how to
 approach each section when you include it.
 
 - **Document Control**: Keep it brief. Name, version, status, author, link to PRD.
-- **Summary & Scope**: 1-2 paragraphs on the technical approach. List key trade-offs. State what is NOT covered.
+- **Summary & Scope**: 1-2 paragraphs on the technical approach. List key trade-offs. State what is
+  NOT covered.
 - **Architecture Overview**: Start with a component list and how they connect.
   Include a data flow description for the primary use case. State the architecture
   style and justify it briefly.
-- **Technology Stack**: Table of layer / technology / version / rationale. Be specific about versions.
-- **Data Model**: Define actual schemas (tables, fields, types, constraints). Include access patterns and indexes.
+- **Technology Stack**: Table of layer / technology / version / rationale. Be specific about
+  versions.
+- **Data Model**: Define actual schemas (tables, fields, types, constraints). Include access
+  patterns and indexes.
 - **API Contracts**: Define actual endpoints with method, path, request/response
   JSON, error cases, and auth requirements.
 - **Core Flows**: Walk through the primary PRD use cases step-by-step at the
@@ -379,11 +382,13 @@ approach each section when you include it.
   architecture/technology choice work?" risks. Plan execution risks ("what could
   delay or block work?") belong in the implementation plan, not here.
 
-> **Note:** The following are separate companion documents, created after the TSD is approved (in this order):
+> **Note:** The following are separate companion documents, created after the TSD is approved (in
+this order):
 >
 > 1. **Implementation plan** (work breakdown, sequencing, milestones, critical path):
 `instructions/implementation-plan/implementation-plan.instructions.md`
-> 2. **Test plan** (testing strategy, test cases, quality gates — references the implementation plan for work package
+> 2. **Test plan** (testing strategy, test cases, quality gates — references the implementation plan
+for work package
 dependencies): `instructions/test-plan/test-plan.instructions.md`
 
 ---
