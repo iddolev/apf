@@ -4,6 +4,8 @@
 
 1. sub-agents that verify implementation against the plan document. Catches what you'd normally
    miss.
+2. Whenever running APF, automatically detect whether a newer version was released in GitHub,
+   and offer the user to update.
 
 ## Bugs
 
