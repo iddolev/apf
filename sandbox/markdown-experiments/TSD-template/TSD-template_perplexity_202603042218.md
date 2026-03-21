@@ -1,5 +1,5 @@
 ---
-date: [YYYY-MM-DD]
+last_update: [YYYY-MM-DD]
 author: [Your name]
 reviewers: [Tech lead, Architect, QA, DevOps]
 status: Draft | In Review | Approved

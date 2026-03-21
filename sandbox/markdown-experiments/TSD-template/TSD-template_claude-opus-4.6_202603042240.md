@@ -1,5 +1,5 @@
 ---
-date: 2026-03-04
+last_update: 2026-03-04
 author: "Claude Opus 4.6"
 status: Draft
 constraints:
