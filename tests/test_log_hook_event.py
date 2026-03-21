@@ -186,7 +186,7 @@ class TestLogEvent:
 
         logger.log_event()
 
-        logfile = tmp_path / "logs" / "claude_code_hook_event.jsonl"
+        logfile = tmp_path / "logs" / "claude_code_hook_events.jsonl"
         assert logfile.exists()
         record = json.loads(logfile.read_text(encoding="utf-8").strip())
         assert "_timestamp_" in record
@@ -205,7 +205,7 @@ class TestLogEvent:
 
         logger.log_event()
 
-        assert not (tmp_path / "logs" / "claude_code_hook_event.jsonl").exists()
+        assert not (tmp_path / "logs" / "claude_code_hook_events.jsonl").exists()
 
     def test_appends_to_existing_log(self, tmp_path, monkeypatch):
         config_file = tmp_path / "apf.yaml"
@@ -219,7 +219,7 @@ class TestLogEvent:
             monkeypatch.setattr("sys.stdin", StringIO(json.dumps({"session_id": sid})))
             logger.log_event()
 
-        logfile = tmp_path / "logs" / "claude_code_hook_event.jsonl"
+        logfile = tmp_path / "logs" / "claude_code_hook_events.jsonl"
         lines = logfile.read_text(encoding="utf-8").strip().splitlines()
         assert len(lines) == 2
         assert json.loads(lines[0])["session_id"] == "sess-1"
@@ -237,7 +237,7 @@ class TestLogEvent:
 
         logger.log_event()
 
-        logfile = tmp_path / "logs" / "claude_code_hook_event.jsonl"
+        logfile = tmp_path / "logs" / "claude_code_hook_events.jsonl"
         record = json.loads(logfile.read_text(encoding="utf-8").strip())
         assert re.fullmatch(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z", record["_timestamp_"])
 

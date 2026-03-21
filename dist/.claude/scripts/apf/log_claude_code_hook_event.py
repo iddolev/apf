@@ -12,7 +12,7 @@ from logger import Logger
 from set_hooks_for_claude_code_event_logger import HooksInstaller
 
 
-LOGFILE = f"logs/{KEY_log_claude_code_hook_event[4:]}.jsonl"
+LOGFILE = "logs/claude_code_hook_events.jsonl"
 FIELD_DEFINITIONS = [
     {"name": "session_id",
      "value": True,
