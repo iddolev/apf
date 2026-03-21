@@ -1,6 +1,6 @@
 ---
 date: 2026-03-04
-LLM-author: grok
+LLM-co-author: grok
 ---
 
 # Technical Specifications Document (TSD) Template

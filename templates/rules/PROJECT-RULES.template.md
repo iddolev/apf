@@ -1,7 +1,7 @@
 ---
 date: 2026-03-06
 author: Iddo Lev
-LLM-author: claude-Opus-4.6
+LLM-co-author: claude-Opus-4.6
 ---
 
 # Project Rules
