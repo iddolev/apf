@@ -1,10 +1,13 @@
 ---
-date: 2026-03-06
-author: "Iddo Lev"
-LLM-author: claude-Opus-4.6
+date: 2026-03-21
+author: Iddo Lev
+LLM-co-author: claude-Opus-4.6
+comment: |
+  This is a general template for a README file. 
+  As far as APF is concerned, it's optional, and is in addition to README.apf.md.
 ---
 
-# [TBD — Product / Feature Name]
+# [TBD — Product Name]
 
 <!-- ADAPT: Fill in a 1-2 sentence description from the PRD's Executive Summary. -->
 
@@ -72,7 +75,9 @@ a methodology toolkit that guides AI-assisted development through a structured p
 PRD, TSD, Implementation Plan, Test Plan, and agent setup, 
 and then an orchestration of the agents. 
 
-The framework lives here: [APF on GitHub](https://github.com/iddolev/apf/tree/main).
+Look at `README.apf.md` for more information on how APF is used in this project.
+
+The general framework lives here: [APF on GitHub](https://github.com/iddolev/apf/tree/main).
 It contains:
 
 - Templates and instructions for creating spec and planning documents

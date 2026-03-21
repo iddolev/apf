@@ -1,6 +1,6 @@
 ---
 date: 2026-03-04
-author: "Iddo Lev"
+author: Iddo Lev
 first_LLM_author: "gpt-5.2"
 improved_by_suggestions_from_LLMs_and_sources:
   - "claude-opus-4.6"

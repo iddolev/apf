@@ -45,7 +45,8 @@ REPO_SLUG = "iddolev/apf"  # for raw.githubusercontent.com
 # Directories are copied recursively; files are copied individually.
 PATH_MAP: list[tuple[str, str, bool]] = [
     (f"dist/{APF_FOLDER}",    APF_FOLDER,                False),
-    ("dist/CLAUDE.md",        "CLAUDE.md",               True),
+    ("dist/README.apf.md",    "README.apf.md",           True),
+    ("dist/CLAUDE.apf.md",    "CLAUDE.apf.md",           True),
     ("dist/.claude/commands", ".claude/commands",        True),
     ("dist/.claude/scripts",  ".claude/scripts",         True),
     ("dist/.claude/shared",   ".claude/shared",          True),
