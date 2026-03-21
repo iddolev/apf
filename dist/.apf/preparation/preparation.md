@@ -68,7 +68,7 @@ identify the first checkbox that is not `[v]`, and resume from that stage:
 
 <a id="specs-and-plans"/>
 
-# Documents Preparation and Instantiation
+## Documents Preparation and Instantiation
 
 In this stage you are to create documents and rule files to be used 
 as the "ground truth" and guiding governance for this project 
