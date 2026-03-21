@@ -129,3 +129,138 @@ TaskCreate / TaskUpdate / TaskList / TaskGet / TaskOutput / TaskStop — a todo 
 
 In practice, you might use both together: the orchestrator calls TaskCreate to record "step 3: research phase" as in-progress, then calls Agent to actually spawn the researcher subagent that does the work, then calls TaskUpdate to mark it complete when the agent returns.
 
+---
+
+# Example using TaskTools and Agent Tool
+
+Let me design a concrete, realistic example: a `/my:audit` command that audits a codebase across three dimensions in parallel — security, test coverage, and dead code. This is a natural fit for TaskTools because the three audits are independent and you want visible progress tracking.
+
+---
+
+**File: `.claude/commands/my/audit.md`**
+
+```markdown
+---
+name: my:audit
+description: Audit codebase for security issues, test coverage, and dead code
+allowed-tools:
+  - Read
+  - Bash
+  - Glob
+  - Grep
+  - Task
+  - TaskCreate
+  - TaskUpdate
+  - TaskList
+---
+
+<objective>
+Run a three-part codebase audit in parallel and produce a consolidated report.
+</objective>
+
+<process>
+Execute the audit workflow:
+
+## 1. Create task list
+
+TaskCreate({ subject: "Security audit", description: "Scan for hardcoded secrets, SQL injection, XSS, insecure deps", activeForm: "Scanning for security issues" })
+TaskCreate({ subject: "Test coverage audit", description: "Find untested files and functions, report coverage gaps", activeForm: "Analysing test coverage" })
+TaskCreate({ subject: "Dead code audit", description: "Find unused exports, unreachable functions, orphaned files", activeForm: "Finding dead code" })
+
+## 2. Spawn three auditor agents in parallel
+
+Run all three Task() calls simultaneously:
+
+Task(
+  prompt="<task>Security audit of this codebase. TaskId: {task_id_1}</task> ... ",
+  subagent_type="codebase-auditor",
+  description="Security audit"
+)
+
+Task(
+  prompt="<task>Test coverage audit. TaskId: {task_id_2}</task> ...",
+  subagent_type="codebase-auditor",
+  description="Coverage audit"
+)
+
+Task(
+  prompt="<task>Dead code audit. TaskId: {task_id_3}</task> ...",
+  subagent_type="codebase-auditor",
+  description="Dead code audit"
+)
+
+## 3. Consolidate
+
+When all three return, write AUDIT-REPORT.md combining their findings.
+</process>
+```
+
+---
+
+**File: `.claude/agents/codebase-auditor.md`**
+
+```markdown
+---
+name: codebase-auditor
+description: Runs a focused codebase audit (security, coverage, or dead code). Spawned by /my:audit.
+tools: Read, Bash, Glob, Grep, TaskUpdate, TaskGet
+model: sonnet
+---
+
+<role>
+You are a focused codebase auditor. You perform one specific audit task and report findings.
+
+You have access to TaskUpdate and TaskGet so you can update your own task status in the shared task list.
+</role>
+
+<process>
+
+## 1. Claim your task
+
+Read the TaskId from your prompt. Then:
+
+TaskUpdate({ taskId: "{task_id}", status: "in_progress" })
+
+## 2. Do the audit
+
+Read the audit type from your prompt and execute accordingly:
+
+**Security:** Grep for hardcoded secrets, eval(), raw SQL concatenation, unvalidated inputs. Check package.json for known vulnerable deps.
+
+**Test coverage:** Glob for source files, cross-reference with test files. List src files with no corresponding test file. Grep for exported functions with no test imports.
+
+**Dead code:** Grep for exported symbols, check which are never imported elsewhere. Find files not referenced by any import.
+
+## 3. Return findings
+
+Structure your response as:
+
+## AUDIT COMPLETE: {audit_type}
+
+### Findings
+- ...
+
+### Severity
+HIGH / MEDIUM / LOW
+
+## 4. Update task status
+
+TaskUpdate({ taskId: "{task_id}", status: "completed" })
+
+</process>
+```
+
+---
+
+**Why TaskTools add value here vs. not using them:**
+
+| Without TaskTools | With TaskTools |
+|---|---|
+| User sees nothing until all 3 agents finish | User sees live spinner: "Scanning for security issues..." |
+| No way for agents to signal they've started | Each agent marks itself `in_progress` immediately |
+| Orchestrator has no structured way to check state | Orchestrator can call `TaskList` to see what's done |
+| If one agent fails, hard to tell which | Failed agent stays `in_progress`, making the gap visible |
+
+---
+
+**Where TaskTools genuinely add value:** multi-agent workflows where tasks are independent, long-running, and you want the user to see structured progress. For a simple sequential workflow with 3 steps, they add ceremony without much benefit — natural language progress messages ("Step 1 done, starting step 2...") are often sufficient.
