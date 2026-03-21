@@ -59,12 +59,10 @@ class ClaudeCodeHookLogger(Logger):
         HooksInstaller().install_hooks_in_settings_file()
 
 
-CLAUDE_CODE_HOOK_EVENT_LOGGER = ClaudeCodeHookLogger(
+if __name__ == "__main__":
+    ClaudeCodeHookLogger(
         config_key=KEY_log_claude_code_hook_event,
         logfile=LOGFILE,
         field_definitions=FIELD_DEFINITIONS,
-        sentinel_filepath=f"{APF_FOLDER}/.{KEY_log_claude_code_hook_event}")
-
-
-if __name__ == "__main__":
-    CLAUDE_CODE_HOOK_EVENT_LOGGER.main()
+        sentinel_filepath=f"{APF_FOLDER}/.{KEY_log_claude_code_hook_event}",
+    ).main()

@@ -5,293 +5,277 @@ from pathlib import Path
 from unittest.mock import patch
 
 import pytest
-from ruamel.yaml import YAML, CommentedMap
+import yaml
 
 # Make dist/.claude/scripts/apf/ importable
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT / "dist" / ".claude" / "scripts" / "apf"))
 
-from common import APF_INFO_FILENAME
-from log_claude_code_hook_event import ClaudeCodeHookLogger, FIELD_DEFINITIONS, CONFIG_KEY, LOGFILE
+from common import KEY_log_claude_code_hook_event, ALLOW_ALL_FIELDS
+from log_claude_code_hook_event import ClaudeCodeHookLogger, FIELD_DEFINITIONS, LOGFILE
+from logger import Status
 
-_logger = ClaudeCodeHookLogger(config_key=CONFIG_KEY, logfile=LOGFILE, field_definitions=FIELD_DEFINITIONS)
-
-_yaml = YAML()
+CONFIG_KEY = KEY_log_claude_code_hook_event
 
 
-def _write_apf_yaml(path: Path, enabled: bool, fields: dict) -> None:
-    """Helper: write a minimal .apf.yaml with the given enabled/fields."""
-    fields_yaml = "\n".join(f"    {k}: {str(v).lower()}" for k, v in fields.items())
-    path.write_text(
-        f"version: 0.1.0\n\n"
-        f"{CONFIG_KEY}:\n"
-        f"  enabled: {str(enabled).lower()}\n"
-        f"  fields:\n{fields_yaml}\n",
-        encoding="utf-8",
+def _make_logger(config_filepath: Path, sentinel_filepath: Path | None = None) -> ClaudeCodeHookLogger:
+    kwargs = dict(
+        config_key=CONFIG_KEY,
+        logfile=LOGFILE,
+        field_definitions=FIELD_DEFINITIONS,
+        config_filepath=str(config_filepath),
     )
+    if sentinel_filepath is not None:
+        kwargs["sentinel_filepath"] = str(sentinel_filepath)
+    return ClaudeCodeHookLogger(**kwargs)
 
 
-def _extract_comments(fields: CommentedMap) -> dict[str, str]:
-    """Extract the 'before' comment for each field key.
+def _write_base_config(path: Path) -> None:
+    path.write_text(yaml.dump({"version": "0.1.0"}), encoding="utf-8")
 
-    ruamel.yaml stores before-comments with an offset:
-    - The first key's comment is in fields.ca.comment[1]
-    - Each later key's comment is at index [2] of the *previous* key's ca.items entry
-    """
-    keys = list(fields.keys())
-    comments = {}
 
-    # First key: comment is on the map itself
-    if fields.ca.comment and fields.ca.comment[1]:
-        comments[keys[0]] = fields.ca.comment[1][0].value
-
-    # Remaining keys: comment is stored as "after" on the previous key
-    for i, key in enumerate(keys[:-1]):
-        token = fields.ca.items.get(key)
-        if token and token[2]:
-            comments[keys[i + 1]] = token[2].value
-
-    return comments
+def _write_config_with_section(path: Path, *, default: bool = False, do_all: bool = False,
+                                fields: dict | None = None) -> None:
+    """Write .apf.yaml with the logger's config section."""
+    section: dict = {"do_all": do_all, "default": default}
+    section["fields"] = [{"name": k, "value": v, "comment": ""} for k, v in (fields or {}).items()]
+    path.write_text(yaml.dump({"version": "0.1.0", CONFIG_KEY: section}), encoding="utf-8")
 
 
 # ── install() ────────────────────────────────────────────────────────────
 
 
 class TestInstall:
-    def test_adds_section_with_comments(self, tmp_path):
-        """install() on a file with no log_claude_code_events section
-        should add the full section with a comment above each field."""
-        apf_yaml = tmp_path / APF_INFO_FILENAME
-        apf_yaml.write_text("version: 0.1.0\n", encoding="utf-8")
+    def test_adds_section(self, tmp_path):
+        """install() on a file with no config section should add the full section."""
+        config_file = tmp_path / "apf.yaml"
+        sentinel = tmp_path / "sentinel"
+        _write_base_config(config_file)
 
-        _logger.install(apf_yaml_path=apf_yaml)
+        with patch("set_hooks_for_claude_code_event_logger.HooksInstaller.install_hooks_in_settings_file"):
+            _make_logger(config_file, sentinel).install()
 
-        config = _yaml.load(apf_yaml.read_text(encoding="utf-8"))
-
-        # Original content preserved
+        config = yaml.safe_load(config_file.read_text(encoding="utf-8"))
         assert config["version"] == "0.1.0"
-
-        # Section structure
         section = config[CONFIG_KEY]
-        assert section["enabled"] is False
+        assert section["do_all"] is False
+        assert section["default"] is False
         fields = section["fields"]
-        assert isinstance(fields, CommentedMap)
+        assert isinstance(fields, list)
+        field_names = [f["name"] for f in fields]
+        assert field_names == [fd["name"] for fd in FIELD_DEFINITIONS]
+        for fd in FIELD_DEFINITIONS:
+            match = next(f for f in fields if f["name"] == fd["name"])
+            assert match["value"] is fd["value"]
 
-        # All fields present with correct defaults, in order
-        assert list(fields.keys()) == [name for name, _, _ in FIELD_DEFINITIONS]
-        for name, default, _ in FIELD_DEFINITIONS:
-            assert fields[name] is default, f"{name} should be {default}"
+    def test_creates_sentinel_as_off(self, tmp_path):
+        """install() should create the sentinel file with 'off'."""
+        config_file = tmp_path / "apf.yaml"
+        sentinel = tmp_path / "sentinel"
+        _write_base_config(config_file)
 
-        # Each field has its description as a comment above it
-        comments = _extract_comments(fields)
-        for name, _, expected_comment in FIELD_DEFINITIONS:
-            assert name in comments, f"No comment for {name}"
-            assert expected_comment in comments[name]
+        with patch("set_hooks_for_claude_code_event_logger.HooksInstaller.install_hooks_in_settings_file"):
+            _make_logger(config_file, sentinel).install()
 
-    def test_enable_after_install(self, tmp_path):
-        """install(enable_after_install=True) should set enabled to True."""
-        apf_yaml = tmp_path / APF_INFO_FILENAME
-        apf_yaml.write_text("version: 0.1.0\n", encoding="utf-8")
-
-        _logger.install(enable_after_install=True, apf_yaml_path=apf_yaml)
-
-        config = _yaml.load(apf_yaml.read_text(encoding="utf-8"))
-        assert config[CONFIG_KEY]["enabled"] is True
-
-    def test_creates_file_when_missing(self, tmp_path):
-        """install() should work even if .apf.yaml does not exist yet."""
-        apf_yaml = tmp_path / APF_INFO_FILENAME
-        assert not apf_yaml.exists()
-
-        _logger.install(apf_yaml_path=apf_yaml)
-
-        config = _yaml.load(apf_yaml.read_text(encoding="utf-8"))
-        assert CONFIG_KEY in config
-        fields = config[CONFIG_KEY]["fields"]
-        assert list(fields.keys()) == [name for name, _, _ in FIELD_DEFINITIONS]
+        assert sentinel.exists()
+        assert sentinel.read_text().strip() == "off"
 
     def test_idempotent_when_all_fields_present(self, tmp_path):
-        """install() on a complete config should not modify the file."""
-        apf_yaml = tmp_path / APF_INFO_FILENAME
-        all_fields = {name: default for name, default, _ in FIELD_DEFINITIONS}
-        _write_apf_yaml(apf_yaml, enabled=True, fields=all_fields)
-        content_before = apf_yaml.read_text(encoding="utf-8")
+        """install() on a complete config should not modify the config file."""
+        config_file = tmp_path / "apf.yaml"
+        sentinel = tmp_path / "sentinel"
+        all_fields = {fd["name"]: fd["value"] for fd in FIELD_DEFINITIONS}
+        _write_config_with_section(config_file, fields=all_fields)
+        content_before = config_file.read_text(encoding="utf-8")
 
-        _logger.install(apf_yaml_path=apf_yaml)
+        with patch("set_hooks_for_claude_code_event_logger.HooksInstaller.install_hooks_in_settings_file"):
+            _make_logger(config_file, sentinel).install()
 
-        assert apf_yaml.read_text(encoding="utf-8") == content_before
+        assert config_file.read_text(encoding="utf-8") == content_before
 
     def test_adds_missing_fields_to_existing_section(self, tmp_path):
         """install() should add only missing fields to an existing section."""
-        apf_yaml = tmp_path / APF_INFO_FILENAME
-        # Write config with only the first two fields
-        partial_fields = {FIELD_DEFINITIONS[0][0]: True, FIELD_DEFINITIONS[1][0]: False}
-        _write_apf_yaml(apf_yaml, enabled=True, fields=partial_fields)
+        config_file = tmp_path / "apf.yaml"
+        sentinel = tmp_path / "sentinel"
+        partial_fields = {FIELD_DEFINITIONS[0]["name"]: True, FIELD_DEFINITIONS[1]["name"]: False}
+        _write_config_with_section(config_file, fields=partial_fields)
 
-        _logger.install(apf_yaml_path=apf_yaml)
+        with patch("set_hooks_for_claude_code_event_logger.HooksInstaller.install_hooks_in_settings_file"):
+            _make_logger(config_file, sentinel).install()
 
-        config = _yaml.load(apf_yaml.read_text(encoding="utf-8"))
+        config = yaml.safe_load(config_file.read_text(encoding="utf-8"))
         fields = config[CONFIG_KEY]["fields"]
-        # All fields should now be present
-        for name, _, _ in FIELD_DEFINITIONS:
-            assert name in fields, f"Missing field: {name}"
-        # Existing fields should retain their values
-        assert fields[FIELD_DEFINITIONS[0][0]] is True
-        assert fields[FIELD_DEFINITIONS[1][0]] is False
+        field_map = {f["name"]: f["value"] for f in fields}
+        for fd in FIELD_DEFINITIONS:
+            assert fd["name"] in field_map
+        assert field_map[FIELD_DEFINITIONS[0]["name"]] is True
+        assert field_map[FIELD_DEFINITIONS[1]["name"]] is False
 
 
 # ── load_config() ────────────────────────────────────────────────────────
 
 
 class TestLoadConfig:
-    def test_enabled_with_fields(self, tmp_path, monkeypatch):
-        apf_yaml = tmp_path / APF_INFO_FILENAME
-        _write_apf_yaml(apf_yaml, enabled=True, fields={"session_id": True, "cwd": False})
-        monkeypatch.chdir(tmp_path)
+    def test_returns_fields_dict(self, tmp_path):
+        config_file = tmp_path / "apf.yaml"
+        _write_config_with_section(config_file, fields={"session_id": True, "cwd": False})
 
-        is_enabled, enabled_fields = _logger.load_config()
+        default, fields = _make_logger(config_file).load_config()
 
-        assert is_enabled is True
-        assert enabled_fields == {"session_id"}
+        assert default is False
+        assert fields == {"session_id": True, "cwd": False}
 
-    def test_disabled(self, tmp_path, monkeypatch):
-        apf_yaml = tmp_path / APF_INFO_FILENAME
-        _write_apf_yaml(apf_yaml, enabled=False, fields={"session_id": True})
-        monkeypatch.chdir(tmp_path)
+    def test_do_all_returns_allow_all(self, tmp_path):
+        config_file = tmp_path / "apf.yaml"
+        _write_config_with_section(config_file, do_all=True)
 
-        is_enabled, enabled_fields = _logger.load_config()
+        result = _make_logger(config_file).load_config()
 
-        assert is_enabled is False
-        assert enabled_fields == {"session_id"}
+        assert result == ALLOW_ALL_FIELDS
 
-    def test_missing_file_raises(self, tmp_path, monkeypatch):
-        monkeypatch.chdir(tmp_path)
+    def test_missing_section_returns_empty(self, tmp_path):
+        config_file = tmp_path / "apf.yaml"
+        _write_base_config(config_file)
 
-        with pytest.raises(FileNotFoundError):
-            _logger.load_config()
+        default, fields = _make_logger(config_file).load_config()
 
-    def test_missing_section_returns_disabled(self, tmp_path, monkeypatch):
-        """If .apf.yaml exists but has no log_claude_code_events section."""
-        apf_yaml = tmp_path / APF_INFO_FILENAME
-        apf_yaml.write_text("version: 0.1.0\n", encoding="utf-8")
-        monkeypatch.chdir(tmp_path)
+        assert default is False
+        assert fields == {}
 
-        is_enabled, enabled_fields = _logger.load_config()
+    def test_default_true_with_exclusions(self, tmp_path):
+        config_file = tmp_path / "apf.yaml"
+        _write_config_with_section(config_file, default=True, fields={"cwd": False})
 
-        assert is_enabled is False
-        assert enabled_fields == set()
+        default, fields = _make_logger(config_file).load_config()
 
-    def test_all_fields_enabled(self, tmp_path, monkeypatch):
-        apf_yaml = tmp_path / APF_INFO_FILENAME
-        all_fields = {name: True for name, _, _ in FIELD_DEFINITIONS}
-        _write_apf_yaml(apf_yaml, enabled=True, fields=all_fields)
-        monkeypatch.chdir(tmp_path)
+        assert default is True
+        assert fields == {"cwd": False}
 
-        is_enabled, enabled_fields = _logger.load_config()
+    def test_all_fields_enabled(self, tmp_path):
+        config_file = tmp_path / "apf.yaml"
+        all_fields = {fd["name"]: True for fd in FIELD_DEFINITIONS}
+        _write_config_with_section(config_file, fields=all_fields)
 
-        assert is_enabled is True
-        assert enabled_fields == {name for name, _, _ in FIELD_DEFINITIONS}
+        default, fields = _make_logger(config_file).load_config()
+
+        assert default is False
+        assert fields == all_fields
 
 
 # ── log_event() ──────────────────────────────────────────────────────────
 
 
 class TestLogEvent:
+    def _make_enabled_logger(self, config_file: Path, sentinel: Path) -> ClaudeCodeHookLogger:
+        sentinel.write_text("on\n", encoding="utf-8")
+        return _make_logger(config_file, sentinel)
+
     def test_writes_enabled_fields_only(self, tmp_path, monkeypatch):
-        apf_yaml = tmp_path / APF_INFO_FILENAME
-        _write_apf_yaml(
-            apf_yaml,
-            enabled=True,
-            fields={"session_id": True, "agent_type": True, "cwd": False},
-        )
+        config_file = tmp_path / "apf.yaml"
+        sentinel = tmp_path / "sentinel"
+        _write_config_with_section(config_file, fields={"session_id": True, "agent_type": True, "cwd": False})
+        logger = self._make_enabled_logger(config_file, sentinel)
         monkeypatch.chdir(tmp_path)
         monkeypatch.setattr("sys.argv", [""])
-
-        stdin_data = json.dumps({
+        monkeypatch.setattr("sys.stdin", StringIO(json.dumps({
             "session_id": "sess-123",
             "agent_type": "Explore",
             "cwd": "/should/be/excluded",
             "extra_field": "also excluded",
-        })
-        monkeypatch.setattr("sys.stdin", StringIO(stdin_data))
+        })))
 
-        _logger.log_event()
+        logger.log_event()
 
-        logfile = tmp_path / "tmp" / "logs" / "claude_code_hook_events_log.jsonl"
+        logfile = tmp_path / "logs" / "claude_code_hook_event.jsonl"
         assert logfile.exists()
         record = json.loads(logfile.read_text(encoding="utf-8").strip())
-        assert "timestamp" in record
+        assert "_timestamp_" in record
         assert record["session_id"] == "sess-123"
         assert record["agent_type"] == "Explore"
         assert "cwd" not in record
         assert "extra_field" not in record
 
-    def test_skips_when_disabled(self, tmp_path, monkeypatch):
-        apf_yaml = tmp_path / APF_INFO_FILENAME
-        _write_apf_yaml(apf_yaml, enabled=False, fields={"session_id": True})
+    def test_skips_when_not_enabled(self, tmp_path, monkeypatch):
+        config_file = tmp_path / "apf.yaml"
+        sentinel = tmp_path / "sentinel"  # missing → NOT_INSTALLED
+        _write_config_with_section(config_file, fields={"session_id": True})
+        logger = _make_logger(config_file, sentinel)
         monkeypatch.chdir(tmp_path)
         monkeypatch.setattr("sys.argv", [""])
 
-        _logger.log_event()
+        logger.log_event()
 
-        logfile = tmp_path / "tmp" / "logs" / "claude_code_hook_events_log.jsonl"
-        assert not logfile.exists()
+        assert not (tmp_path / "logs" / "claude_code_hook_event.jsonl").exists()
 
     def test_appends_to_existing_log(self, tmp_path, monkeypatch):
-        apf_yaml = tmp_path / APF_INFO_FILENAME
-        _write_apf_yaml(apf_yaml, enabled=True, fields={"session_id": True})
+        config_file = tmp_path / "apf.yaml"
+        sentinel = tmp_path / "sentinel"
+        _write_config_with_section(config_file, fields={"session_id": True})
+        logger = self._make_enabled_logger(config_file, sentinel)
         monkeypatch.chdir(tmp_path)
-
-        # Write two events
         monkeypatch.setattr("sys.argv", [""])
+
         for sid in ("sess-1", "sess-2"):
             monkeypatch.setattr("sys.stdin", StringIO(json.dumps({"session_id": sid})))
-            _logger.log_event()
+            logger.log_event()
 
-        logfile = tmp_path / "tmp" / "logs" / "claude_code_hook_events_log.jsonl"
+        logfile = tmp_path / "logs" / "claude_code_hook_event.jsonl"
         lines = logfile.read_text(encoding="utf-8").strip().splitlines()
         assert len(lines) == 2
         assert json.loads(lines[0])["session_id"] == "sess-1"
         assert json.loads(lines[1])["session_id"] == "sess-2"
 
     def test_timestamp_format(self, tmp_path, monkeypatch):
-        apf_yaml = tmp_path / APF_INFO_FILENAME
-        _write_apf_yaml(apf_yaml, enabled=True, fields={"session_id": True})
+        import re
+        config_file = tmp_path / "apf.yaml"
+        sentinel = tmp_path / "sentinel"
+        _write_config_with_section(config_file, fields={"session_id": True})
+        logger = self._make_enabled_logger(config_file, sentinel)
         monkeypatch.chdir(tmp_path)
         monkeypatch.setattr("sys.argv", [""])
         monkeypatch.setattr("sys.stdin", StringIO(json.dumps({"session_id": "s1"})))
 
-        _logger.log_event()
+        logger.log_event()
 
-        logfile = tmp_path / "tmp" / "logs" / "claude_code_hook_events_log.jsonl"
+        logfile = tmp_path / "logs" / "claude_code_hook_event.jsonl"
         record = json.loads(logfile.read_text(encoding="utf-8").strip())
-        # ISO 8601 UTC format: YYYY-MM-DDTHH:MM:SSZ
-        import re
-        assert re.fullmatch(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z", record["timestamp"])
+        assert re.fullmatch(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z", record["_timestamp_"])
 
 
 # ── status() ─────────────────────────────────────────────────────────────
 
 
 class TestStatus:
-    def test_returns_enabled(self, tmp_path, monkeypatch):
-        apf_yaml = tmp_path / APF_INFO_FILENAME
-        _write_apf_yaml(apf_yaml, enabled=True, fields={"session_id": True})
-        monkeypatch.chdir(tmp_path)
+    def test_returns_enabled(self, tmp_path):
+        config_file = tmp_path / "apf.yaml"
+        sentinel = tmp_path / "sentinel"
+        _write_config_with_section(config_file, fields={"session_id": True})
+        sentinel.write_text("on\n", encoding="utf-8")
 
-        assert _logger.status().value == "enabled"
+        assert _make_logger(config_file, sentinel).status() == Status.ENABLED
 
-    def test_returns_disabled(self, tmp_path, monkeypatch):
-        apf_yaml = tmp_path / APF_INFO_FILENAME
-        _write_apf_yaml(apf_yaml, enabled=False, fields={"session_id": True})
-        monkeypatch.chdir(tmp_path)
+    def test_returns_disabled(self, tmp_path):
+        config_file = tmp_path / "apf.yaml"
+        sentinel = tmp_path / "sentinel"
+        _write_config_with_section(config_file, fields={"session_id": True})
+        sentinel.write_text("off\n", encoding="utf-8")
 
-        assert _logger.status().value == "disabled"
+        assert _make_logger(config_file, sentinel).status() == Status.DISABLED
 
-    def test_returns_disabled_when_file_missing(self, tmp_path, monkeypatch):
-        monkeypatch.chdir(tmp_path)
+    def test_returns_not_installed_when_sentinel_missing(self, tmp_path):
+        config_file = tmp_path / "apf.yaml"
+        sentinel = tmp_path / "sentinel"
+        _write_config_with_section(config_file, fields={"session_id": True})
 
-        assert _logger.status().value == "disabled"
+        assert _make_logger(config_file, sentinel).status() == Status.NOT_INSTALLED
+
+    def test_returns_not_installed_when_section_missing(self, tmp_path):
+        config_file = tmp_path / "apf.yaml"
+        sentinel = tmp_path / "sentinel"
+        _write_base_config(config_file)
+        sentinel.write_text("on\n", encoding="utf-8")
+
+        assert _make_logger(config_file, sentinel).status() == Status.NOT_INSTALLED
 
 
 # ── set_enabled() ─────────────────────────────────────────────────────────
@@ -299,54 +283,54 @@ class TestStatus:
 
 class TestSetEnabled:
     def test_enables_when_disabled(self, tmp_path):
-        apf_yaml = tmp_path / APF_INFO_FILENAME
-        _write_apf_yaml(apf_yaml, enabled=False, fields={"session_id": True})
+        config_file = tmp_path / "apf.yaml"
+        sentinel = tmp_path / "sentinel"
+        _write_config_with_section(config_file, fields={"session_id": True})
+        sentinel.write_text("off\n", encoding="utf-8")
+        logger = _make_logger(config_file, sentinel)
 
-        result = _logger.set_enabled(True, apf_yaml_path=apf_yaml).value
+        logger.set_enabled(True)
 
-        assert result == "enabled"
-        config = _yaml.load(apf_yaml.read_text(encoding="utf-8"))
-        assert config[CONFIG_KEY]["enabled"] is True
+        assert logger.status() == Status.ENABLED
 
     def test_disables_when_enabled(self, tmp_path):
-        apf_yaml = tmp_path / APF_INFO_FILENAME
-        _write_apf_yaml(apf_yaml, enabled=True, fields={"session_id": True})
+        config_file = tmp_path / "apf.yaml"
+        sentinel = tmp_path / "sentinel"
+        _write_config_with_section(config_file, fields={"session_id": True})
+        sentinel.write_text("on\n", encoding="utf-8")
+        logger = _make_logger(config_file, sentinel)
 
-        result = _logger.set_enabled(False, apf_yaml_path=apf_yaml).value
+        logger.set_enabled(False)
 
-        assert result == "disabled"
-        config = _yaml.load(apf_yaml.read_text(encoding="utf-8"))
-        assert config[CONFIG_KEY]["enabled"] is False
+        assert logger.status() == Status.DISABLED
 
-    def test_raises_when_file_missing(self, tmp_path):
-        apf_yaml = tmp_path / APF_INFO_FILENAME
+    def test_exits_when_not_installed(self, tmp_path):
+        config_file = tmp_path / "apf.yaml"
+        sentinel = tmp_path / "sentinel"  # missing → NOT_INSTALLED
+        _write_config_with_section(config_file, fields={"session_id": True})
+        logger = _make_logger(config_file, sentinel)
 
-        with pytest.raises(FileNotFoundError):
-            _logger.set_enabled(True, apf_yaml_path=apf_yaml)
-
-    def test_raises_when_section_missing(self, tmp_path):
-        apf_yaml = tmp_path / APF_INFO_FILENAME
-        apf_yaml.write_text("version: 0.1.0\n", encoding="utf-8")
-
-        with pytest.raises(ValueError):
-            _logger.set_enabled(True, apf_yaml_path=apf_yaml)
+        with pytest.raises(SystemExit):
+            logger.set_enabled(True)
 
     def test_on_is_idempotent(self, tmp_path):
-        apf_yaml = tmp_path / APF_INFO_FILENAME
-        _write_apf_yaml(apf_yaml, enabled=True, fields={"session_id": True})
+        config_file = tmp_path / "apf.yaml"
+        sentinel = tmp_path / "sentinel"
+        _write_config_with_section(config_file, fields={"session_id": True})
+        sentinel.write_text("on\n", encoding="utf-8")
+        logger = _make_logger(config_file, sentinel)
 
-        result = _logger.set_enabled(True, apf_yaml_path=apf_yaml).value
+        logger.set_enabled(True)
 
-        assert result == "enabled"
-        config = _yaml.load(apf_yaml.read_text(encoding="utf-8"))
-        assert config[CONFIG_KEY]["enabled"] is True
+        assert logger.status() == Status.ENABLED
 
     def test_off_is_idempotent(self, tmp_path):
-        apf_yaml = tmp_path / APF_INFO_FILENAME
-        _write_apf_yaml(apf_yaml, enabled=False, fields={"session_id": True})
+        config_file = tmp_path / "apf.yaml"
+        sentinel = tmp_path / "sentinel"
+        _write_config_with_section(config_file, fields={"session_id": True})
+        sentinel.write_text("off\n", encoding="utf-8")
+        logger = _make_logger(config_file, sentinel)
 
-        result = _logger.set_enabled(False, apf_yaml_path=apf_yaml).value
+        logger.set_enabled(False)
 
-        assert result == "disabled"
-        config = _yaml.load(apf_yaml.read_text(encoding="utf-8"))
-        assert config[CONFIG_KEY]["enabled"] is False
+        assert logger.status() == Status.DISABLED
