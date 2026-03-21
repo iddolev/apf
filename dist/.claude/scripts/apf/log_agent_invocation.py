@@ -28,13 +28,11 @@ class AgentInvocationLogger(Logger):
         return ret
 
 
-AGENT_INVOCATION_LOGGER = AgentInvocationLogger(
-    config_key=KEY_log_agent_invocation,
-    logfile=LOGFILE,
-    # We always want all the three fields: actor, event_type, message - therefore ALLOW_ALL_FIELDS
-    field_definitions=ALLOW_ALL_FIELDS,
-    sentinel_filepath=f"{APF_FOLDER}/.{KEY_log_agent_invocation}")
-
-
 if __name__ == "__main__":
-    AGENT_INVOCATION_LOGGER.main()
+    AgentInvocationLogger(
+        config_key=KEY_log_agent_invocation,
+        logfile=LOGFILE,
+        # We always want all the three fields: actor, event_type, message - therefore ALLOW_ALL_FIELDS
+        field_definitions=ALLOW_ALL_FIELDS,
+        sentinel_filepath=f"{APF_FOLDER}/.{KEY_log_agent_invocation}",
+    ).main()
