@@ -55,9 +55,7 @@ The end result must:
 
 ## State Tracking
 
-Find the latest `STATE/STATE-v*.md` file.
-Mark the Implementation Plan checkbox as `[.]` (in progress) when you begin.
-Mark the Implementation Plan checkbox as `[v]` (done) when the plan is approved.
+Consult the latest `STATE/STATE-v*.md` and update it as needed.
 
 <a id="naming-convention"/>
 
@@ -309,7 +307,7 @@ If issues are found, present them and resolve with the user before asking for ap
 
 Then ask the user to set the status: Draft -> In Review -> Approved.
 
-When approved, mark the Implementation Plan checkbox as `[v]` in the latest `STATE/STATE-v*.md`.
+When approved, update the latest `STATE/STATE-v*.md`.
 
 Run `/format-markdown <plan-file>` on the implementation plan file.
 

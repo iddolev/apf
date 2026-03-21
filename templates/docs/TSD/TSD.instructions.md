@@ -2,7 +2,8 @@
 date: 2026-03-05
 author: "Iddo Lev"
 LLM-author: claude-Opus-4.6
-purpose: "Instructions for an LLM to read an approved PRD and produce a lean, project-appropriate TSD."
+purpose: "Instructions for an LLM to read an approved PRD and produce a lean, project-appropriate
+TSD."
 inputs:
   - "An approved PRD from /docs/specs/PRD_v{version}.md"
   - "/instructions/TSD/TSD.template.md (reference menu of possible sections)"
@@ -59,9 +60,7 @@ The end result must:
 
 ## State Tracking
 
-Find the latest `STATE/STATE-v*.md` file.
-Mark the TSD checkbox as `[.]` (in progress) when you begin.
-Mark the TSD checkbox as `[v]` (done) when the TSD is approved.
+Consult the latest `STATE/STATE-v*.md` and update it as needed.
 
 <a id="naming-convention"/>
 
@@ -345,7 +344,7 @@ If issues are found, present them and resolve with the user before asking for ap
 
 Then ask the user to set the TSD status: Draft -> In Review -> Approved.
 
-When approved, mark the TSD checkbox as `[v]` in the latest `STATE/STATE-v*.md`.
+When approved, update the latest `STATE/STATE-v*.md`.
 
 Run `/format-markdown <tsd-file>` on the TSD file.
 

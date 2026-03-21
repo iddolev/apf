@@ -8,7 +8,8 @@ improved_by_suggestions_from_LLMs_and_sources:
   - "grok"
   - "perplexity"
   - "https://github.com/snarktank/ai-dev-tasks"
-purpose: "Instructions for an LLM to interview a user and produce a PRD matching the repository template."
+purpose: "Instructions for an LLM to interview a user and produce a PRD matching the repository
+template."
 inputs:
   - "/instructions/PRD/PRD.template.md"
 outputs:
@@ -54,9 +55,7 @@ The end result must:
 
 ## State Tracking
 
-Find the latest `STATE/STATE-v*.md` file.
-Mark the PRD checkbox as `[.]` (in progress) when you begin.
-Mark the PRD checkbox as `[v]` (done) when the PRD is approved.
+Consult the latest `STATE/STATE-v*.md` and update it as needed.
 
 ## Naming convention
 
@@ -342,7 +341,7 @@ When the PRD is ready:
 - Ensure companion documents are linked where applicable (Tech Spec, QA/test plan,
   Analytics/Tracking Plan, Launch Runbook) or explicitly marked `[TBD]`.
 - If they approve, update `Status`, `Last Updated`, and add an entry to `Appendix → Change Log`.
-  Mark the PRD checkbox as `[v]` in the latest `STATE/STATE-v*.md`.
+  Update the latest `STATE/STATE-v*.md`.
 
 Run `/format-markdown <prd-file>` on the PRD file.
 
