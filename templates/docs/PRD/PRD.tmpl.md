@@ -279,7 +279,7 @@ Glossary**.
 > Detailed schemas, endpoint definitions, event payloads, and storage design belong in a **Technical
 Spec / API Spec**.
 
-- **Technical Spec (link):** [TBD] (template: `../TECH-SPEC/TECH-SPEC.md.tmpl`)
+- **Technical Spec (link):** [TBD] (template: `../TECH-SPEC/TECH-SPEC.tmpl.md`)
 - **API / Events Spec (link, if separate):** [TBD]
 - **Data retention / privacy policy reference (link, if applicable):** [TBD]
 
@@ -315,7 +315,7 @@ technical considerations.
 > Architecture, stack choices, migrations, feature-flag implementation, and
 > rollback mechanics belong in a **Technical Spec**.
 
-- **Technical Spec (link):** [TBD] (template: `../TECH-SPEC/TECH-SPEC.md.tmpl`)
+- **Technical Spec (link):** [TBD] (template: `../TECH-SPEC/TECH-SPEC.tmpl.md`)
 
 ### 11.1 Non-Negotiable Constraints (Product-impacting)
 
@@ -372,7 +372,7 @@ technical considerations.
 > Detailed runbooks, monitoring setup, support rotations, and rollback procedures belong in a
 **Launch Runbook**.
 
-- **Launch Runbook (link):** [TBD] (template: `../LAUNCH/Launch-runbook.md.tmpl`)
+- **Launch Runbook (link):** [TBD] (template: `../LAUNCH/Launch-runbook.tmpl.md`)
 
 #### Launch Requirements (High-level)
 
@@ -396,7 +396,7 @@ technical considerations.
 > Requirements) and how we'll validate outcomes.
 > Detailed test strategy and coverage planning belong in a **QA / test plan**.
 
-- **QA / test plan (link):** [TBD] (template: `../QA/QA-test-plan.md.tmpl`)
+- **QA / test plan (link):** [TBD] (template: `../QA/QA-test-plan.tmpl.md`)
 
 ### 14.3 Entry / Exit Criteria
 

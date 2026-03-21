@@ -685,7 +685,7 @@ Payload example:
 validated.
 >
 > For the full tracking plan, see: **Analytics Tracking Plan**
-> (template: `../ANALYTICS/Analytics-tracking-plan.md.tmpl`)
+> (template: `../ANALYTICS/Analytics-tracking-plan.tmpl.md`)
 
 ### 17.1 Analytics Events
 

@@ -35,15 +35,15 @@ So this is illuminated here for key folders and files.
 1. `README.md`:  This file, a starting point for the Agentic Programming Framework.
 2. `dist/README.apf.md`:  A subsidiary README file to be copied to the user project.
    Explains how APF helped create the user's project.
-3. `templates/README.md.tmpl`:  An optional README template the user can choose to use.
+3. `templates/README.tmpl.md`:  An optional README template the user can choose to use.
    The user may also choose to follow a different format,
    but should still mention that README.apf.md has info
    specifically about using APF for creating and maintaining the project.
 4. `CLAUDE.md`:  Instructions for Claude Code / OpenCode for the APF project itself
-5. `CLAUDE.apf.md.tmpl`: Specific instructions for Claude Code,
+5. `CLAUDE.apf.tmpl.md`: Specific instructions for Claude Code,
    in addition to the instructions the user may choose to put in their project's main `CLAUDE.md`
    file.
-   (The user's `CLAUDE.md` file should mention `CLAUDE.apf.md.tmpl`)
+   (The user's `CLAUDE.md` file should mention `CLAUDE.apf.tmpl.md`)
 6. `dist/.apf/.apf.yaml`:  A configuration file for APF. E.g. includes the APF version number.
 
 ## The Document Chain
@@ -83,9 +83,9 @@ templates/                       — Files instantiated per project
 │   └── agents/                  — Agent definition templates
 ├── rules
 ├── STATE
-├── CLAUDE.md.tmpl
-├── PROJECT-STRUCTURE.md.tmpl
-└── README.md.tmpl
+├── CLAUDE.tmpl.md
+├── PROJECT-STRUCTURE.tmpl.md
+└── README.tmpl.md
 
 .claude/                         — Entities for Claude Code
 │                                  either for this project, not to be copied to the user project
@@ -109,7 +109,7 @@ tests/                           — Tests for APF scripts
 ## Template Conventions
 
 - Templates use placeholders to be filled during an iterative interview with the user.
-- A template filename is `X.md.tmpl`.
+- A template filename is `X.tmpl.md`.
 - Some templates have a companion `.instructions.md` file
   that tells the LLM how to fill the template.
 

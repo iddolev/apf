@@ -33,27 +33,27 @@ above (PRD, TSD, implementation plan, test plan). Fill in `[TBD]` placeholders
 and adapt `<!-- ADAPT -->` sections to match the project.
 
 1. `PROGRAMMING-PRINCIPLES`: Instantiate
-   `.apf/preparation/templates/rules/PROGRAMMING-PRINCIPLES.md.tmpl` according to its
+   `.apf/preparation/templates/rules/PROGRAMMING-PRINCIPLES.tmpl.md` according to its
    `<!-- ADAPT -->` markers, using information from the PRD and TSD. Place the
    result at `rules/PROGRAMMING-PRINCIPLES.md`.
 2. `PROJECT-RULES`: Instantiate
-   `.apf/preparation/templates/rules/PROJECT-RULES.md.tmpl` — derive
+   `.apf/preparation/templates/rules/PROJECT-RULES.tmpl.md` — derive
    rules from the TSD and PRD, then confirm each rule with the user. Place the
    result at `rules/PROJECT-RULES.md`.
 3. `SECURITY-CONVENTIONS`: If the project has
    security conventions beyond `PROGRAMMING-PRINCIPLES.md`, then instantiate
-   `.apf/preparation/templates/rules/SECURITY-CONVENTIONS.md.tmpl` and
+   `.apf/preparation/templates/rules/SECURITY-CONVENTIONS.tmpl.md` and
    place the result at `rules/SECURITY-CONVENTIONS.md`.
 4. `GIT-RULES`: Instantiate
-   `.apf/preparation/templates/rules/GIT-RULES.md.tmpl` — confirm the
+   `.apf/preparation/templates/rules/GIT-RULES.tmpl.md` — confirm the
    commit message format, branch naming, agent permissions etc. with the user. Place
    the result at `rules/GIT-RULES.md`.
 5. `PROJECT-STRUCTURE`: Instantiate
-   `.apf/preparation/templates/PROJECT-STRUCTURE.md.tmpl` —
+   `.apf/preparation/templates/PROJECT-STRUCTURE.tmpl.md` —
    derive from the TSD's architecture and the implementation plan's work breakdown.
    Place the result at `docs/PROJECT-STRUCTURE.md`.
 6. `README`: Offer to auto-generate the project's README.md based on the docs, and ask for
    approval.
-   If yes, then instantiate `.apf/preparation/templates/README.md.tmpl` according to its
+   If yes, then instantiate `.apf/preparation/templates/README.tmpl.md` according to its
    `<!-- ADAPT -->` markers, using information from the other documents.
    Place the result as `README.md` in the project root folder.

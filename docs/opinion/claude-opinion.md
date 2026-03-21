@@ -26,26 +26,26 @@ instructions/
 │   └── PROGRAMMING-PRINCIPLES.md                 — Coding standards for any agent that writes/reviews code
 ├── creating-docs/
 │   ├── PRD/
-│   │   ├── PRD.md.tmpl                       — Product Requirements Document template
+│   │   ├── PRD.tmpl.md                       — Product Requirements Document template
 │   │   └── PRD.instructions.md                   — Instructions for filling the PRD
 │   ├── TSD/
-│   │   ├── TSD.md.tmpl                       — Technical Specifications Document template
+│   │   ├── TSD.tmpl.md                       — Technical Specifications Document template
 │   │   └── TSD.instructions.md                   — Instructions for filling the TSD
 │   ├── implementation-plan/
-│   │   ├── implementation-plan.md.tmpl        — Implementation plan template
+│   │   ├── implementation-plan.tmpl.md        — Implementation plan template
 │   │   └── implementation-plan.instructions.md    — Instructions for filling the plan
 │   └── test-plan/
-│       ├── test-plan.md.tmpl                  — Test plan template
+│       ├── test-plan.tmpl.md                  — Test plan template
 │       └── test-plan.instructions.md              — Instructions for filling the test plan
 ├── claude/
 │   ├── claude-preparation.md                      — Claude-specific preparation workflow
 │   ├── knowledge/
-│   │   ├── CLAUDE.md.tmpl                     — CLAUDE.md project file template
-│   │   ├── AGENTS-LIST.md.tmpl                — Agent roster template
-│   │   └── SHARED-AGENT-CONTEXT.md.tmpl       — Shared context across agents template
+│   │   ├── CLAUDE.tmpl.md                     — CLAUDE.md project file template
+│   │   ├── AGENTS-LIST.tmpl.md                — Agent roster template
+│   │   └── SHARED-AGENT-CONTEXT.tmpl.md       — Shared context across agents template
 │   └── agent-templates/
-│       ├── tech-lead.md.tmpl                  — Tech lead agent definition
-│       └── backend-specialist.md.tmpl         — Backend specialist agent definition
+│       ├── tech-lead.tmpl.md                  — Tech lead agent definition
+│       └── backend-specialist.tmpl.md         — Backend specialist agent definition
 └── state/
     └── STATE.template.yaml            — State tracking for the preparation workflow
 ```
@@ -179,7 +179,7 @@ section in the template).
 #### a. ~~Build & run commands~~
 
 Addressed by the new README template
-(`instructions/creating-docs/README/README.md.tmpl`), added as step 5 in
+(`instructions/creating-docs/README/README.tmpl.md`), added as step 5 in
 starting-point.md. CLAUDE.md should reference the README.
 
 #### b. ~~Test commands~~
@@ -188,7 +188,7 @@ Addressed by the new README template (Testing section).
 
 #### c. ~~Project-specific rules~~
 
-Created `instructions/creating-docs/project-rules/PROJECT-RULES.md.tmpl` as a
+Created `instructions/creating-docs/project-rules/PROJECT-RULES.tmpl.md` as a
 standalone document with 7 rule categories (language/framework, API, data, error
 handling, naming, testing, security), each with `<!-- ADAPT -->` markers and concrete
 examples. Added as step 5 in starting-point.md (between test plan and README).
@@ -200,7 +200,7 @@ Addressed by the new README template (Prerequisites and Environment Setup sectio
 
 #### e. ~~Commit conventions~~
 
-Created `instructions/creating-docs/git-rules/GIT-RULES.md.tmpl` as a standalone
+Created `instructions/creating-docs/git-rules/GIT-RULES.tmpl.md` as a standalone
 document covering commit message format, branch naming, push policy (human-only by
 default), agent git permissions (branch workflow for coding agents, no git for
 reviewers/planners), prohibited operations, and merge policy. Added as step 7 in

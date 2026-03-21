@@ -67,7 +67,7 @@ Maybe a "rubber duck" agent that the coder agent talks to
    The starting-point.md and the tech lead (both being the main entry points)
    need to compare the version of the instantiated file to the template version.
    If the template version is higher, then an appropriate update process should be done.
-   E.g. if SHARED-AGENT-CONTEXT.md.tmpl is updated.
+   E.g. if SHARED-AGENT-CONTEXT.tmpl.md is updated.
    Currently I am updating the files in the user project ad-hoc manually.
 
 ## Updates
@@ -269,7 +269,7 @@ DO = documentation-specialist, SA = system-architect.
 
 Refactor README.md and PROJECT-RULES.md into smaller, role-targeted knowledge files
 so each agent reads only what it needs. This also requires updating
-SHARED-AGENT-CONTEXT.md.tmpl and the agent templates to reference the new files.
+SHARED-AGENT-CONTEXT.tmpl.md and the agent templates to reference the new files.
 
 ### More
 
@@ -295,7 +295,7 @@ whether something general should be added to the template
 
 backend-specialist-template
 
-Comparison of `instructions/.claude/agent-templates/backend-specialist.md.tmpl` vs
+Comparison of `instructions/.claude/agent-templates/backend-specialist.tmpl.md` vs
 `sandbox/michael-mykey-agents/mykey-backend-developer.md`.
 
 The mykey version has several substantive sections that the template currently lacks (it only has
@@ -350,7 +350,7 @@ criteria.
 
 ## Possibly to consider: frontend-specialist-template vs mykey-frontend-specialist
 
-Comparison of `instructions/.claude/agent-templates/frontend-specialist.md.tmpl` vs
+Comparison of `instructions/.claude/agent-templates/frontend-specialist.tmpl.md` vs
 `sandbox/michael-mykey-agents/mykey-frontend-specialist.md`.
 
 The template is already quite strong here — it has responsive design, accessibility, component
@@ -414,7 +414,7 @@ requirements, performance vs UX tradeoffs, accessibility priority. Worth adding 
 
 ## Possibly to consider: security-specialist-template vs mykey-security-specialist
 
-Comparison of `instructions/.claude/agent-templates/security-specialist.md.tmpl` vs
+Comparison of `instructions/.claude/agent-templates/security-specialist.tmpl.md` vs
 `sandbox/michael-mykey-agents/mykey-security-specialist.md`.
 
 The template is already **very strong** — it has comprehensive sections on threat modeling, input
@@ -589,7 +589,7 @@ a system-architect template.
 
 ## Possibly to consider: test-specialist-template vs mykey-test-specialist
 
-Comparison of `instructions/.claude/agent-templates/test-specialist.md.tmpl` vs
+Comparison of `instructions/.claude/agent-templates/test-specialist.tmpl.md` vs
 `sandbox/michael-mykey-agents/mykey-test-specialist.md`.
 
 The template is already strong with test quality, structure, mocking/isolation, and
@@ -667,7 +667,7 @@ well-structured with:
 - Clear "What You Are NOT" section
 - Automated checks step (linting, type checking)
 
-This is high-value and mostly generic. Recommend creating `code-reviewer.md.tmpl`.
+This is high-value and mostly generic. Recommend creating `code-reviewer.tmpl.md`.
 
 ### 2. mykey-docs-specialist — SHOULD create a template
 
@@ -683,7 +683,7 @@ Also listed in todo.md as "documentation-specialist". The mykey version has:
 - Clear scope boundaries ("What You Do NOT Do")
 - Edge case guidance (contradictory docs, incomplete info, large scope, sensitive info)
 
-Very comprehensive and mostly generic. Recommend creating `docs-specialist.md.tmpl`.
+Very comprehensive and mostly generic. Recommend creating `docs-specialist.tmpl.md`.
 
 ### 3. mykey-devils-advocate — CONSIDER creating a template
 
@@ -782,9 +782,9 @@ Implement the ADR (Any Decision Record) system as described in `docs/ADR-rationa
 
 ### Templates to create
 
-1. **`ADR-index.md.tmpl`** — template for `ADR-index.md`, a compact table
+1. **`ADR-index.tmpl.md`** — template for `ADR-index.md`, a compact table
    (number, title, status, one-line summary) that is cheap for the tech lead to scan.
-2. **`ADR-list.md.tmpl`** — template for `ADR-list.md`, the full ADR records
+2. **`ADR-list.tmpl.md`** — template for `ADR-list.md`, the full ADR records
    with complete context, decision, and consequences sections.
 
 Both templates should include instructions on the ADR format, when to create
@@ -792,7 +792,7 @@ a new record, and how to maintain the index alongside the list.
 
 ### SHARED-AGENT-CONTEXT update
 
-Add instructions to `SHARED-AGENT-CONTEXT.md.tmpl` explaining the ADR system:
+Add instructions to `SHARED-AGENT-CONTEXT.tmpl.md` explaining the ADR system:
 
 - The **tech lead** reads `ADR-index.md` when planning work or assigning tasks.
   When a relevant ADR is found, it reads the full record from `ADR-list.md`

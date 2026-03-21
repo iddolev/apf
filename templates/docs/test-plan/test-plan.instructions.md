@@ -9,7 +9,7 @@ inputs:
   - "The corresponding PRD from /docs/specs/PRD_v{version}.md (for requirements traceability)"
   - "The implementation plan from /docs/plans/implementation-plan_v{version}.md (for work package
     dependencies)"
-  - "/instructions/test-plan/test-plan.md.tmpl (reference menu of possible sections)"
+  - "/instructions/test-plan/test-plan.tmpl.md (reference menu of possible sections)"
 outputs:
   - "A completed test plan markdown document named test-plan_v{version}.md in /docs/plans/"
 ---
@@ -38,7 +38,7 @@ You are an LLM acting as a senior QA engineer / test architect. Your job is to r
 "how to verify what was built meets the requirements."
 
 The critical principle: **write only what this project actually needs.** The reference
-template at `instructions/test-plan/test-plan.md.tmpl` is a menu of everything a test
+template at `instructions/test-plan/test-plan.tmpl.md` is a menu of everything a test
 plan *could* contain. E.g. a solo-developer local MVP does not need chaos testing,
 SAST/DAST, or elaborate defect triage processes. A distributed multi-team production system
 does. Your job is to assess scope and write accordingly.
@@ -301,7 +301,7 @@ Run `/format-markdown <test-plan-file>` on the test plan file.
 # Section writing guidance
 
 When writing each section, use the test plan template
-(`instructions/test-plan/test-plan.md.tmpl`) as inspiration for what level of detail
+(`instructions/test-plan/test-plan.tmpl.md`) as inspiration for what level of detail
 to include. Below is guidance on how to approach each section when you include it.
 
 - **Document Control**: Keep it brief. Name, version, status, links to TSD and PRD.

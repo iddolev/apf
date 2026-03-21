@@ -6,7 +6,7 @@ purpose: "Instructions for an LLM to read an approved TSD and produce an impleme
 inputs:
   - "An approved TSD from /docs/specs/TSD_v{version}.md"
   - "The corresponding PRD from /docs/specs/PRD_v{version}.md (for scope reference)"
-  - "/instructions/implementation-plan/implementation-plan.md.tmpl (document structure)"
+  - "/instructions/implementation-plan/implementation-plan.tmpl.md (document structure)"
 outputs:
   - "A completed implementation plan markdown document named implementation-plan_v{version}.md in
     /docs/plans/"
@@ -128,7 +128,7 @@ Concretely:
 
 The implementation plan is extracted from the TSD, not invented from scratch. The table below
 maps TSD sections to the type of work packages they generate. It is derived from the TSD
-template at `/instructions/TSD/TSD.md.tmpl` and should cover all sections that template
+template at `/instructions/TSD/TSD.tmpl.md` and should cover all sections that template
 defines. **If the TSD template is modified in the future (sections added, renamed, or
 removed), this table should be updated to match.** Not every TSD will include all of these
 sections -- only process sections that appear in the actual TSD being planned.
