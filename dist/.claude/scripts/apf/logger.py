@@ -99,7 +99,7 @@ class Logger(ABC):
             return Status.NOT_INSTALLED
         if self.config_key not in yaml_load(self.config_filepath):
             return Status.NOT_INSTALLED
-        if self.sentinel_filepath and self.sentinel_filepath.read_text().strip() == "on":
+        if not self.sentinel_filepath or self.sentinel_filepath.read_text().strip() == "on":
             return Status.ENABLED
         return Status.DISABLED
 
