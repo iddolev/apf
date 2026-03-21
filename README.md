@@ -30,16 +30,20 @@ So this is illuminated here for key folders and files.
 6. `tests/`:  Testing code of APF
 7. `sandbox/`:  Experimentation. You can ignore this folder
 
-### Files
+### Central Files
 
-1. README.md:  This file, a starting point for the Agentic Programming Framework.
-2. dist/README.apf.md:  A subsidiary README file to be copied to the user project.
+1. `README.md`:  This file, a starting point for the Agentic Programming Framework.
+2. `dist/README.apf.md`:  A subsidiary README file to be copied to the user project.
    Explains how APF helped create the user's project.
-3. templates/README.template.md:  An optional README template the user can choose to use.
+3. `templates/README.template.md`:  An optional README template the user can choose to use.
    The user may also choose to follow a different format,
    but should still mention that README.apf.md has info
    specifically about using APF for creating and maintaining the project.
-4. dist/.apf/.apf.yaml:  A configuration file for APF. E.g. includes the APF version number.
+4. `CLAUDE.md`:  Instructions for Claude Code / OpenCode for the APF project itself
+5. `CLAUDE.apf.template.md`: Specific instructions for Claude Code,
+   in addition to the instructions the user may choose to put in their project's main `CLAUDE.md` file.
+   (The user's `CLAUDE.md` file should mention `CLAUDE.apf.template.md`)
+6. `dist/.apf/.apf.yaml`:  A configuration file for APF. E.g. includes the APF version number.
 
 ## The Document Chain
 
