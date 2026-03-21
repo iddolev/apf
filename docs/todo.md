@@ -1,5 +1,9 @@
 # To-Do List
 
+## More
+
+1. sub-agents that verify implementation against the plan document. Catches what you'd normally miss.
+
 ## Bugs
 
 running format_markdown.py on setup-github-ci.md breaks a line incorrectly
