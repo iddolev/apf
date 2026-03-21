@@ -2,6 +2,7 @@
 Format markdown files according to the project's markdown guidelines.
 
 Rules enforced:
+
   1. Replace smart/curly quotes with ASCII equivalents.
   2. Wrap lines longer than MAX_LINE_LENGTH characters (exceptions: table rows, URLs).
   3. Ensure every heading is followed by exactly one blank line.
@@ -12,7 +13,7 @@ Usage:
     python scripts/apf/format_markdown.py [paths...]
 
     If no paths are given, all *.md files in the repo are processed
-    (excluding sandbox/ anf tmd/ and .git/).
+    (excluding sandbox/, .git/, and any files excluded by .gitignore).
 """
 
 from __future__ import annotations
@@ -38,9 +39,23 @@ MAX_LINE_LENGTH = 100
 
 EXCLUDE_PATTERNS = [
     "sandbox/",
-    "tmp/",
     ".git/"
 ]
+
+
+def _load_gitignore_patterns(root: Path) -> list[str]:
+    gitignore = root / ".gitignore"
+    if not gitignore.exists():
+        return []
+    patterns = []
+    for line in gitignore.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if line and not line.startswith("#") and not line.startswith("!"):
+            patterns.append(line)
+    return patterns
+
+
+EXCLUDE_PATTERNS += _load_gitignore_patterns(REPO_ROOT)
 
 
 def find_markdown_files(root: Path) -> list[Path]:
@@ -283,14 +298,14 @@ def process_file(path: Path, dry_run: bool = False) -> bool:
     return True
 
 
-def main() -> None:
+def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Format markdown files according to project guidelines."
     )
     parser.add_argument(
         "paths",
         nargs="*",
-        help="Specific files or directories to process. Defaults to all repo markdown files.",
+        help="Specific files or directories to process. Defaults to all markdown files.",
     )
     parser.add_argument(
         "--dry-run",
@@ -300,21 +315,29 @@ def main() -> None:
     parser.add_argument(
         "--check",
         action="store_true",
-        help="Exit with code 1 if any files need formatting (for CI).",
+        help="Exit with code 1 if any files need formatting (useful for CI).",
     )
-    args = parser.parse_args()
+    return parser.parse_args()
 
+
+def collect_files_from_paths(args: argparse.Namespace) -> list[Path]:
+    files = []
+    for p in args.paths:
+        path = Path(p)
+        if path.is_file():
+            files.append(path.resolve())
+        elif path.is_dir():
+            for f in sorted(path.rglob("*.md")):
+                rel = f.relative_to(REPO_ROOT).as_posix()
+                if not any(rel.startswith(e) for e in EXCLUDE_PATTERNS):
+                    files.append(f.resolve())
+    return files
+
+
+def main() -> None:
+    args = parse_args()
     if args.paths:
-        files = []
-        for p in args.paths:
-            path = Path(p)
-            if path.is_file():
-                files.append(path.resolve())
-            elif path.is_dir():
-                for f in sorted(path.rglob("*.md")):
-                    rel = f.relative_to(REPO_ROOT).as_posix()
-                    if not any(rel.startswith(e) for e in EXCLUDE_PATTERNS):
-                        files.append(f.resolve())
+        files = collect_files_from_paths(args)
     else:
         files = find_markdown_files(REPO_ROOT)
 
