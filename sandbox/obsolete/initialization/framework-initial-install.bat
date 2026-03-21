@@ -24,7 +24,6 @@ if not exist rules mkdir rules
 copy "%AP%\instructions\rules\SOFTWARE-ENGINEERING-PRINCIPLES.md" "rules\SOFTWARE-ENGINEERING-PRINCIPLES.md" > NUL 2>&1
 
 if not exist STATE mkdir STATE
-if not exist "STATE\STATE.apf.yaml" copy "%AP%\instructions\state\FRAMEWORK-STATE-template.yaml" "STATE\STATE.apf.yaml" > NUL 2>&1
 
 if not exist scripts mkdir scripts
 copy "%AP%\.claude\scripts\log_hook_event.py" ".claude\scripts\log_hook_event.py" > NUL 2>&1
