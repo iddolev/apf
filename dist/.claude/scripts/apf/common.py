@@ -35,3 +35,11 @@ def yaml_load(path: Path) -> dict:
 def yaml_save(path: Path, data: dict) -> None:
     with open(path, "w", encoding="utf-8") as f:
         yaml.dump(data, f, allow_unicode=True)
+
+
+def config_key_to_log_filepath(config_key: str) -> str:
+    """E.g.
+    log_agent_invocation -> logs/agent_invocations.jsonl
+    """
+    assert config_key.startswith('log_')
+    return f"logs/{config_key[4:]}s.jsonl"

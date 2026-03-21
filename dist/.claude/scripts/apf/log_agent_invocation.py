@@ -6,11 +6,11 @@ Usage: python .claude/scripts/log_agent_invocation.py "<agent-name>" "<event-typ
 
 import sys
 
-from common import InvalidInputException, APF_FOLDER, ALLOW_ALL_FIELDS
+from common import InvalidInputException, APF_FOLDER, ALLOW_ALL_FIELDS, config_key_to_log_filepath
 from logger import Logger, EVENT_ID_FIELD, EVENT_ID_VALUE
 
 KEY_log_agent_invocation = "log_agent_invocation"
-LOGFILE = f"logs/{KEY_log_agent_invocation[4:]}.jsonl"
+LOGFILE = config_key_to_log_filepath(KEY_log_agent_invocation)
 
 
 class AgentInvocationLogger(Logger):
