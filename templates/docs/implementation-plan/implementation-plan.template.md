@@ -1,6 +1,6 @@
 ---
 date: 2026-03-05
-author: "Iddo Lev"
+author: Iddo Lev
 LLM-author: claude-Opus-4.6
 ---
 

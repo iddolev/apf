@@ -93,6 +93,8 @@ class HooksInstaller:
         if os.path.exists(SETTINGS_PATH):
             with open(SETTINGS_PATH, encoding="utf-8") as f:
                 self._settings = json.load(f)
+        else:
+            self._settings = {}
 
     def _save_settings(self) -> None:
         os.makedirs(os.path.dirname(SETTINGS_PATH), exist_ok=True)

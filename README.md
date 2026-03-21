@@ -11,6 +11,36 @@ The purpose is that everyone
 can benefit from the highest quality of agentic programming framework instead of
 trying to figure this out by themselves or manually following instruction guides.
 
+## Organization
+
+Because APF is a framework, it can be confusing to understand the role of each file.
+So this is illuminated here for key folders and files.
+
+### Folders
+
+1. `dist/`:  Files copied as-is into the user project
+2. `templates/`:  Files instantiated by the preparation process into the user project
+3. `.claude/`:  Entities for Claude Code (definitions of commands, skills, agents, hooks, etc.)
+   Some of them are used only during development of APF itself,
+   and some of them are useful for both APF and the user project
+   - so these are placed under an `apf` sub-folder (e.g. `commands/apf/format-markdown.md`)
+4. `installation`:  Installation script that is used by the user to install APF in the user project,
+   as well as for updating to a newer version of APF
+5. `docs/`:  Documents about APF
+6. `tests/`:  Testing code of APF
+7. `sandbox/`:  Experimentation. You can ignore this folder
+
+### Files
+
+1. README.md:  This file, a starting point for the Agentic Programming Framework.
+2. dist/README.apf.md:  A subsidiary README file to be copied to the user project.
+   Explains how APF helped create the user's project.
+3. templates/README.template.md:  An optional README template the user can choose to use.
+   The user may also choose to follow a different format,
+   but should still mention that README.apf.md has info
+   specifically about using APF for creating and maintaining the project.
+4. dist/.apf/.apf.yaml:  A configuration file for APF. E.g. includes the APF version number.
+
 ## The Document Chain
 
 The core of this toolkit is a four-document pipeline, where each document derives from the previous
@@ -31,72 +61,89 @@ After the documents are complete, the toolkit also guides creation of
 ## Structure
 
 ```
-.claude/
-├── commands/apf/                — Slash commands (format-markdown, log-claude-code-hook-event)
-├── scripts/apf/                 — Python scripts backing the slash commands
-└── ...                          — APF-only config (agents, settings) — not copied to user projects
+dist/                            — Files copied as-is into the user project
+├── .apf
+├── .claude
+├── rules
+├── docs-and-agents-process.md
+└── README.apf.md
 
-installation/
-├── apf_install.bat              — Windows launcher for the installer
-└── apf_install.py               — Copies dist/ files and instantiates templates/ into user project
-
-dist/                            — Files copied as-is into user projects (currently empty)
-
-templates/
-└── CLAUDE.template.md           — CLAUDE.md template, instantiated per project
-
-instructions/
-├── docs-and-agents-process.md   — Entry point and orchestration
-├── rules/
-│   ├── PROGRAMMING-PRINCIPLES.md       — Practical coding standards for agents
-│   ├── SOFTWARE-ENGINEERING-PRINCIPLES.md — Theoretical foundations for reviewers
-│   └── ADVERSARIAL-THINKING.md         — Adversarial mode overlay for any agent
-├── creating-docs/
+templates/                       — Files instantiated per project
+├── docs/                        — Templates for the project's documents
 │   ├── PRD/                     — PRD template + instructions
 │   ├── TSD/                     — TSD template + instructions
 │   ├── implementation-plan/     — Implementation plan template + instructions
-│   ├── test-plan/               — Test plan template + instructions
-│   ├── README/                  — README template
-│   ├── project-rules/           — Templates for git rules, project rules, security conventions
-│   └── project-structure/       — Project structure template
-├── initialization/              — First-time framework setup scripts and instructions
-└── state/                       — State tracking for the preparation workflow
+│   └── test-plan/               — Test plan template + instructions
+├── .claude/
+│   └── agents/                  — Agent definition templates
+├── rules
+├── STATE
+├── CLAUDE.template.md
+├── PROJECT-STRUCTURE.template.md
+└── README.template.md
 
-docs/                            — Design rationale and ADR documentation
-tests/                           — Framework tests
+.claude/                         — Entities for Claude Code
+│                                  either for this project, not to be copied to the user project
+│                                  or for both this project and the user project
+│                                  - these are placed under "apf" subfolder.
+│                                  Entities that are only for the user project and not APF itself
+│                                  sit under dist/.claude/ and templates/.claude/
+├── commands                     — Slash commands
+├── scripts                      — Python scripts backing the slash commands
+├── skills                       — Skills
+└── ...                          — APF-only config — not copied to user project
+
+installation/
+├── apf_install.bat              — Windows launcher for the installer
+└── apf_install.py               — Copies dist/ files into user project
+
+docs/                            — Docs about APF
+tests/                           — Tests for APF scripts
 ```
 
 ## Template Conventions
 
 - Templates use placeholders to be filled during an iterative interview with the user.
-- Some templates have a companion `.instructions.md` file that tells the LLM how to fill the template.
+- A template filename is `X.template.md`.
+- Some templates have a companion `.instructions.md` file
+  that tells the LLM how to fill the template.
 
 ## How to Use
 
 ### Download
 
-Download this file and run it:
+To install APF in your new or existing project, download [this file](https://github.com/iddolev/apf/blob/main/installation/apf_install.bat) and run it,
+or download it using `curl`:
 
 ```bash
-https://github.com/iddolev/apf/blob/main/installation/apf_install.bat
+curl -O https://raw.githubusercontent.com/iddolev/apf/main/installation/apf_install.bat
 ```
 
-This will download a python script and run it. 
-There are several arguments you can pass to the script you downloaded:
+Running this script fetches `apf_install.py` and runs it.
+
+There are several arguments you can pass to the `apf_install.bat` script you downloaded:
 
 - `--version` — Show the installed APF version and the latest available version, then exit
 - `--target FOLDER` — Install into FOLDER instead of the current directory
 - `--dry-run` — Show what would be done without touching any files
 - `--yes` / `-y` — Skip the confirmation prompt
 - `--force` — Reinstall even if already at the latest version
-- If you run it without any flag, the local version will be updated 
-  only if there is a newer version available
+- If you run it without any flag, the local version will be updated
+  only if there is a newer version available in the GitHub repo.
 
 ### Run
+
+[TBD: Improve this section]
 
 Once download is complete, give an LLM (Cursor with Claude Sonnet, or Claude Code) the prompt:
 
 > Follow the instructions in docs-and-agents-process.md
+
+## Demo
+
+To help you better understand how APF works,
+you can look at the [apf-demo](https://github.com/iddolev/apf-demo) repo.
+This repo is the result of installing APF into it, and running it to create a small toy project.
 
 ## Rationale
 

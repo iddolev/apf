@@ -1,6 +1,6 @@
 ---
 date: 2026-03-04
-author: "Iddo Lev"
+author: Iddo Lev
 LLM-coauthors:
   - claude-Opus-4.6
   - gemini-3.1-pro

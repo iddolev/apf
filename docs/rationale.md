@@ -1,5 +1,5 @@
 ---
-author: "Iddo Lev"
+author: Iddo Lev
 last-updated: 2026-03-07
 ---
 

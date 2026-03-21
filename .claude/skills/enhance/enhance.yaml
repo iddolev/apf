@@ -1,16 +1,27 @@
+local:
+  download_folder: C:\Code\apf_external_sources\
+
 frameworks:
   GSD:
+    synonyms: Get Shit Done
     repo: https://github.com/gsd-build/get-shit-done
     processed_version:
   Paul:
     repo: https://github.com/ChristopherKahler/paul
     processed_version:
-  ULW:
-    synonyms: OMO
+  OMO:
+    synonyms: ULW, UltraWork
     repo: https://github.com/code-yeongyu/oh-my-openagent
     processed_version:
   GStack:
     repo: https://github.com/garrytan/gstack
+    processed_version:
+  Spec-Kit:
+    synonyms: Spec Driven Development
+    repo: https://github.com/github/spec-kit
+    processed_version:
+  Superpowers:
+    repo: https://github.com/obra/superpowers
     processed_version:
 
 sources:
