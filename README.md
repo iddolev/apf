@@ -39,10 +39,10 @@ So this is illuminated here for key folders and files.
    The user may also choose to follow a different format,
    but should still mention that README.apf.md has info
    specifically about using APF for creating and maintaining the project.
-4. `CLAUDE.md`:  Instructions for Claude Code / OpenCode for the APF project itself
+4. `CLAUDE.md`:  Instructions for Claude Code / OpenCode for the APF project itself.
+   This is separate from the user project's `CLAUDE.me`.
 5. `CLAUDE.apf.tmpl.md`: Specific instructions for Claude Code,
-   in addition to the instructions the user may choose to put in their project's main `CLAUDE.md`
-   file.
+   in addition to the instructions the user may choose to put in their project's main `CLAUDE.md`.
    (The user's `CLAUDE.md` file should mention `CLAUDE.apf.tmpl.md`)
 6. `dist/.apf/.apf.yaml`:  A configuration file for APF. E.g. includes the APF version number.
 
