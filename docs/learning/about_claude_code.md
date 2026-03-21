@@ -264,3 +264,42 @@ TaskUpdate({ taskId: "{task_id}", status: "completed" })
 ---
 
 **Where TaskTools genuinely add value:** multi-agent workflows where tasks are independent, long-running, and you want the user to see structured progress. For a simple sequential workflow with 3 steps, they add ceremony without much benefit — natural language progress messages ("Step 1 done, starting step 2...") are often sufficient.
+
+
+# When claude code Tasks are useful: to see progress in UI
+
+Honestly, the main value is UI feedback during a long multi-agent run within a single session.
+
+  When Claude spawns several agents in parallel and each one calls TaskUpdate({ status: "in_progress" }), the Claude Code UI shows live spinners with the      
+  activeForm label you defined — "Scanning for security issues...", "Analysing test coverage..." — so the user can see what's happening in real time rather    
+  than staring at a blank screen waiting for all agents to finish.
+
+  That's essentially it. The other features (dependencies via addBlockedBy, structured state via TaskList) are nice in theory but in practice Claude can track 
+  that same information in its own working context just as reliably.
+
+  So the honest cost/benefit:
+
+  ┌────────────────────────────────────────────┬───────────────────────────────────────────────────────┐
+  │                  Benefit                   │                       How real                        │
+  ├────────────────────────────────────────────┼───────────────────────────────────────────────────────┤
+  │ Live progress spinners for parallel agents │ Genuinely useful                                      │
+  ├────────────────────────────────────────────┼───────────────────────────────────────────────────────┤
+  │ User can see which agent is stuck          │ Genuinely useful                                      │
+  ├────────────────────────────────────────────┼───────────────────────────────────────────────────────┤
+  │ Dependency enforcement between tasks       │ Marginal — Claude can reason about this without tools │
+  ├────────────────────────────────────────────┼───────────────────────────────────────────────────────┤
+  │ Structured state for orchestrator          │ Marginal — Claude holds this in context anyway        │
+  └────────────────────────────────────────────┴───────────────────────────────────────────────────────┘
+
+  When it's not worth it:
+  - Sequential workflows — just narrate progress in plain text
+  - Short tasks — overhead of TaskCreate/TaskUpdate calls isn't worth it
+  - Any workflow where you need cross-session persistence — use files instead
+
+  Bottom line: if you're building a workflow that spawns 3+ parallel agents and the user will be watching it run, TaskTools earn their keep purely through the 
+  spinner UX. Otherwise they add ceremony for little gain.
+  
+# Lack of documentation on TaskTools and TodoWrite
+
+https://www.reddit.com/r/ClaudeAI/comments/1mo40o3/has_anyone_found_configuration_options_for_claude/
+
