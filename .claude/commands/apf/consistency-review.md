@@ -80,7 +80,7 @@ Cross-reference with the actual code logic.
 For files with YAML frontmatter (commands, skills, agents):
 
 - Check that `description` exists and accurately reflects what the file actually does
-- Check (if applicable) that `allowed-tools` exists and includes the tools that are 
+- Check (if applicable) that `allowed-tools` exists and includes the tools that are
   actually used in the file and doesn't list tools that aren't needed
 
 ### E. Repeated or conflicting definitions
@@ -89,7 +89,13 @@ Look for the same concept (constant value, file path, process description,
 terminology) defined or described differently in two or more places. Flag any
 conflicts.
 
-### F. TODOs, TBDs, and known gaps
+### F. Typos
+
+Read all prose text in markdown files, docstrings, and comments and flag
+spelling mistakes and obvious grammatical errors. Focus on human-readable
+text, not code identifiers or technical terms.
+
+### G. TODOs, TBDs, and known gaps
 
 Search for `TODO`, `TBD`, `FIXME`, `[TBD`, and similar markers in all files.
 List them — these are not necessarily bugs, but they should be surfaced so
