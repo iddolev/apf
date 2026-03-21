@@ -110,7 +110,7 @@ tests/                           — Tests for APF scripts
 
 - Templates use placeholders to be filled during an iterative interview with the user.
 - A template filename is `X.tmpl.md`.
-- Some templates have a companion `.instructions.md` file
+- Some templates `X.tmpl.md` have a companion `X.instructions.md` file
   that tells the LLM how to fill the template.
 
 ## How to Use
@@ -149,6 +149,18 @@ Once download is complete, give an LLM (Cursor with Claude Sonnet, or Claude Cod
 To help you better understand how APF works,
 you can look at the [apf-demo](https://github.com/iddolev/apf-demo) repo.
 This repo is the result of installing APF into it, and running it to create a small toy project.
+
+## Installation vs. Preparation
+
+**Installation:** This is a rare event in which you either first install APF in your project,
+or update the installed APF to a newer version (when a new version is made available).
+This process is governed by the script `apf_install.bat` which you should run 
+from the shell in the root folder of your project.
+
+**Preparation:** This is a workflow completely separate and different from "installation."
+It is governed by the command `/apf:preparation` which you should run after starting
+the Claude Code or OpenCode session. It goes through preparation of the project's documents,
+including the PRD and TSD as well as agnets creation / updating.
 
 ## Rationale
 
