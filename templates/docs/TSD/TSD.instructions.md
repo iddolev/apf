@@ -1,7 +1,7 @@
 ---
 date: 2026-03-05
 author: Iddo Lev
-LLM-author: claude-Opus-4.6
+LLM-co-author: claude-Opus-4.6
 purpose: "Instructions for an LLM to read an approved PRD and produce a lean, project-appropriate
 TSD."
 inputs:

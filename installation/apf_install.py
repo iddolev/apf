@@ -52,6 +52,7 @@ PATH_MAP: list[tuple[str, str, bool]] = [
     ("dist/.claude/shared",   ".claude/shared",          True),
     (".claude/commands/apf",  ".claude/commands/apf",    True),
     (".claude/scripts/apf",   ".claude/scripts/apf",     True),
+    ("templates/", ".apf/preparation/templates",         True),
 ]
 
 # The following are supposed to be copied as-is to the user's project

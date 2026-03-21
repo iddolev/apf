@@ -1,7 +1,7 @@
 ---
 date: 2026-03-05
 author: Iddo Lev
-LLM-author: claude-Opus-4.6
+LLM-co-author: claude-Opus-4.6
 purpose: "Instructions for an LLM to read an approved TSD and PRD and produce a project-appropriate
 test plan."
 inputs:

@@ -1,7 +1,7 @@
 ---
 date: 2026-03-05
 author: Iddo Lev
-LLM-author: claude-Opus-4.6
+LLM-co-author: claude-Opus-4.6
 purpose: "Instructions for an LLM to read an approved TSD and produce an implementation plan."
 inputs:
   - "An approved TSD from /docs/specs/TSD_v{version}.md"

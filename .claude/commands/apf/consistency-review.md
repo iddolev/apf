@@ -89,11 +89,11 @@ Look for the same concept (constant value, file path, process description,
 terminology) defined or described differently in two or more places. Flag any
 conflicts.
 
-### F. Typos
+### F. Typos and Styling
 
 Read all prose text in markdown files, docstrings, and comments and flag
-spelling mistakes and obvious grammatical errors. Focus on human-readable
-text, not code identifiers or technical terms.
+spelling mistakes and obvious grammatical errors. Also flag text styling issues. 
+Focus on human-readable text, not code identifiers or technical terms.
 
 ### G. TODOs, TBDs, and known gaps
 
