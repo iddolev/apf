@@ -1,7 +1,7 @@
 """
 Logs agent invocation events to STATE/HISTORY.jsonl.
 
-Usage: python .claude/scripts/log_agent_invocations.py "<agent-name>" "<event-type>" "<message>"
+Usage: python .claude/scripts/log_agent_invocation.py "<agent-name>" "<event-type>" "<message>"
 """
 
 import sys
@@ -9,8 +9,8 @@ import sys
 from common import InvalidInputException, APF_FOLDER, ALLOW_ALL_FIELDS
 from logger import Logger, EVENT_ID_FIELD, EVENT_ID_VALUE
 
-KEY_log_agent_invocations = "log_agent_invocations"
-LOGFILE = f"logs/{KEY_log_agent_invocations[4:]}.jsonl"
+KEY_log_agent_invocation = "log_agent_invocation"
+LOGFILE = f"logs/{KEY_log_agent_invocation[4:]}.jsonl"
 
 
 class AgentInvocationLogger(Logger):
@@ -29,11 +29,11 @@ class AgentInvocationLogger(Logger):
 
 
 AGENT_INVOCATION_LOGGER = AgentInvocationLogger(
-    config_key=KEY_log_agent_invocations,
+    config_key=KEY_log_agent_invocation,
     logfile=LOGFILE,
     # We always want all the three fields: actor, event_type, message - therefore ALLOW_ALL_FIELDS
     field_definitions=ALLOW_ALL_FIELDS,
-    sentinel_filepath=f"{APF_FOLDER}/.{KEY_log_agent_invocations}")
+    sentinel_filepath=f"{APF_FOLDER}/.{KEY_log_agent_invocation}")
 
 
 if __name__ == "__main__":
