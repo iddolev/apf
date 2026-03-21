@@ -1,6 +1,6 @@
 ---
 author: Iddo Lev
-LLM-author: claude-Opus-4.6
+LLM-co-author: claude-Opus-4.6
 last-updated: 2026-03-07
 ---
 
