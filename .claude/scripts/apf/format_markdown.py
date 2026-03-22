@@ -19,13 +19,17 @@ Usage:
 from __future__ import annotations
 
 import argparse
-import os
 import re
 import sys
 import textwrap
 from pathlib import Path
 
-REPO_ROOT = Path(__file__).resolve().parent.parent.parent
+import pathspec
+
+# Both in the APF project and in the user project,
+# format_markdown.py sits in: <project_root>/.claude/scripts/apf/format_markdown.py
+# Therefore need the following expression to get to the project root:
+REPO_ROOT = Path(__file__).resolve().parent.parent.parent.parent
 
 SMART_QUOTES = {
     "\u2018": "'",   # left single curly quote
@@ -37,38 +41,16 @@ SMART_QUOTES = {
 MAX_LINE_LENGTH = 100
 
 
-EXCLUDE_PATTERNS = [
-    "sandbox/",
-    ".git/"
-]
-
-
-def _load_gitignore_patterns(root: Path) -> list[str]:
+def _build_exclude_spec(root: Path) -> pathspec.PathSpec:
+    lines = ["sandbox/", ".git/"]
     gitignore = root / ".gitignore"
-    if not gitignore.exists():
-        return []
-    patterns = []
-    for line in gitignore.read_text(encoding="utf-8").splitlines():
-        line = line.strip()
-        if line and not line.startswith("#") and not line.startswith("!"):
-            patterns.append(line)
-    return patterns
+    if gitignore.exists():
+        lines += gitignore.read_text(encoding="utf-8").splitlines()
+    return pathspec.PathSpec.from_lines("gitwildmatch", lines)
 
 
-EXCLUDE_PATTERNS += _load_gitignore_patterns(REPO_ROOT)
+EXCLUDE_SPEC = _build_exclude_spec(REPO_ROOT)
 
-
-def find_markdown_files(root: Path) -> list[Path]:
-    """Find all markdown files in the repo, excluding EXCLUDE_PATTERNS and special files."""
-    files = []
-    for path in sorted(root.rglob("*.md")):
-        rel = path.relative_to(root).as_posix()
-        if any(f"/{e}/" in f"/{rel}" for e in EXCLUDE_PATTERNS):
-            continue
-        if any(rel.startswith(p) or rel.endswith(p) for p in EXCLUDE_PATTERNS):
-            continue
-        files.append(path)
-    return files
 
 
 def fix_smart_quotes(text: str) -> str:
@@ -320,26 +302,23 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def collect_files_from_paths(args: argparse.Namespace) -> list[Path]:
+def collect_files_from_paths_list(paths: list[str]) -> list[Path]:
     files = []
-    for p in args.paths:
+    for p in paths:
         path = Path(p)
         if path.is_file():
             files.append(path.resolve())
         elif path.is_dir():
-            for f in sorted(path.rglob("*.md")):
-                rel = f.relative_to(REPO_ROOT).as_posix()
-                if not any(rel.startswith(e) for e in EXCLUDE_PATTERNS):
-                    files.append(f.resolve())
+            files.extend(sorted(path.rglob("*.md")))
     return files
 
 
 def main() -> None:
     args = parse_args()
-    if args.paths:
-        files = collect_files_from_paths(args)
-    else:
-        files = find_markdown_files(REPO_ROOT)
+    paths = args.paths if args.paths else [str(REPO_ROOT)]
+    files = collect_files_from_paths_list(paths)
+    files = [f for f in files
+             if not EXCLUDE_SPEC.match_file(f.relative_to(REPO_ROOT).as_posix())]
 
     if not files:
         print("No markdown files found.")
