@@ -1,5 +1,5 @@
 ---
-date: 2026-03-04
+last_update: 2026-03-04
 author: "gpt-5.2"
 purpose: "Instructions for an LLM to interview a user and produce a PRD matching the repository template."
 inputs:

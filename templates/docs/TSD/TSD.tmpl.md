@@ -1,5 +1,5 @@
 ---
-date: 2026-03-04
+last_update: 2026-03-04
 author: Iddo Lev
 LLM-coauthors:
   - claude-Opus-4.6
@@ -19,9 +19,12 @@ LLM-consolidator: claude-Opus-4.6
 >
 > **How to use this template:**
 >
-> - Fill in every section relevant to your project. Mark sections that do not apply as "N/A -- [reason]".
-> - Every `[TBD]` placeholder should be replaced with a concrete answer or explicitly marked out of scope.
-> - If a value is unknown, write `[TBD]` and add a corresponding entry to **Section 20.3 (Open Questions)**.
+> - Fill in every section relevant to your project. Mark sections that do not apply as "N/A --
+[reason]".
+> - Every `[TBD]` placeholder should be replaced with a concrete answer or explicitly marked out of
+scope.
+> - If a value is unknown, write `[TBD]` and add a corresponding entry to **Section 20.3 (Open
+Questions)**.
 > - Prefer specifics over generalities: exact interfaces, schemas, invariants, error modes,
 >   limits, and rollout/rollback mechanics.
 > - Keep requirements testable: include measurable targets, acceptance checks, and observability.
@@ -34,7 +37,8 @@ LLM-consolidator: claude-Opus-4.6
 ## 1. Document Control
 
 - **Product / Feature Name:** [TBD]
-- **Technical One-liner:** [TBD -- e.g., "Event-driven service that ingests X, enriches with Y, and exposes Z via REST"]
+- **Technical One-liner:** [TBD -- e.g., "Event-driven service that ingests X, enriches with Y, and
+  exposes Z via REST"]
 - **Version:** [TBD -- semantic: 0.1-draft, 1.0-approved, ...]
 - **Status:** Draft / In Review / Approved / Implemented
 - **Author(s):** [TBD]
@@ -43,7 +47,8 @@ LLM-consolidator: claude-Opus-4.6
 - **Primary Engineer / Tech Lead:** [TBD]
 - **Target Release Date:** [TBD]
 - **Related PRD:** [Link to the PRD, version number]
-- **Related Docs / Links:** [Figma mocks / Jira tickets / GitHub repo / API references / RFCs / ADRs]
+- **Related Docs / Links:** [Figma mocks / Jira tickets / GitHub repo / API references / RFCs /
+  ADRs]
 
 ---
 
@@ -79,10 +84,13 @@ LLM-consolidator: claude-Opus-4.6
 
 ### 2.1 Technical Summary
 
-- **Objective:** [A brief 1-2 paragraph technical summary of what is being built and why. Tie back to PRD goals.]
-- **High-Level Solution:** [How are we solving the problem technically? e.g., "Event-driven microservice with a
+- **Objective:** [A brief 1-2 paragraph technical summary of what is being built and why. Tie back
+  to PRD goals.]
+- **High-Level Solution:** [How are we solving the problem technically? e.g., "Event-driven
+  microservice with a
   PostgreSQL backing store..."]
-- **Key Trade-offs / Decisions:** [Summarize the most consequential architectural choices and why they were made.]
+- **Key Trade-offs / Decisions:** [Summarize the most consequential architectural choices and why
+  they were made.]
 
 ### 2.2 Scope & Assumptions
 
@@ -147,7 +155,8 @@ LLM-consolidator: claude-Opus-4.6
 
 ### 5.3 Relevant Incidents & Learnings
 
-- [IL-1: e.g., "Outage on 2025-11-03 due to DB connection exhaustion under load; need connection pooling."]
+- [IL-1: e.g., "Outage on 2025-11-03 due to DB connection exhaustion under load; need connection
+  pooling."]
 - [IL-2]
 
 ---
@@ -158,7 +167,8 @@ LLM-consolidator: claude-Opus-4.6
 
 ### 6.1 System Context
 
-- [Describe how this new feature or system fits into the existing architecture. Who/what interacts with it?]
+- [Describe how this new feature or system fits into the existing architecture. Who/what interacts
+  with it?]
 - **Architecture style:** [e.g., Microservices / Modular monolith / Serverless / Event-driven /
   Hybrid -- brief justification linking to PRD constraints]
 - **Primary actors:** [users, admins, systems]
@@ -167,7 +177,8 @@ LLM-consolidator: claude-Opus-4.6
 
 ### 6.2 High-Level Architecture
 
-- [Insert a diagram or describe the high-level architecture. Consider C4 model Context or Container diagrams.]
+- [Insert a diagram or describe the high-level architecture. Consider C4 model Context or Container
+  diagrams.]
 
 | Component | Type | Responsibility | Inputs | Outputs | Tech | Statefulness | Dependencies | Owner | SLA / SLO |
 |-----------|------|----------------|--------|---------|------|--------------|--------------|-------|-----------|
@@ -184,7 +195,8 @@ LLM-consolidator: claude-Opus-4.6
 - **Transformation / enrichment:** [processing steps, rules, tools]
 - **Export paths:** [downstream consumers, formats, protocols]
 
-> Provide at least one end-to-end example of a key data flow, including example payloads at each stage.
+> Provide at least one end-to-end example of a key data flow, including example payloads at each
+stage.
 
 ### 6.4 Design Principles
 
@@ -390,7 +402,8 @@ Payload example:
 
 - **Retry strategy:** [exponential backoff, max attempts]
 - **Poison message handling:** [DLQ, alerting, manual replay]
-- **Idempotency and dedupe:** See Section 9.2 for the overall strategy; note any messaging-specific additions here.
+- **Idempotency and dedupe:** See Section 9.2 for the overall strategy; note any messaging-specific
+  additions here.
 
 ---
 
@@ -433,7 +446,8 @@ Payload example:
 |------|----|---------|-----------------------|--------------|
 | [TBD] | [TBD] | [TBD] | [TBD] | [events, writes] |
 
-- **Invariants:** [what must be true in each state -- e.g., "An order in CONFIRMED state must have a payment_id"]
+- **Invariants:** [what must be true in each state -- e.g., "An order in CONFIRMED state must have a
+  payment_id"]
 - **Terminal states:** [states from which no further transitions are possible]
 
 *(Repeat for each entity with a lifecycle)*
@@ -454,7 +468,8 @@ Payload example:
 
 - **Input validation:** [schema, ranges, regex]
 - **Cross-field / Complex Validation:** [TBD]
-- **Idempotency Strategy:** See Section 9.2 for the overall strategy; note any validation-specific additions here.
+- **Idempotency Strategy:** See Section 9.2 for the overall strategy; note any validation-specific
+  additions here.
 - **Authorization validation:** [TBD]
 
 ### 12.3 Algorithms / Complex Logic (If Any)
@@ -585,7 +600,8 @@ Payload example:
 
 ### 15.1 Logging
 
-- **Log structure:** [Structured JSON, what fields to include (userId, correlationId), PII redaction]
+- **Log structure:** [Structured JSON, what fields to include (userId, correlationId), PII
+  redaction]
 - **Retention:** [TBD]
 
 ### 15.2 Metrics & Dashboards
@@ -665,10 +681,11 @@ Payload example:
 
 ## 17. Analytics & Metrics Instrumentation
 
-> Implementation details: what events/metrics are emitted, where, with what schema, and how they are validated.
+> Implementation details: what events/metrics are emitted, where, with what schema, and how they are
+validated.
 >
 > For the full tracking plan, see: **Analytics Tracking Plan**
-> (template: `../ANALYTICS/Analytics-tracking-plan.template.md`)
+> (template: `../ANALYTICS/Analytics-tracking-plan.tmpl.md`)
 
 ### 17.1 Analytics Events
 

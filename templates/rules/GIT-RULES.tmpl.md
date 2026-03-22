@@ -1,5 +1,5 @@
 ---
-date: 2026-03-06
+last_update: 2026-03-06
 author: Iddo Lev
 LLM-co-author: claude-Opus-4.6
 ---

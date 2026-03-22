@@ -1,5 +1,5 @@
 ---
-date: 2026-03-04
+last_update: 2026-03-04
 author: "claude-opus-4.6"
 purpose: "Step-by-step instructions for an LLM to interview a user and iteratively build a PRD that conforms to the
 companion template."

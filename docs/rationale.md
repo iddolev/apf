@@ -243,7 +243,7 @@ distinct categories that each need a different solution.
 | Specs & plans (PRDs, TSDs, implementation plans, test plans) | **Preparation phase** -- `starting-point.md` steps 3-6 orchestrate creation via dedicated instruction files under `instructions/creating-docs/` |
 | Architecture Decision Records (ADRs) | **Tech lead agent** -- authorized to modify the TSD with ADR-format entries (Context, Options, Decision, Consequences) with inline audit trail |
 | Changelogs & release notes | **Not covered** -- requires post-implementation summarization; natural fit for a lightweight release-notes agent or a tech-lead post-phase step |
-| READMEs (project-level, module-level, package-level) | **Partially covered** -- project-level README created in preparation phase (`starting-point.md` step 12, `README.template.md`); module/package-level READMEs are not addressed |
+| READMEs (project-level, module-level, package-level) | **Partially covered** -- project-level README created in preparation phase (`starting-point.md` step 12, `README.tmpl.md`); module/package-level READMEs are not addressed |
 | Onboarding guides | **Not covered** -- could be derived from README + project structure + TSD but no process exists |
 | Runbooks (deployment, rollback, incident response) | **Not covered** -- TSD sections on deployment/rollout provide source material but no runbook is generated |
 
@@ -319,10 +319,10 @@ distinct categories that each need a different solution.
 
 | Documentation Function | Current Coverage |
 |---|---|
-| Contributing guides (coding standards, PR process, branch naming) | **Partially covered** -- `GIT-RULES.template.md` covers git conventions; `PROGRAMMING-PRINCIPLES.md` covers coding standards; no unified contributing guide is generated |
+| Contributing guides (coding standards, PR process, branch naming) | **Partially covered** -- `GIT-RULES.tmpl.md` covers git conventions; `PROGRAMMING-PRINCIPLES.md` covers coding standards; no unified contributing guide is generated |
 | CI/CD pipeline docs | **Not covered** |
 | Testing strategy docs | **Covered** -- test plan created in preparation phase (`starting-point.md` step 6, `test-plan.instructions.md`) |
-| Security policies | **Partially covered** -- `SECURITY-CONVENTIONS.template.md` created in preparation phase if needed; does not cover disclosure process or incident response |
+| Security policies | **Partially covered** -- `SECURITY-CONVENTIONS.tmpl.md` created in preparation phase if needed; does not cover disclosure process or incident response |
 
 <a id="412-diagramming-visual-documentation"/>
 

@@ -35,14 +35,15 @@ So this is illuminated here for key folders and files.
 1. `README.md`:  This file, a starting point for the Agentic Programming Framework.
 2. `dist/README.apf.md`:  A subsidiary README file to be copied to the user project.
    Explains how APF helped create the user's project.
-3. `templates/README.template.md`:  An optional README template the user can choose to use.
+3. `templates/README.tmpl.md`:  An optional README template the user can choose to use.
    The user may also choose to follow a different format,
    but should still mention that README.apf.md has info
    specifically about using APF for creating and maintaining the project.
-4. `CLAUDE.md`:  Instructions for Claude Code / OpenCode for the APF project itself
-5. `CLAUDE.apf.template.md`: Specific instructions for Claude Code,
-   in addition to the instructions the user may choose to put in their project's main `CLAUDE.md` file.
-   (The user's `CLAUDE.md` file should mention `CLAUDE.apf.template.md`)
+4. `CLAUDE.md`:  Instructions for Claude Code / OpenCode for the APF project itself.
+   This is separate from the user project's `CLAUDE.me`.
+5. `CLAUDE.apf.tmpl.md`: Specific instructions for Claude Code,
+   in addition to the instructions the user may choose to put in their project's main `CLAUDE.md`.
+   (The user's `CLAUDE.md` file should mention `CLAUDE.apf.tmpl.md`)
 6. `dist/.apf/.apf.yaml`:  A configuration file for APF. E.g. includes the APF version number.
 
 ## The Document Chain
@@ -82,9 +83,9 @@ templates/                       — Files instantiated per project
 │   └── agents/                  — Agent definition templates
 ├── rules
 ├── STATE
-├── CLAUDE.template.md
-├── PROJECT-STRUCTURE.template.md
-└── README.template.md
+├── CLAUDE.tmpl.md
+├── PROJECT-STRUCTURE.tmpl.md
+└── README.tmpl.md
 
 .claude/                         — Entities for Claude Code
 │                                  either for this project, not to be copied to the user project
@@ -108,8 +109,8 @@ tests/                           — Tests for APF scripts
 ## Template Conventions
 
 - Templates use placeholders to be filled during an iterative interview with the user.
-- A template filename is `X.template.md`.
-- Some templates have a companion `.instructions.md` file
+- A template filename is `X.tmpl.md`.
+- Some templates `X.tmpl.md` have a companion `X.instructions.md` file
   that tells the LLM how to fill the template.
 
 ## How to Use
@@ -148,6 +149,18 @@ Once download is complete, give an LLM (Cursor with Claude Sonnet, or Claude Cod
 To help you better understand how APF works,
 you can look at the [apf-demo](https://github.com/iddolev/apf-demo) repo.
 This repo is the result of installing APF into it, and running it to create a small toy project.
+
+## Installation vs. Preparation
+
+**Installation:** This is a rare event in which you either first install APF in your project,
+or update the installed APF to a newer version (when a new version is made available).
+This process is governed by the script `apf_install.bat` which you should run 
+from the shell in the root folder of your project.
+
+**Preparation:** This is a workflow completely separate and different from "installation."
+It is governed by the command `/apf:preparation` which you should run after starting
+the Claude Code or OpenCode session. It goes through preparation of the project's documents,
+including the PRD and TSD as well as agnets creation / updating.
 
 ## Rationale
 

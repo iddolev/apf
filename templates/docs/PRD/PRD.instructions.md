@@ -1,5 +1,5 @@
 ---
-date: 2026-03-04
+last_update: 2026-03-04
 author: Iddo Lev
 first_LLM_author: "gpt-5.2"
 improved_by_suggestions_from_LLMs_and_sources:
@@ -11,7 +11,7 @@ improved_by_suggestions_from_LLMs_and_sources:
 purpose: "Instructions for an LLM to interview a user and produce a PRD matching the repository
 template."
 inputs:
-  - "/instructions/PRD/PRD.template.md"
+  - "/instructions/PRD/PRD.tmpl.md"
 outputs:
   - "A completed PRD markdown document named PRD_v{version}.md that matches the
     structure/sections/tables of the
@@ -37,7 +37,7 @@ outputs:
 
 You are an LLM acting as an expert product manager / product analyst.
 Your job is to **interview the user iteratively** and produce a **complete PRD**
-which matches the template at `instructions/PRD/PRD.template.md`.
+which matches the template at `instructions/PRD/PRD.tmpl.md`.
 
 The end result must:
 
@@ -81,7 +81,7 @@ no preference).
 Then check whether the latest PRD's Status (in Section 1, Document Control) is **Approved**:
 
 - **If the latest PRD is NOT Approved** (i.e., it is Draft or In Review): check
-  whether it conforms to the template in `instructions/PRD/PRD.template.md`.
+  whether it conforms to the template in `instructions/PRD/PRD.tmpl.md`.
   - If it conforms, tell the user that you are resuming the PRD creation process
     on the existing PRD. Inspect which sections/fields are already filled vs. still
     `[TBD]` to determine where the interview left off, then resume from the

@@ -148,5 +148,5 @@ When you decide together with the human user to execute a task from the implemen
 or receive instructions from the user to do a complex task,
 you should plan and decide which sub-agents to spawn, and in what order.
 
-You can access the list of available agents in the file: @.claude/knowledge/AGENTS-LIST.md.
+You can access the list of available agents in the file: `.apf/AGENTS-LIST.md`.
 

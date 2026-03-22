@@ -1,5 +1,5 @@
 ---
-date: YYYY-MM-DD
+last_update: YYYY-MM-DD
 author: "[TBD]"
 related-prd: "[Link to PRD]"
 status: Draft / In Review / Approved

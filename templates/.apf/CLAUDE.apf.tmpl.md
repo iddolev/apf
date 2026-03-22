@@ -1,11 +1,9 @@
 ---
-Date: 2026-03-06
+last_update: 2026-03-06
 Author: Iddo Lev
 ---
 
-<!-- ADAPT: Delete the word Template from the following heading. -->
-
-# CLAUDE.md Template
+# CLAUDE.apf.md
 
 <!-- ADAPT: The following sentence should not remain in the instantiated CLAUDE.md file -->
 This is a template for a CLAUDE.md file, to be instantiated by the agentic programming setup process for a new project.

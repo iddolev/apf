@@ -1,5 +1,5 @@
 ---
-date: 2026-03-04
+last_update: 2026-03-04
 author: Iddo Lev
 LLM-coauthors:
   - claude-Opus-4.6
@@ -14,7 +14,8 @@ LLM-consolidator: GPT-5.2
 
 > **How to use this template**
 > - This is a fill-in PRD format intended to be completed via an iterative interview.
-> - Keep all requirements **testable** (acceptance criteria), **scoped** (in/out), and **measurable** (success metrics).
+> - Keep all requirements **testable** (acceptance criteria), **scoped** (in/out), and
+**measurable** (success metrics).
 
 ---
 
@@ -144,7 +145,8 @@ LLM-consolidator: GPT-5.2
 
 ## 6) User Journeys, Use Cases & Stories
 
-> For definitions of User Journey, Use Case, and User Story and how they relate, see **Appendix A: Glossary**.
+> For definitions of User Journey, Use Case, and User Story and how they relate, see **Appendix A:
+Glossary**.
 
 ### 6.1 Core User Journeys (High-level)
 
@@ -274,9 +276,10 @@ LLM-consolidator: GPT-5.2
 
 > **PRD guidance:** This section captures **requirements and constraints** about
 > data and integrations (the "what" and "why").
-> Detailed schemas, endpoint definitions, event payloads, and storage design belong in a **Technical Spec / API Spec**.
+> Detailed schemas, endpoint definitions, event payloads, and storage design belong in a **Technical
+Spec / API Spec**.
 
-- **Technical Spec (link):** [TBD] (template: `../TECH-SPEC/TECH-SPEC.template.md`)
+- **Technical Spec (link):** [TBD] (template: `../TECH-SPEC/TECH-SPEC.tmpl.md`)
 - **API / Events Spec (link, if separate):** [TBD]
 - **Data retention / privacy policy reference (link, if applicable):** [TBD]
 
@@ -296,7 +299,8 @@ LLM-consolidator: GPT-5.2
 ### 10.3 API / Event Impact (Requirement-level)
 
 - **New capabilities required:** [e.g., "must provide a way to create/update X"]
-- **Compatibility constraints:** [e.g., "must not break existing clients"; "must support old + new behavior for N
+- **Compatibility constraints:** [e.g., "must not break existing clients"; "must support old + new
+  behavior for N
   weeks"]
 - **Deprecations / migrations (user-facing):** [TBD]
 
@@ -306,11 +310,12 @@ LLM-consolidator: GPT-5.2
 
 ## 11) Technical Architecture & Constraints
 
-> **PRD guidance:** Keep this section to **non-negotiable constraints** and product-impacting technical considerations.
+> **PRD guidance:** Keep this section to **non-negotiable constraints** and product-impacting
+technical considerations.
 > Architecture, stack choices, migrations, feature-flag implementation, and
 > rollback mechanics belong in a **Technical Spec**.
 
-- **Technical Spec (link):** [TBD] (template: `../TECH-SPEC/TECH-SPEC.template.md`)
+- **Technical Spec (link):** [TBD] (template: `../TECH-SPEC/TECH-SPEC.tmpl.md`)
 
 ### 11.1 Non-Negotiable Constraints (Product-impacting)
 
@@ -364,9 +369,10 @@ LLM-consolidator: GPT-5.2
 ### 13.3 Operational Readiness
 
 > **PRD guidance:** Keep this section at a product level (milestones, audience, sequencing).
-> Detailed runbooks, monitoring setup, support rotations, and rollback procedures belong in a **Launch Runbook**.
+> Detailed runbooks, monitoring setup, support rotations, and rollback procedures belong in a
+**Launch Runbook**.
 
-- **Launch Runbook (link):** [TBD] (template: `../LAUNCH/Launch-runbook.template.md`)
+- **Launch Runbook (link):** [TBD] (template: `../LAUNCH/Launch-runbook.tmpl.md`)
 
 #### Launch Requirements (High-level)
 
@@ -390,7 +396,7 @@ LLM-consolidator: GPT-5.2
 > Requirements) and how we'll validate outcomes.
 > Detailed test strategy and coverage planning belong in a **QA / test plan**.
 
-- **QA / test plan (link):** [TBD] (template: `../QA/QA-test-plan.template.md`)
+- **QA / test plan (link):** [TBD] (template: `../QA/QA-test-plan.tmpl.md`)
 
 ### 14.3 Entry / Exit Criteria
 

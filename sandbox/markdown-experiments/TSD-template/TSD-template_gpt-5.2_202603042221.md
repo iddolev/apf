@@ -1,5 +1,5 @@
 ---
-date: 2026-03-04
+last_update: 2026-03-04
 author: "GPT-5.2"
 template: "TSD"
 purpose: "Fill-in technical specification template intended to be completed via an iterative interview."

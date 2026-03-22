@@ -1,5 +1,5 @@
 ---
-date: {{YYYY-MM-DD}}
+last_update: {{YYYY-MM-DD}}
 author: "{{Author Name}}"
 status: Draft / In Review / Approved
 ---
