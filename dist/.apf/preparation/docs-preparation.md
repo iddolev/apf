@@ -28,9 +28,20 @@ After completing each item, mark its checkbox as `[v]` in the STATE file before 
 
 ## Instantiating Rule Templates and Other Files
 
+### Instantiation Instructions
+
 Instantiate each template below using information from the documents created
-above (PRD, TSD, implementation plan, test plan). Fill in `[TBD]` placeholders
-and adapt `<!-- ADAPT -->` sections to match the project.
+above (PRD, TSD, implementation plan, test plan). 
+In all the files mentioned below:
+
+1. You need to instantiate them according to the instructions in the `<!-- ADAPT: ...->` tags.
+2. After that, remove all `<!-- ADAPT -->` markers from the output.
+3. Fill in `[TBD]` placeholders
+4. Keep all non-ADAPT sections unchanged.
+5. A template `<X>.tmpl.md` should be instantiated to a file `<X>.md` and placed 
+   according to the instructions.
+
+### The Files
 
 1. `PROGRAMMING-PRINCIPLES`: Instantiate
    `.apf/preparation/templates/rules/PROGRAMMING-PRINCIPLES.tmpl.md` according to its
