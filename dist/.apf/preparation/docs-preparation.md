@@ -26,7 +26,7 @@ After completing each item, mark its checkbox as `[v]` in the STATE file before 
 
 <a id="rules-and-templates"/>
 
-## Instantiating rules and project templates
+## Instantiating Rule Templates and Other Files
 
 Instantiate each template below using information from the documents created
 above (PRD, TSD, implementation plan, test plan). Fill in `[TBD]` placeholders
@@ -57,3 +57,28 @@ and adapt `<!-- ADAPT -->` sections to match the project.
    If yes, then instantiate `.apf/preparation/templates/README.tmpl.md` according to its
    `<!-- ADAPT -->` markers, using information from the other documents.
    Place the result as `README.md` in the project root folder.
+
+## CLAUDE.md files
+
+### CLAUDE.apf.md
+
+Instantiate the file `.apf/preparation/templates/CLAUDE.apf.tmpl.md` according to the instructions in it.
+Put the result in `.apf/CLAUDE.apf.md`.
+
+### CLAUDE.md
+
+The APF framework deliberately does not create a CLAUDE.md file, 
+in order to allow the user to have their own `CLAUDE.md` file.
+
+However, APF requires the user's `CLAUDE.md` to mention `CLAUDE.apf.md`.
+This is accomplished by adding the following text inside the user's `CLAUDE.md`,
+if it's not already there:
+
+<!-- DO NOT REMOVE: This is required for APF -->
+Read also the instructions in `.apf/CLAUDE.apf.md`.
+<!-- END OF DO NOT REMOVE: This is required for APF -->
+
+So your instruction is to check whether `CLAUDE.md` already exists in the project's root folder.
+If yes, tell the user that the above section needs to be appended to `CLAUDE.md`
+and ask for permission to do so. If there is no `CLAUDE.md` file, 
+then simply create it with the required section.
