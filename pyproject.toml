@@ -1,7 +1,6 @@
 [project]
 name = "apf"
 requires-python = ">=3.10"
-dependencies = ["pathspec"]
 
 [project.optional-dependencies]
 test = ["pytest"]
