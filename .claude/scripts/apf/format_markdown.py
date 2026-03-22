@@ -49,15 +49,6 @@ def _build_exclude_spec(root: Path) -> pathspec.PathSpec:
 EXCLUDE_SPEC = _build_exclude_spec(REPO_ROOT)
 
 
-def find_markdown_files(root: Path) -> list[Path]:
-    """Find all markdown files in the repo, excluding .gitignore patterns and sandbox/."""
-    files = []
-    for path in sorted(root.rglob("*.md")):
-        rel = path.relative_to(root).as_posix()
-        if not EXCLUDE_SPEC.match_file(rel):
-            files.append(path)
-    return files
-
 
 def fix_smart_quotes(text: str) -> str:
     """Rule 1: Replace smart/curly quotes with ASCII equivalents."""
@@ -308,26 +299,23 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def collect_files_from_paths(args: argparse.Namespace) -> list[Path]:
+def collect_files_from_paths_list(paths: list[str]) -> list[Path]:
     files = []
-    for p in args.paths:
+    for p in paths:
         path = Path(p)
         if path.is_file():
             files.append(path.resolve())
         elif path.is_dir():
-            for f in sorted(path.rglob("*.md")):
-                rel = f.relative_to(REPO_ROOT).as_posix()
-                if not EXCLUDE_SPEC.match_file(rel):
-                    files.append(f.resolve())
+            files.extend(sorted(path.rglob("*.md")))
     return files
 
 
 def main() -> None:
     args = parse_args()
-    if args.paths:
-        files = collect_files_from_paths(args)
-    else:
-        files = find_markdown_files(REPO_ROOT)
+    paths = args.paths if args.paths else [str(REPO_ROOT)]
+    files = collect_files_from_paths_list(paths)
+    files = [f for f in files
+             if not EXCLUDE_SPEC.match_file(f.relative_to(REPO_ROOT).as_posix())]
 
     if not files:
         print("No markdown files found.")
