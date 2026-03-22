@@ -26,7 +26,10 @@ from pathlib import Path
 
 import pathspec
 
-REPO_ROOT = Path(__file__).resolve().parent.parent.parent
+# Both in the APF project and in the user project,
+# format_markdown.py sits in: <project_root>/.claude/scripts/apf/format_markdown.py
+# Therefore need the following expression to get to the project root:
+REPO_ROOT = Path(__file__).resolve().parent.parent.parent.parent
 
 SMART_QUOTES = {
     "\u2018": "'",   # left single curly quote
