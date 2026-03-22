@@ -15,6 +15,9 @@
    by some known package, check, and if yes, then obtain it and use it rather than re-implementing.
 4. Dependencies that are required by a script of APF (e.g. package that checks .gitignore pattern
    to skip files for format_markdown.py) need to be added to the user project's dependencies
+5. E.g. the problem with google doc name vs what allowed on windows - it broke and I had to think
+   of a better way than simply converting to unicode etc. so maybe such problems should be surfaced
+   to the human to decide what to do, so (1) surface and not just try to solve itself (2) human thinks better
 
 ## Bugs
 
