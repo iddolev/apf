@@ -6,6 +6,14 @@
    miss.
 2. Whenever running APF, automatically detect whether a newer version was released in GitHub,
    and offer the user to update.
+3. Instructions to all coding agents, and especially reviewers: Always do research and check whether
+   there is already a known library that does something, and use it. 
+   E.g. if you need code that can compare a filepath against a .gitignore pattern,
+   it's a very bad practice to try to implement it yourself, when there is already a known python package to do it.
+   Always ask yourself: Is it likely that the required functionality has been implemented already
+   by some known package, check, and if yes, then obtain it and use it rather than re-implementing.
+4. Dependencies that are required by a script of APF (e.g. package that checks .gitignore pattern
+   to skip files for format_markdown.py) need to be added to the user project's dependencies
 
 ## Bugs
 

@@ -19,11 +19,12 @@ Usage:
 from __future__ import annotations
 
 import argparse
-import os
 import re
 import sys
 import textwrap
 from pathlib import Path
+
+import pathspec
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 
@@ -37,37 +38,24 @@ SMART_QUOTES = {
 MAX_LINE_LENGTH = 100
 
 
-EXCLUDE_PATTERNS = [
-    "sandbox/",
-    ".git/"
-]
-
-
-def _load_gitignore_patterns(root: Path) -> list[str]:
+def _build_exclude_spec(root: Path) -> pathspec.PathSpec:
+    lines = ["sandbox/", ".git/"]
     gitignore = root / ".gitignore"
-    if not gitignore.exists():
-        return []
-    patterns = []
-    for line in gitignore.read_text(encoding="utf-8").splitlines():
-        line = line.strip()
-        if line and not line.startswith("#") and not line.startswith("!"):
-            patterns.append(line)
-    return patterns
+    if gitignore.exists():
+        lines += gitignore.read_text(encoding="utf-8").splitlines()
+    return pathspec.PathSpec.from_lines("gitwildmatch", lines)
 
 
-EXCLUDE_PATTERNS += _load_gitignore_patterns(REPO_ROOT)
+EXCLUDE_SPEC = _build_exclude_spec(REPO_ROOT)
 
 
 def find_markdown_files(root: Path) -> list[Path]:
-    """Find all markdown files in the repo, excluding EXCLUDE_PATTERNS and special files."""
+    """Find all markdown files in the repo, excluding .gitignore patterns and sandbox/."""
     files = []
     for path in sorted(root.rglob("*.md")):
         rel = path.relative_to(root).as_posix()
-        if any(f"/{e}/" in f"/{rel}" for e in EXCLUDE_PATTERNS):
-            continue
-        if any(rel.startswith(p) or rel.endswith(p) for p in EXCLUDE_PATTERNS):
-            continue
-        files.append(path)
+        if not EXCLUDE_SPEC.match_file(rel):
+            files.append(path)
     return files
 
 
@@ -329,7 +317,7 @@ def collect_files_from_paths(args: argparse.Namespace) -> list[Path]:
         elif path.is_dir():
             for f in sorted(path.rglob("*.md")):
                 rel = f.relative_to(REPO_ROOT).as_posix()
-                if not any(rel.startswith(e) for e in EXCLUDE_PATTERNS):
+                if not EXCLUDE_SPEC.match_file(rel):
                     files.append(f.resolve())
     return files
 
