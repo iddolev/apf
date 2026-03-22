@@ -8,6 +8,7 @@
    and offer the user to update.
 3. Instructions to all coding agents, and especially reviewers: Always do research and check whether
    there is already a known library that does something, and use it. 
+   "Don't reinvent the wheel" (is this a common phrase in English?)
    E.g. if you need code that can compare a filepath against a .gitignore pattern,
    it's a very bad practice to try to implement it yourself, when there is already a known python package to do it.
    Always ask yourself: Is it likely that the required functionality has been implemented already
