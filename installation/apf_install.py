@@ -53,7 +53,7 @@ PATH_MAP: list[tuple[str, str, bool]] = [
     ("dist/.claude/commands/",       ".claude/commands/",                   True),
     ("dist/.claude/scripts/",        ".claude/scripts/",                    True),
     ("dist/.claude/shared/",         ".claude/shared/",                     True),
-    ("dist/rules/",                  "rules/",                              True),
+    ("dist/rules/",                  "rules/apf/",                          True),
     (".claude/commands/apf/",        ".claude/commands/apf/",               True),
     (".claude/scripts/apf/",         ".claude/scripts/apf/",                True),
     (f"dist/{APF_FOLDER}/preparation/", f"{APF_FOLDER}/preparation/",       True),
