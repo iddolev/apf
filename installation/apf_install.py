@@ -292,11 +292,46 @@ def copy_path_map(repo_dir: Path, project_dir: Path, *, dry_run: bool) -> None:
              "The installation is incomplete — some files may be outdated or missing.")
 
 
+APF_CLAUDE_SECTION_HEADING = "## APF-specific CLAUDE instructions"
+APF_CLAUDE_SECTION_BODY = "Read @templates/.apf/CLAUDE.apf.tmpl.md"
+
+
+def update_claude_md(project_dir: Path, *, dry_run: bool) -> None:
+    """Create CLAUDE.md if missing, then append the APF section if not already present."""
+    claude_path = project_dir / "CLAUDE.md"
+
+    if not claude_path.exists():
+        if dry_run:
+            print(f"  [dry-run] Would create CLAUDE.md with APF section")
+            return
+        claude_path.write_text(
+            f"{APF_CLAUDE_SECTION_HEADING}\n\n{APF_CLAUDE_SECTION_BODY}\n",
+            encoding="utf-8",
+        )
+        print(f"  📄 Created CLAUDE.md")
+        return
+
+    content = claude_path.read_text(encoding="utf-8")
+    if APF_CLAUDE_SECTION_HEADING in content:
+        return
+
+    if dry_run:
+        print(f"  [dry-run] Would append APF section to CLAUDE.md")
+        return
+
+    claude_path.write_text(
+        content.rstrip() + f"\n\n{APF_CLAUDE_SECTION_HEADING}\n\n{APF_CLAUDE_SECTION_BODY}\n",
+        encoding="utf-8",
+    )
+    print(f"  📄 Updated CLAUDE.md")
+
+
 def install(repo_dir: Path, project_dir: Path, new_version: str, *, dry_run: bool) -> None:
     """Install APF framework files into the project."""
     print(f"\n📦 Installing APF v{new_version} into {project_dir}\n")
     copy_path_map(repo_dir, project_dir, dry_run=dry_run)
     update_gitignore(project_dir, dry_run=dry_run)
+    update_claude_md(project_dir, dry_run=dry_run)
     update_apf_version(project_dir, new_version, dry_run=dry_run)
 
 
