@@ -7,17 +7,19 @@
 2. Whenever running APF, automatically detect whether a newer version was released in GitHub,
    and offer the user to update.
 3. Instructions to all coding agents, and especially reviewers: Always do research and check whether
-   there is already a known library that does something, and use it. 
+   there is already a known library that does something, and use it.
    "Don't reinvent the wheel" (is this a common phrase in English?)
    E.g. if you need code that can compare a filepath against a .gitignore pattern,
-   it's a very bad practice to try to implement it yourself, when there is already a known python package to do it.
+   it's a very bad practice to try to implement it yourself, when there is already a known python
+   package to do it.
    Always ask yourself: Is it likely that the required functionality has been implemented already
    by some known package, check, and if yes, then obtain it and use it rather than re-implementing.
 4. Dependencies that are required by a script of APF (e.g. package that checks .gitignore pattern
    to skip files for format_markdown.py) need to be added to the user project's dependencies
 5. E.g. the problem with google doc name vs what allowed on windows - it broke and I had to think
    of a better way than simply converting to unicode etc. so maybe such problems should be surfaced
-   to the human to decide what to do, so (1) surface and not just try to solve itself (2) human thinks better
+   to the human to decide what to do, so (1) surface and not just try to solve itself (2) human
+   thinks better
 
 ## Bugs
 
@@ -304,63 +306,6 @@ current file structure)
 
 Ask CC to inspect the URL suggestions at the bottom of each agent template to see
 whether something general should be added to the template
-
-## Possibly to consider: incorporating generic backend principles from mykey-backend-developer into
-
-backend-specialist-template
-
-Comparison of `instructions/.claude/agent-templates/backend-specialist.tmpl.md` vs
-`sandbox/michael-mykey-agents/mykey-backend-developer.md`.
-
-The mykey version has several substantive sections that the template currently lacks (it only has
-empty
-`<!-- ADAPT -->` placeholders). These are generic backend best practices worth adding as default
-template content.
-
-### Worth incorporating
-
-#### 1. Implementation Standards section
-
-The template has an empty placeholder for "Key patterns" but the mykey version has well-structured,
-generic backend
-best practices:
-
-- **Code Quality** — clean code, DRY, small functions, typing, meaningful comments
-- **Code Organization** — layered architecture (controllers -> services -> repositories), separation
-  of concerns,
-  dependency injection, config separation
-- **Efficiency & Performance** — N+1 avoidance, caching, async I/O, connection pooling, pagination
-
-Most of these are universal backend principles, not project-specific.
-
-#### 2. Error Handling Pattern
-
-Custom error classes, global error middleware, async error handling, contextual logging. All
-generic.
-
-#### 3. API Design Standards
-
-Consistent naming, HTTP status codes, response envelopes, versioning, documenting contracts. All
-generic.
-
-#### 4. Post-Implementation Checklist
-
-A concrete checklist before considering a task complete. Very useful as a template pattern.
-
-#### 5. Consulting the Architect guidance (partial)
-
-When to escalate to the tech-lead/architect. The template already has pipeline awareness but lacks
-specific escalation
-criteria.
-
-### NOT worth incorporating
-
-- MyKey-specific details (SHA-256 OTP hashing, specific paths)
-- The verbose repetition of memory instructions (template already handles this via
-  `@SHARED-AGENT-CONTEXT`)
-- The `tools:` frontmatter line listing specific tools (not in the template convention)
-- Using `model: opus` (template intentionally uses sonnet for cost balance)
-- The "searching past context" section with grep commands (too specific)
 
 ## Possibly to consider: frontend-specialist-template vs mykey-frontend-specialist
 
