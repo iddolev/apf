@@ -165,7 +165,6 @@ def copy_file(src: Path, dest: Path, *, overwrite: bool, dry_run: bool) -> None:
         return
     dest.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(src, dest)
-    print(f"  📄 Copied → {dest}")
 
 
 def copy_entry(src: Path, dest: Path, *, overwrite: bool, dry_run: bool) -> None:
@@ -178,6 +177,7 @@ def copy_entry(src: Path, dest: Path, *, overwrite: bool, dry_run: bool) -> None
                 copy_file(descendant, dest / rel, overwrite=overwrite, dry_run=dry_run)
     else:
         copy_file(src, dest, overwrite=overwrite, dry_run=dry_run)
+    print(f"  📄 Copied → {dest}")
 
 
 def _is_apf_repo(project_dir: Path) -> bool:
