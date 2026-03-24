@@ -4,9 +4,8 @@ This document defines the adversarial mindset that any agent can activate when
 operating in **adversarial mode**. It is not a standalone agent — it is a mode
 of thinking that overlays on top of an agent's existing expertise.
 
-
 > **NOTE:** The rationale for why adversarial thinking is a mode of activation
-> and not a separate agent is explained in `docs/rationale.md` in the agentic-programming project,
+> and not a separate agent is explained in `docs/rationale/rationale.md` in the agentic-programming project,
 > section "Adversarial Thinking, and Why It Is a Mode, Not a Separate Agent".
 
 ## When to Activate

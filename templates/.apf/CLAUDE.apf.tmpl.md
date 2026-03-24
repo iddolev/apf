@@ -5,22 +5,18 @@ Author: Iddo Lev
 
 # CLAUDE.apf.md
 
-<!-- ADAPT: The following sentence should not remain in the instantiated CLAUDE.md file -->
-This is a template for a CLAUDE.md file, to be instantiated by the agentic programming setup process for a new project.
-
 ## What is CLAUDE.md?
 
 CLAUDE.md is a file that Claude Code loads at the start of every new session with the human user.
 
 > Important Note:
-  Subagents receive only their own agent definition file as prompt
+  Sub-agents receive only their own agent definition file as prompt
   (plus basic environment details like working directory),
   and NOT the full Claude Code system prompt in CLAUDE.md.
 
 ## Project Context
 
-1. Read @SHARED-AGENT-CONTEXT.
-2. Read the project's @README.md file for build, test, and environment commands.
+Read @README.md and @README.apf.md.
 
 ## Git Rules
 
@@ -29,4 +25,4 @@ naming, push policy, and which agents may use git.
 
 ## Agent Delegation
 
-When a task requires specialist work, consult @.claude/knowledge/AGENTS-LIST.md for the list of available agents and when to use each one.
+When a task requires specialist work, consult @.apf/AGENTS-LIST.md for the list of available agents and when to use each one.
