@@ -43,7 +43,8 @@ So look for files matching the pattern `.apf/STATE-v*.md`:
 
 If no such file exists:
 Infer the user wants to set up a new project.
-Tell the user you understand this, and ask for the version number (default: `0.1`).
+Tell the user you understand this, 
+and use the tool AskUserQuestion to ask for the version number (default: `0.1`).
 Create `.apf/STATE-v{version}.md` by instantiating
 the template in `.apf/preparation/templates/.apf/STATE.tmpl.md`
 (replace `{version}` in the file name and in the content with the chosen version number).
