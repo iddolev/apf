@@ -293,7 +293,7 @@ def copy_path_map(repo_dir: Path, project_dir: Path, *, dry_run: bool) -> None:
 
 
 APF_CLAUDE_SECTION_HEADING = "## APF-specific CLAUDE instructions"
-APF_CLAUDE_SECTION_BODY = "Read @templates/.apf/CLAUDE.apf.tmpl.md"
+APF_CLAUDE_SECTION_BODY = "Read @.apf/CLAUDE.apf.md"
 
 
 def update_claude_md(project_dir: Path, *, dry_run: bool) -> None:

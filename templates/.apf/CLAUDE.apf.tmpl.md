@@ -5,6 +5,12 @@ Author: Iddo Lev
 
 # CLAUDE.apf.md
 
+## Inclusion
+
+The following line should be included in the project's `CLAUDE.md` file, so that it refers to the content here:
+
+> Read @.apf/CLAUDE.apf.md.
+
 ## What is CLAUDE.md?
 
 CLAUDE.md is a file that Claude Code loads at the start of every new session with the human user.
