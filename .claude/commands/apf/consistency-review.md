@@ -22,8 +22,9 @@ Run:
 git ls-files
 ```
 
-From the output, exclude any paths that start with `sandbox/`.
-These are the files to review.
+From the output, exclude any paths that start with `sandbox/`,
+as well as all files excluded by .gitignore.
+The remaining files are to be reviewed.
 
 ## Step 2 — Build context
 
@@ -31,7 +32,7 @@ Before searching for issues, orient yourself:
 
 - Read `README.md` (or equivalent top-level doc) to understand the project's
   stated structure, intent, and conventions.
-- Read `CLAUDE.md` for project-specific rules and constraints.
+- Read `CLAUDE.md` (if exists) for project-specific rules and constraints.
 - Use Glob to inspect the actual top-level directory and file layout.
 
 ## Step 3 — Systematic consistency checks
@@ -82,18 +83,20 @@ For files with YAML frontmatter (commands, skills, agents):
 - Check that `description` exists and accurately reflects what the file actually does
 - Check (if applicable) that `allowed-tools` exists and includes the tools that are
   actually used in the file and doesn't list tools that aren't needed
+- Check that the Frontmatter in similar files has the same or similar structure. 
+  E.g. identify inconsistencies in naming and lower/upper case. 
 
 ### E. Repeated or conflicting definitions
 
-Look for the same concept (constant value, file path, process description,
-terminology) defined or described differently in two or more places. Flag any
-conflicts.
+Look for any concept (constant value, file path, process description,
+terminology) which is defined or described differently in two or more places. 
+Flag any conflicts.
 
 ### F. Typos and Styling
 
-Read all prose text in markdown files, docstrings, and comments and flag
-spelling mistakes and obvious grammatical errors. Also flag text styling issues. 
-Focus on human-readable text, not code identifiers or technical terms.
+- In human-readable text in markdown files, docstrings, and comments: 
+  flag spelling mistakes and obvious grammatical errors. Also flag text styling issues. 
+- Flag spelling mistakes in code identifiers and technical terms.
 
 ### G. TODOs, TBDs, and known gaps
 
@@ -134,4 +137,4 @@ If the user says "fix all" or "yes to all", apply all remaining fixes without
 asking for individual confirmations.
 
 After all fixes are applied (or skipped), print a brief summary:
-how many issues were found, how many were fixed, and how many were skipped.
+Per type: how many issues were found, how many were fixed, and how many were skipped.

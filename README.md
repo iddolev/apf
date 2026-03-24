@@ -164,5 +164,5 @@ including the PRD and TSD as well as agnets creation / updating.
 
 ## Rationale
 
-See the [rationale](https://github.com/iddolev/apf/blob/main/docs/rationale.md) page
+See the [rationale](https://github.com/iddolev/apf/blob/main/docs/rationale/rationale.md) page
 for explanations about the rationale of various parts of the APF.

@@ -94,7 +94,7 @@ This approach may need revision if:
 
 ## 2. (Any) Decision Records (ADRs)
 
-Full rationale in [ADR-rationale.md](ADR-rationale.md). **Not yet implemented.**
+Full rationale in [ADR-rationale.md](https://github.com/iddolev/apf/blob/main/docs/rationale/ADR-rationale.md). **Not yet implemented.**
 
 ADRs record project-wide decisions that constrain future work — not just
 architecture, but also technology choices, conventions, process decisions,

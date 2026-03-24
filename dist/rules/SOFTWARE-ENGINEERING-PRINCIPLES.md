@@ -10,7 +10,7 @@ LLM-co-author: claude-Opus-4.6
 
 
 > **NOTE:** The rationale for why this file is separate from `PROGRAMMING-PRINCIPLES.md`
-> is explained in `docs/rationale.md` in the APF project,
+> is explained in `docs/rationale/rationale.md` in the APF project,
 > section "Why SOFTWARE-ENGINEERING-PRINCIPLES.md and PROGRAMMING-PRINCIPLES.md Are Separate Files".
 
 This file contains foundational software engineering theory — the underlying principles
