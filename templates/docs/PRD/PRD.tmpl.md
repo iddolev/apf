@@ -29,7 +29,7 @@ LLM-consolidator: GPT-5.2
 - **Status:** Draft / In Review / Approved
 - **Author(s):** [TBD]
 - **Stakeholders:** [TBD — teams + names]
-- **Last Updated:** [YYYY-MM-DD]
+- **Last Updated:** [YYYY-MM-DD hh:mm]
 - **Related Links:** [mocks/specs/tickets/repo/docs]
 
 ---

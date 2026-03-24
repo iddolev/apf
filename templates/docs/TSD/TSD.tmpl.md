@@ -43,7 +43,7 @@ Questions)**.
 - **Status:** Draft / In Review / Approved / Implemented
 - **Author(s):** [TBD]
 - **Reviewers:** [TBD]
-- **Last Updated:** [YYYY-MM-DD]
+- **Last Updated:** [YYYY-MM-DD hh:mm]
 - **Primary Engineer / Tech Lead:** [TBD]
 - **Target Release Date:** [TBD]
 - **Related PRD:** [Link to the PRD, version number]
@@ -767,9 +767,9 @@ validated.
 
 ## 20. Decision Log
 
-| ID | Date | Decision | Rationale | Owner |
-|----|------|----------|-----------|-------|
-| D-001 | [TBD] | [TBD] | [TBD] | [TBD] |
+| ID | Timestamp | Decision | Rationale | Owner |
+|----|-----------|----------|-----------|-------|
+| D-001 | [TBD, in format: YYYY-MM-DD hh:mm] | [TBD] | [TBD] | [TBD] |
 
 ---
 
@@ -801,4 +801,4 @@ validated.
 
 ### Change Log
 
-- *v0.1 - [YYYY-MM-DD]* - Initial Draft by [Name]
+- *v0.1 - [YYYY-MM-DD hh:mm]* - Initial Draft by [Name]

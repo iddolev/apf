@@ -16,7 +16,7 @@ LLM-co-author: claude-Opus-4.6
 - **Version:** [matches TSD version]
 - **Status:** Draft / In Review / Approved
 - **Author(s):** [TBD]
-- **Last Updated:** [YYYY-MM-DD]
+- **Last Updated:** [YYYY-MM-DD hh:mm]
 - **Related TSD:** [link to TSD]
 - **Related PRD:** [link to PRD]
 
@@ -93,4 +93,4 @@ LLM-co-author: claude-Opus-4.6
 
 ## Change Log
 
-- *v0.1 - [YYYY-MM-DD]* - Initial plan by [Name]
+- *v0.1 - [YYYY-MM-DD hh:mm]* - Initial plan by [Name]

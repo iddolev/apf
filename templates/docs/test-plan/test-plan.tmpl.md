@@ -13,10 +13,14 @@ LLM-co-author: claude-Opus-4.6
 >
 > **How to use this template:**
 >
-> - Fill in every section relevant to your project. Mark sections that do not apply as "N/A -- [reason]".
-> - Every `[TBD]` placeholder should be replaced with a concrete answer or explicitly marked out of scope.
-> - Reference the TSD for architecture and component boundaries; reference the PRD for requirements to verify.
-> - Prefer specifics over generalities: exact test cases, concrete mock boundaries, measurable exit criteria.
+> - Fill in every section relevant to your project. Mark sections that do not apply as "N/A --
+[reason]".
+> - Every `[TBD]` placeholder should be replaced with a concrete answer or explicitly marked out of
+scope.
+> - Reference the TSD for architecture and component boundaries; reference the PRD for requirements
+to verify.
+> - Prefer specifics over generalities: exact test cases, concrete mock boundaries, measurable exit
+criteria.
 
 ---
 
@@ -28,7 +32,7 @@ LLM-co-author: claude-Opus-4.6
 - **Version:** [TBD -- matches TSD version]
 - **Status:** Draft / In Review / Approved
 - **Author(s):** [TBD]
-- **Last Updated:** [YYYY-MM-DD]
+- **Last Updated:** [YYYY-MM-DD hh:mm]
 - **Related TSD:** [Link to TSD, version]
 - **Related PRD:** [Link to PRD, version]
 - **Related implementation plan:** [Link to implementation plan, version]
@@ -74,7 +78,8 @@ LLM-co-author: claude-Opus-4.6
 
 ## 3. Requirements Traceability
 
-> Map each PRD requirement to the test case(s) that verify it. This ensures nothing falls through the cracks.
+> Map each PRD requirement to the test case(s) that verify it. This ensures nothing falls through
+the cracks.
 
 | PRD Ref | Requirement Summary | Test Case ID(s) | Type | Status |
 |--------:|---------------------|------------------|------|--------|
@@ -135,7 +140,8 @@ gracefully
 relevant for evolving systems)
 
 > - **Priority** — P1 = must pass for release; P2 = should pass; P3 = nice-to-have
-> - **Expected Result** — what must be true for the test to pass; written so a coding agent can turn it into assertions
+> - **Expected Result** — what must be true for the test to pass; written so a coding agent can turn
+it into assertions
 
 ### 5.1 [Component / Module Name]
 
@@ -149,7 +155,8 @@ relevant for evolving systems)
 
 ### 5.N Manual / Exploratory Test Checklists
 
-> For test scenarios that are performed manually (e.g., browser-based E2E, visual verification, UX validation).
+> For test scenarios that are performed manually (e.g., browser-based E2E, visual verification, UX
+validation).
 
 - [TBD]
 
@@ -256,4 +263,4 @@ relevant for evolving systems)
 
 ## Change Log
 
-- *v0.1 - [YYYY-MM-DD]* - Initial test plan by [Name]
+- *v0.1 - [YYYY-MM-DD hh:mm]* - Initial test plan by [Name]
