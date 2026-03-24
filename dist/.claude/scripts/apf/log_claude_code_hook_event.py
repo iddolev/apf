@@ -7,7 +7,7 @@ Receives hook input as JSON on stdin.
 import json
 import sys
 
-from common import InvalidInputException, APF_FOLDER, KEY_log_claude_code_hook_event, config_key_to_log_filepath
+from common import InvalidInputException, APF_CONFIG_FOLDER, KEY_log_claude_code_hook_event, config_key_to_log_filepath
 from logger import Logger
 from set_hooks_for_claude_code_event_logger import HooksInstaller
 
@@ -65,5 +65,5 @@ if __name__ == "__main__":
         config_key=KEY_log_claude_code_hook_event,
         logfile=LOGFILE,
         field_definitions=FIELD_DEFINITIONS,
-        sentinel_filepath=f"{APF_FOLDER}/.{KEY_log_claude_code_hook_event}",
+        sentinel_filepath=f"{APF_CONFIG_FOLDER}/.{KEY_log_claude_code_hook_event}",
     ).main()

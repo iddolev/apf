@@ -8,8 +8,9 @@ import yaml
 ALLOW_ALL_FIELDS = "*"
 
 APF_FOLDER = ".apf"
+APF_CONFIG_FOLDER = f"{APF_FOLDER}/config"
 APF_INFO_FILENAME = ".apf.yaml"
-APF_INFO_FILEPATH = f"{APF_FOLDER}/{APF_INFO_FILENAME}"
+APF_INFO_FILEPATH = f"{APF_CONFIG_FOLDER}/{APF_INFO_FILENAME}"
 
 KEY_log_claude_code_hook_event = "log_claude_code_hook_event"
 

@@ -6,7 +6,7 @@ Usage: python .claude/scripts/log_agent_invocation.py "<agent-name>" "<event-typ
 
 import sys
 
-from common import InvalidInputException, APF_FOLDER, ALLOW_ALL_FIELDS, config_key_to_log_filepath
+from common import InvalidInputException, APF_CONFIG_FOLDER, ALLOW_ALL_FIELDS, config_key_to_log_filepath
 from logger import Logger, EVENT_ID_FIELD, EVENT_ID_VALUE
 
 KEY_log_agent_invocation = "log_agent_invocation"
@@ -34,5 +34,5 @@ if __name__ == "__main__":
         logfile=LOGFILE,
         # We always want all the three fields: actor, event_type, message - therefore ALLOW_ALL_FIELDS
         field_definitions=ALLOW_ALL_FIELDS,
-        sentinel_filepath=f"{APF_FOLDER}/.{KEY_log_agent_invocation}",
+        sentinel_filepath=f"{APF_CONFIG_FOLDER}/.{KEY_log_agent_invocation}",
     ).main()

@@ -1,5 +1,5 @@
 @echo off
-set "FLAG_FILE=.apf\.log_claude_code_hook_event"
+set "FLAG_FILE=.apf\config\.log_claude_code_hook_event"
 set /p FLAG=<"%FLAG_FILE%"
 if "%FLAG%"=="on" (
     echo HI1111

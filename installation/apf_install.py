@@ -30,8 +30,9 @@ import yaml
 # Although the following 3 variables appear in dist/.claude/scripts/apf/common.py
 # this file cannot be accessed here, as it can be copied only during copy_path_map()
 APF_FOLDER = ".apf"
+APF_CONFIG_FOLDER = f"{APF_FOLDER}/config"
 APF_INFO_FILENAME = ".apf.yaml"
-APF_INFO_FILEPATH = f"{APF_FOLDER}/{APF_INFO_FILENAME}"
+APF_INFO_FILEPATH = f"{APF_CONFIG_FOLDER}/{APF_INFO_FILENAME}"
 
 REPO_URL = "https://github.com/iddolev/apf.git"
 REPO_SLUG = "iddolev/apf"  # for raw.githubusercontent.com
@@ -63,7 +64,7 @@ PATH_MAP: list[tuple[str, str, bool]] = [
 # because .apf.yaml is supposed to be tracked in the git of the user project.
 GITIGNORE_ENTRIES = [
     "apf_install.bat",
-    ".apf/",
+    ".apf/config/",
     ".claude/commands/apf/",
     ".claude/scripts/apf/",
     ".claude/shared",
