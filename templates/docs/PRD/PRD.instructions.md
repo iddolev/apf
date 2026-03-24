@@ -64,6 +64,11 @@ Each product version gets its own PRD file (e.g., `PRD_v0.1.md`, `PRD_v0.2.md`).
 The version in the filename must match the Version field in Section 1
 (Document Control).
 
+## Date and time placeholders
+
+Wherever the template contains the pattern `YYYY-MM-DD hh:mm`, replace it with
+the current date and time in that exact format (e.g., `2026-03-24 14:30`).
+
 ## Continuation
 
 The process here may be interrupted (e.g. the user stopped working for the day and

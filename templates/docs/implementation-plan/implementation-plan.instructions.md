@@ -65,6 +65,11 @@ Implementation plan files are named `implementation-plan_v{version}.md` and stor
 `project_root/docs/plans/`. The version matches the TSD version it derives from (e.g.,
 `implementation-plan_v0.1.md` derives from `TSD_v0.1.md`).
 
+## Date and time placeholders
+
+Wherever the template contains the pattern `YYYY-MM-DD hh:mm`, replace it with
+the current date and time in that exact format (e.g., `2026-03-24 14:30`).
+
 ## Continuation
 
 Whenever you start following these instructions, check whether any `implementation-plan_v*.md` files

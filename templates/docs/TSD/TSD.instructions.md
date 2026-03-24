@@ -70,6 +70,11 @@ TSD files are named `TSD_v{version}.md` and stored in `project_root/docs/specs/`
 The version matches the PRD version it implements (e.g., `TSD_v0.1.md` implements
 `PRD_v0.1.md`).
 
+## Date and time placeholders
+
+Wherever the template contains the pattern `YYYY-MM-DD hh:mm`, replace it with
+the current date and time in that exact format (e.g., `2026-03-24 14:30`).
+
 ## Continuation
 
 Whenever you start following these instructions, check whether any `TSD_v*.md` files already exist
