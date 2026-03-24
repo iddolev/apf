@@ -439,9 +439,9 @@ technical considerations.
 
 ## 17) Decisions Log
 
-| ID | Date | Decision | Rationale | Owner |
-|----|------|----------|-----------|-------|
-| D-001 | [TBD] | [TBD] | [TBD] | [TBD] |
+| ID | Timestamp                          | Decision | Rationale | Owner |
+|----|------------------------------------|----------|-----------|-------|
+| D-001 | [TBD, in format: YYYY-MM-DD hh:mm] | [TBD] | [TBD] | [TBD] |
 
 ---
 
@@ -466,6 +466,6 @@ technical considerations.
 
 ### Appendix C: Change Log
 
-| Version | Date | Author | Changes |
-|---------|------|--------|---------|
-| 0.1 | [TBD] | [TBD] | Initial draft |
+| Version | Timestamp                           | Author | Changes |
+|---------|-------------------------------------|--------|---------|
+| 0.1 | [TBD, in format: YYYY-MM-DD hh:mm] | [TBD] | Initial draft |
