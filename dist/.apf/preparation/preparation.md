@@ -51,8 +51,14 @@ identify the first checkbox that is not `[v]`, and resume from that stage:
 
 1. Tell the user you're resuming from that stage.
 2. Update the `STATE` file as needed as you go along.
-3. Go to the appropriate stage (and when that stage is done, mark it in the STATE file,
-   and move on to the subsequent stage).
+3. Go to the appropriate stage according to the `STATE` file.
+
+## Updating `STATE`
+
+1. Whenever you start a new stage, mark its checkbox in the STATE file as `[.]` 
+   to indicate it's in progress.
+2. Whenever you complete a stage, mark its checkbox in the STATE file as `[v]`.
+3. If there is a problem with a stage, mark its checkbox in the STATE file as `[!]`.
 
 ## How to interact with the user
 
