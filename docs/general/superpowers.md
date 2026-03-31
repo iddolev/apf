@@ -356,3 +356,31 @@ Wait for user approval before proceeding.
 **Why it's not mechanically guaranteed:** There's no code enforcing this. Unlike the `SessionStart` hook — which runs deterministically as a shell script — this is purely instruction-following by an LLM. The skill authors know this, which is why the language is so aggressive ("ABSOLUTELY MUST", "not negotiable, not optional", "you cannot rationalize your way out of this", the entire red flags table). All of that exists precisely *because* an LLM can always find a reason not to follow a rule. The stronger the framing, the more likely compliance — but it's still probabilistic, not deterministic.
 
 **In short:** "I want to create X" should reliably trigger brainstorming because the match is obvious. Where it gets shakier is with ambiguous requests where the skill match isn't immediately obvious — that's the gap the red flags table tries to close.
+
+---
+
+## Code-reviewer Was Wrongly Called
+
+When the "brainstorming" skill was running, at some point around spec review loop, 
+claude decided to run the "code-reviewer" agent (which is defined as part of the superpowers plugin).
+
+So I asked Claude: 
+Explain why you invoked superpowers:code-reviewer now, before there is any code to review
+
+### Claude answered
+
+You're right to call that out. I shouldn't have.
+
+  The brainstorming skill instructs me to "dispatch a spec-document-reviewer subagent" — that's a generic subagent I should have described and prompted from scratch, not
+  superpowers:code-reviewer. That agent is meant for reviewing implemented code against a plan and coding standards, not for reviewing a design document.
+
+  What I did worked incidentally — I gave the agent a clear spec-review prompt and it behaved reasonably — but I grabbed the wrong tool. I should have either:
+
+  - Dispatched a plain general-purpose agent with a well-crafted spec-review prompt, or
+  - Done the spec review inline myself, since the document was short enough
+
+  I'll use superpowers:code-reviewer correctly going forward: only after code has been written.
+
+### My opinion
+
+Relying on the LLM to follow such instructions and know where to run which agent is not reliable.
