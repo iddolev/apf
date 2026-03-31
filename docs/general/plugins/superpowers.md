@@ -389,8 +389,16 @@ Relying on the LLM to follow such instructions and know where to run which agent
 
 ## Actual behavior
 
+### Unreasonably long/detailed plan
+
 This thing produced a "plan" which is 1150 lines long all in one file. 
 With a lot of snippets of long python code (instead of relying on a "coder" to write them).
 It's not really a plan with steps (like in APF), but all or most "fleshed out".
 No wonder it works so slowly.
+
+### Took way too much time
+
+Took a lot of time, even for steps that already had planned, 
+plus Claude Code continuously stopped to ask yes/no questions. 
+It's very unpractical. 
 
