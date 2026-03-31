@@ -384,3 +384,13 @@ You're right to call that out. I shouldn't have.
 ### My opinion
 
 Relying on the LLM to follow such instructions and know where to run which agent is not reliable.
+
+---
+
+## Actual behavior
+
+This thing produced a "plan" which is 1150 lines long all in one file. 
+With a lot of snippets of long python code (instead of relying on a "coder" to write them).
+It's not really a plan with steps (like in APF), but all or most "fleshed out".
+No wonder it works so slowly.
+
