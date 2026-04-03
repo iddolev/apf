@@ -402,3 +402,10 @@ Took a lot of time, even for steps that already had planned,
 plus Claude Code continuously stopped to ask yes/no questions. 
 It's very unpractical. 
 
+### Didn't do basic things
+
+E.g.:
+
+1. Check that number of arguments of the script is as required 
+   and if not then print helpful message for usage
+2. 
