@@ -23,7 +23,7 @@ So this is illuminated here for key folders and files.
 3. `.claude/`:  Entities for Claude Code (definitions of commands, skills, agents, hooks, etc.)
    Some of them are used only during development of APF itself,
    and some of them are useful for both APF and the user project
-   - so these are placed under an `apf` sub-folder (e.g. `commands/apf/format-markdown.md`)
+   - so the latter are placed under an `apf` sub-folder (e.g. `commands/apf/consistency-review.md`)
 4. `installation`:  Installation script that is used by the user to install APF in the user project,
    as well as for updating to a newer version of APF
 5. `docs/`:  Documents about APF
