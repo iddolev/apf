@@ -55,7 +55,6 @@ PATH_MAP: list[tuple[str, str, bool]] = [
     (f"{DISTRIBUTION_FOLDER}/{APF_FOLDER}/rules",     f"{APF_FOLDER}/rules",   True),
     (f"{DISTRIBUTION_FOLDER}/.claude/commands/apf/",  ".claude/commands/apf/", True),
     (f"{DISTRIBUTION_FOLDER}/.claude/apf/",           ".claude/apf/",          True),
-    (f"{DISTRIBUTION_FOLDER}/rules/apf/",             "rules/apf/",            True),
     (".claude/commands/apf/",                         ".claude/commands/apf/", True),
     (".claude/apf/",                                  ".claude/apf/",          True),
     (f"{DISTRIBUTION_FOLDER}/{APF_FOLDER}/preparation/", f"{APF_FOLDER}/preparation/", True),
