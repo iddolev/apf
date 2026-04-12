@@ -18,7 +18,7 @@ So this is illuminated here for key folders and files.
 
 ### Folders
 
-1. `dist/`:  Files copied as-is into the user project
+1. `distribution/`:  Files copied as-is into the user project
 2. `templates/`:  Files instantiated by the preparation process into the user project
 3. `.claude/`:  Entities for Claude Code (definitions of commands, skills, agents, hooks, etc.)
    Some of them are used only during development of APF itself,
@@ -33,7 +33,7 @@ So this is illuminated here for key folders and files.
 ### Central Files
 
 1. `README.md`:  This file, a starting point for the Agentic Programming Framework.
-2. `dist/README.apf.md`:  A subsidiary README file to be copied to the user project.
+2. `distribution/README.apf.md`:  A subsidiary README file to be copied to the user project.
    Explains how APF helped create the user's project.
 3. `templates/README.tmpl.md`:  An optional README template the user can choose to use.
    The user may also choose to follow a different format,
