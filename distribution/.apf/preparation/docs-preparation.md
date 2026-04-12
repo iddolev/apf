@@ -46,19 +46,19 @@ In all the files mentioned below:
 1. `PROGRAMMING-PRINCIPLES`: Instantiate
    `.apf/preparation/templates/rules/PROGRAMMING-PRINCIPLES.tmpl.md` according to its
    `<!-- ADAPT -->` markers, using information from the PRD and TSD. Place the
-   result at `rules/apf/PROGRAMMING-PRINCIPLES.md`.
+   result at `.apf/rules/PROGRAMMING-PRINCIPLES.md`.
 2. `PROJECT-RULES`: Instantiate
    `.apf/preparation/templates/rules/PROJECT-RULES.tmpl.md` — derive
    rules from the TSD and PRD, then confirm each rule with the user. Place the
-   result at `rules/apf/PROJECT-RULES.md`.
+   result at `.apf/rules/PROJECT-RULES.md`.
 3. `SECURITY-CONVENTIONS`: If the project has
    security conventions beyond `PROGRAMMING-PRINCIPLES.md`, then instantiate
    `.apf/preparation/templates/rules/SECURITY-CONVENTIONS.tmpl.md` and
-   place the result at `rules/apf/SECURITY-CONVENTIONS.md`.
+   place the result at `.apf/rules/SECURITY-CONVENTIONS.md`.
 4. `GIT-RULES`: Instantiate
    `.apf/preparation/templates/rules/GIT-RULES.tmpl.md` — confirm the
    commit message format, branch naming, agent permissions etc. with the user. Place
-   the result at `rules/apf/GIT-RULES.md`.
+   the result at `.apf/rules/GIT-RULES.md`.
 5. `PROJECT-STRUCTURE`: Instantiate
    `.apf/preparation/templates/PROJECT-STRUCTURE.tmpl.md` —
    derive from the TSD's architecture and the implementation plan's work breakdown.
