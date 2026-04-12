@@ -47,17 +47,19 @@ REPO_SLUG = "iddolev/apf"  # for raw.githubusercontent.com
 # destination does not yet exist).
 # Directories are copied recursively; files are copied individually.
 PATH_MAP: list[tuple[str, str, bool]] = [
-    (f"{DISTRIBUTION_FOLDER}/{APF_VERSION_FILEPATH}", APF_VERSION_FILEPATH,  True),
-    (f"{DISTRIBUTION_FOLDER}/{APF_CONFIG_FOLDER}",    APF_CONFIG_FOLDER,     False),
-    (f"{DISTRIBUTION_FOLDER}/README.apf.md",          "README.apf.md",       True),
-    (f"{DISTRIBUTION_FOLDER}/CLAUDE.apf.md",          "CLAUDE.apf.md",       True),
-    (f"{DISTRIBUTION_FOLDER}/.claude/commands/",      ".claude/commands/",   True),
-    (f"{DISTRIBUTION_FOLDER}/.claude/apf/",           ".claude/apf/",        True),
-    (f"{DISTRIBUTION_FOLDER}/rules/apf/",             "rules/apf/",          True),
-    (".claude/commands/apf/",        ".claude/commands/apf/",                True),
-    (".claude/apf/",                 ".claude/apf/",                         True),
+    (f"{DISTRIBUTION_FOLDER}/README.apf.md",          "README.apf.md",         True),
+    (f"{DISTRIBUTION_FOLDER}/CLAUDE.apf.md",          "CLAUDE.apf.md",         True),
+    (f"{DISTRIBUTION_FOLDER}/{APF_VERSION_FILEPATH}", APF_VERSION_FILEPATH,    True),
+    (f"{DISTRIBUTION_FOLDER}/{APF_CONFIG_FOLDER}",    APF_CONFIG_FOLDER,       False),
+    (f"{DISTRIBUTION_FOLDER}/{APF_FOLDER}/preparation", f"{APF_FOLDER}/preparation", True),
+    (f"{DISTRIBUTION_FOLDER}/{APF_FOLDER}/rules",     f"{APF_FOLDER}/rules",   True),
+    (f"{DISTRIBUTION_FOLDER}/.claude/commands/apf/",  ".claude/commands/apf/", True),
+    (f"{DISTRIBUTION_FOLDER}/.claude/apf/",           ".claude/apf/",          True),
+    (f"{DISTRIBUTION_FOLDER}/rules/apf/",             "rules/apf/",            True),
+    (".claude/commands/apf/",                         ".claude/commands/apf/", True),
+    (".claude/apf/",                                  ".claude/apf/",          True),
     (f"{DISTRIBUTION_FOLDER}/{APF_FOLDER}/preparation/", f"{APF_FOLDER}/preparation/", True),
-    ("templates/",                   ".apf/preparation/templates/",          True),
+    ("templates/",                     f"{APF_FOLDER}/preparation/templates/", True),
 ]
 
 # The following are supposed to be copied as-is to the user's project
@@ -66,9 +68,9 @@ GITIGNORE_ENTRIES = [
     "apf_install.bat",
     ".apf/config/",
     ".apf/preparation/",
+    ".apf/rules/",
     ".claude/commands/apf/",
-    ".claude/scripts/apf/",
-    ".claude/shared",
+    ".claude/apf/",
 ]
 
 

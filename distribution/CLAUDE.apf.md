@@ -26,7 +26,7 @@ Read @README.md and @README.apf.md.
 
 ## Git Rules
 
-Read and follow @rules/GIT-RULES.md -- it defines the commit message format, branch
+Read and follow @.apf/rules/GIT-RULES.md -- it defines the commit message format, branch
 naming, push policy, and which agents may use git.
 
 ## Agent Delegation
