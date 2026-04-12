@@ -1,6 +1,6 @@
-# Analysis: frontend-specialist-template vs mykey-frontend-specialist
+# Analysis: apf-frontend-specialist-template vs mykey-frontend-specialist
 
-Comparison of `instructions/.claude/agent-templates/frontend-specialist.tmpl.md` vs
+Comparison of `instructions/.claude/agents/apf-frontend-specialist.tmpl.md` vs
 `sandbox/michael-mykey-agents/mykey-frontend-specialist.md`.
 
 The template is already quite strong here — it has responsive design, accessibility, component

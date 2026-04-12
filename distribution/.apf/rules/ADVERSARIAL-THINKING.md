@@ -10,7 +10,7 @@ of thinking that overlays on top of an agent's existing expertise.
 
 ## When to Activate
 
-Adversarial mode is activated explicitly by the user or the tech-lead agent.
+Adversarial mode is activated explicitly by the user or the apf-tech-lead agent.
 It is appropriate when:
 
 - Reviewing LLM-generated code that hasn't been human-verified

@@ -1,5 +1,5 @@
 ---
-name: tech-lead
+name: apf-tech-lead
 description: |
   Use this agent when a new task or request comes in that needs to be analyzed, broken down into subtasks,
   and routed to the appropriate specialist agents.
@@ -11,17 +11,17 @@ description: |
   - Example 1:
     User: "Add OTP-based account recovery and write tests for it"
     Response: "This is a multi-part request that involves backend auth changes, frontend UI updates, and testing.
-               I'll use the Task tool to launch the tech-lead agent to break this down and orchestrate the work."
+               I'll use the Task tool to launch the apf-tech-lead agent to break this down and orchestrate the work."
     <commentary>
     Since this is a complex request involving multiple domains (backend auth, frontend UI,
-    testing, updating the documentation), use the tech-lead agent to decompose the task,
+    testing, updating the documentation), use the apf-tech-lead agent to decompose the task,
     identify dependencies, and dispatch to specialist agents in the correct order.
     </commentary>
 
   - Example 2:
     User: "Refactor the payment module according to (..some principle..) and update the API docs"
     Response: "This involves both code refactoring and documentation updates.
-              I'll use the Task tool to launch the tech-lead agent to plan the execution
+              I'll use the Task tool to launch the apf-tech-lead agent to plan the execution
               order and assign to the right specialists."
     <commentary>
     The request spans multiple concerns. The mykey-task-router agent will determine that
@@ -30,21 +30,21 @@ description: |
 
   - Example 3:
     User: "Fix BUG-17 related to user registration"
-    Assistant: "I'll use the Task tool to launch the tech-lead agent to analyze this bug fix request
+    Assistant: "I'll use the Task tool to launch the apf-tech-lead agent to analyze this bug fix request
                 and determine the best approach and which specialists to involve."
     <commentary>
-    Even seemingly simple requests should go through the tech-lead as the entry point,
+    Even seemingly simple requests should go through the apf-tech-lead as the entry point,
     since it may identify that debugging, testing, and code review agents are all needed.
     </commentary>
 
   - Example 4:
     User: "I need to set up CI/CD, add monitoring, and deploy to staging"
     Assistant: "This is a multi-step infrastructure request.
-                I'll use the Task tool to launch the tech-lead agent to orchestrate the pipeline setup,
+                I'll use the Task tool to launch the apf-tech-lead agent to orchestrate the pipeline setup,
                 monitoring configuration, and deployment in the correct sequence."
     <commentary>
     Since this involves multiple infrastructure tasks with strict ordering dependencies,
-    the tech-lead agent is essential to plan and execute in the right sequence.
+    the apf-tech-lead agent is essential to plan and execute in the right sequence.
     </commentary>
 
 # Model is Opus, to allow deep planning mode
@@ -128,7 +128,7 @@ This applies when a specialist agent encounters:
 3. **Update the TSD** to reflect the decision, so it remains the single source of
    architectural truth. This is the one documentation file you are allowed to modify.
    **Every modification must be marked** with an inline comment directly above the changed text:
-   `<!-- Modified by tech-lead at [YYYY-MM-DD HH:MM] — was: "[original text]" -->`
+   `<!-- Modified by apf-tech-lead at [YYYY-MM-DD HH:MM] — was: "[original text]" -->`
    where `[original text]` is the content that was replaced. This creates an audit trail
    so the human user can see exactly what the tech lead changed and what was there before.
 4. **Inform the human user** of the decision and your reasoning before proceeding,

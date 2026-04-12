@@ -1,11 +1,11 @@
-# Analysis: tech-lead-template vs mykey-task-router and mykey-system-architect
+# Analysis: apf-tech-lead-template vs mykey-task-router and mykey-system-architect
 
-The tech-lead template maps to TWO sandbox agents: `mykey-task-router` (orchestration) and
+The apf-tech-lead template maps to TWO sandbox agents: `mykey-task-router` (orchestration) and
 `mykey-system-architect` (architectural decisions). This is a significant structural difference.
 
 ## Structural insight
 
-The template combines orchestration and architecture into one "tech-lead" role. The mykey project
+The template combines orchestration and architecture into one "apf-tech-lead" role. The mykey project
 splits them:
 
 - **task-router**: Pure orchestration — analyzes requests, decomposes tasks, dispatches to pipeline
@@ -19,7 +19,7 @@ This split is arguably better because:
 2. The architect can be skipped for simple tasks while the router always runs
 3. Context window efficiency — the router doesn't need architectural knowledge loaded
 
-However, the template's approach (single tech-lead) is simpler and may be sufficient for smaller
+However, the template's approach (single apf-tech-lead) is simpler and may be sufficient for smaller
 projects.
 
 ## Worth incorporating from mykey-task-router
@@ -27,7 +27,7 @@ projects.
 ### 1. Pipeline diagram and stage details
 
 The task-router has an explicit pipeline diagram with 6 stages and detailed stage descriptions
-(when to use, when to skip, input/output for each). The tech-lead template references
+(when to use, when to skip, input/output for each). The apf-tech-lead template references
 `@AGENTS-LIST.md` but doesn't have this level of pipeline detail built-in. Consider adding a
 generic pipeline framework.
 
@@ -86,7 +86,7 @@ estimates, cross-layer impacts.
 
 ## Recommendation
 
-Consider whether the template should remain a single "tech-lead" or be split into "tech-lead"
+Consider whether the template should remain a single "apf-tech-lead" or be split into "apf-tech-lead"
 (orchestrator) and "system-architect" (advisor). If keeping as one, incorporate the best of both.
 If splitting, consider adding a system-architect template.
 

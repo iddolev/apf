@@ -1,6 +1,6 @@
-# Analysis: security-specialist-template vs mykey-security-specialist
+# Analysis: apf-security-specialist-template vs mykey-security-specialist
 
-Comparison of `instructions/.claude/agent-templates/security-specialist.tmpl.md` vs
+Comparison of `instructions/.claude/agents/apf-security-specialist.tmpl.md` vs
 `sandbox/michael-mykey-agents/mykey-security-specialist.md`.
 
 The template is already **very strong** — it has comprehensive sections on threat modeling, input

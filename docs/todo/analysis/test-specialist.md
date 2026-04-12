@@ -1,6 +1,6 @@
-# Analysis: test-specialist-template vs mykey-test-specialist
+# Analysis: apf-test-specialist-template vs mykey-test-specialist
 
-Comparison of `instructions/.claude/agent-templates/test-specialist.tmpl.md` vs
+Comparison of `instructions/.claude/agents/apf-test-specialist.tmpl.md` vs
 `sandbox/michael-mykey-agents/mykey-test-specialist.md`.
 
 The template is already strong with test quality, structure, mocking/isolation, and

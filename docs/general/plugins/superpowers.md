@@ -362,24 +362,24 @@ Wait for user approval before proceeding.
 ## Code-reviewer Was Wrongly Called
 
 When the "brainstorming" skill was running, at some point around spec review loop, 
-claude decided to run the "code-reviewer" agent (which is defined as part of the superpowers plugin).
+claude decided to run the "apf-code-reviewer" agent (which is defined as part of the superpowers plugin).
 
 So I asked Claude: 
-Explain why you invoked superpowers:code-reviewer now, before there is any code to review
+Explain why you invoked superpowers:apf-code-reviewer now, before there is any code to review
 
 ### Claude answered
 
 You're right to call that out. I shouldn't have.
 
   The brainstorming skill instructs me to "dispatch a spec-document-reviewer subagent" — that's a generic subagent I should have described and prompted from scratch, not
-  superpowers:code-reviewer. That agent is meant for reviewing implemented code against a plan and coding standards, not for reviewing a design document.
+  superpowers:apf-code-reviewer. That agent is meant for reviewing implemented code against a plan and coding standards, not for reviewing a design document.
 
   What I did worked incidentally — I gave the agent a clear spec-review prompt and it behaved reasonably — but I grabbed the wrong tool. I should have either:
 
   - Dispatched a plain general-purpose agent with a well-crafted spec-review prompt, or
   - Done the spec review inline myself, since the document was short enough
 
-  I'll use superpowers:code-reviewer correctly going forward: only after code has been written.
+  I'll use superpowers:apf-code-reviewer correctly going forward: only after code has been written.
 
 ### My opinion
 

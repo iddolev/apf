@@ -4,7 +4,7 @@ The sandbox has 4 agents that don't have corresponding templates:
 
 ## 1. mykey-code-reviewer — SHOULD create a template
 
-The todo.md already lists "code-reviewer" under "Add more agents". The mykey version is
+The todo.md already lists "apf-code-reviewer" under "Add more agents". The mykey version is
 well-structured with:
 
 - Clear pipeline role (Stage 3, mandatory after implementation)
@@ -16,7 +16,7 @@ well-structured with:
 - Clear "What You Are NOT" section
 - Automated checks step (linting, type checking)
 
-This is high-value and mostly generic. Recommend creating `code-reviewer.tmpl.md`.
+This is high-value and mostly generic. Recommend creating `apf-code-reviewer.tmpl.md`.
 
 ## 2. mykey-docs-specialist — SHOULD create a template
 
@@ -49,8 +49,8 @@ This could be very valuable as a generic template. It fills a role that none of 
 cover — adversarial review before implementation, complementing the code reviewer (which reviews
 after implementation). Consider adding to the agent roster.
 
-## 4. mykey-task-router — already covered by tech-lead template
+## 4. mykey-task-router — already covered by apf-tech-lead template
 
-The task-router's orchestration role is covered by the tech-lead template. See
+The task-router's orchestration role is covered by the apf-tech-lead template. See
 [tech-lead.md](tech-lead.md) for specific elements worth incorporating. No separate template
 needed.

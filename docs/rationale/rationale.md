@@ -183,7 +183,7 @@ Collapsing architectural authority into the tech lead avoids this entirely.
 Adding an architect agent means another agent that needs to load project context.
 The tech lead already has it loaded. No duplication needed.
 
-<a id="34-what-this-means-for-the-tech-lead"/>
+<a id="34-what-this-means-for-the-apf-tech-lead"/>
 
 ### 3.4. What This Means for the Tech Lead
 
@@ -241,8 +241,8 @@ distinct categories that each need a different solution.
 | Documentation Function | Current Coverage |
 |---|---|
 | Specs & plans (PRDs, TSDs, implementation plans, test plans) | **Preparation phase** -- `starting-point.md` steps 3-6 orchestrate creation via dedicated instruction files under `instructions/creating-docs/` |
-| Architecture Decision Records (ADRs) | **Tech lead agent** -- authorized to modify the TSD with ADR-format entries (Context, Options, Decision, Consequences) with inline audit trail |
-| Changelogs & release notes | **Not covered** -- requires post-implementation summarization; natural fit for a lightweight release-notes agent or a tech-lead post-phase step |
+| Architecture Decision Records (ADRs) | **apf-tech-lead agent** -- authorized to modify the TSD with ADR-format entries (Context, Options, Decision, Consequences) with inline audit trail |
+| Changelogs & release notes | **Not covered** -- requires post-implementation summarization; natural fit for a lightweight release-notes agent or an apf-tech-lead post-phase step |
 | READMEs (project-level, module-level, package-level) | **Partially covered** -- project-level README created in preparation phase (`starting-point.md` step 12, `README.tmpl.md`); module/package-level READMEs are not addressed |
 | Onboarding guides | **Not covered** -- could be derived from README + project structure + TSD but no process exists |
 | Runbooks (deployment, rollback, incident response) | **Not covered** -- TSD sections on deployment/rollout provide source material but no runbook is generated |

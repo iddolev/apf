@@ -1,6 +1,6 @@
-# Analysis: backend-specialist-template vs mykey-backend-developer
+# Analysis: apf-backend-specialist-template vs mykey-backend-developer
 
-Comparison of `instructions/.claude/agent-templates/backend-specialist.tmpl.md` vs
+Comparison of `instructions/.claude/agents/apf-backend-specialist.tmpl.md` vs
 `sandbox/michael-mykey-agents/mykey-backend-developer.md`.
 
 The mykey version has several substantive sections that the template currently lacks (it only has
@@ -37,7 +37,7 @@ A concrete checklist before considering a task complete. Very useful as a templa
 
 ### 5. Consulting the Architect guidance (partial)
 
-When to escalate to the tech-lead/architect. The template already has pipeline awareness but lacks
+When to escalate to the apf-tech-lead/architect. The template already has pipeline awareness but lacks
 specific escalation criteria.
 
 ## NOT worth incorporating

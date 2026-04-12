@@ -17,7 +17,7 @@ This file contains the list of all available agents and their abilities.
      The field "When to Use" should be filled with the value of the `description` field
      from the agent's yaml frontmatter WITHOUT the examples there. -->
 
-### [agent-name1 e.g. backend-specialist]
+### [agent-name1 e.g. apf-backend-specialist]
 
 Role: [role1 e.g. Backend developer]
 

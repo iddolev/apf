@@ -44,8 +44,8 @@ instructions/
 │   │   ├── AGENTS-LIST.tmpl.md                — Agent roster template
 │   │   └── SHARED-AGENT-CONTEXT.tmpl.md       — Shared context across agents template
 │   └── agent-templates/
-│       ├── tech-lead.tmpl.md                  — Tech lead agent definition
-│       └── backend-specialist.tmpl.md         — Backend specialist agent definition
+│       ├── apf-tech-lead.tmpl.md               — Tech lead agent definition
+│       └── apf-backend-specialist.tmpl.md     — Backend specialist agent definition
 └── state/
     └── STATE.template.yaml            — State tracking for the preparation workflow
 ```
@@ -147,14 +147,14 @@ miss it entirely.
 reference `instructions/creating-docs/*/` and point to instruction files instead of
 templates.
 
-**2. The agent templates stop at two.** There's a tech-lead and a backend-specialist,
-but the `todo.md` lists six more needed roles. The backend-specialist template is
+**2. The agent templates stop at two.** There's an apf-tech-lead and an apf-backend-specialist,
+but the `todo.md` lists six more needed roles. The apf-backend-specialist template is
 well-crafted (the direct-mode vs. pipeline-mode distinction, the `<!-- ADAPT -->`
 markers with concrete examples, the external inspiration links). But until at least a
-frontend-specialist and test-specialist exist, the agent-creation stage of the pipeline
+apf-frontend-specialist and apf-test-specialist exist, the agent-creation stage of the pipeline
 is incomplete for most real projects.
 
-**4. ~~The tech-lead template has a typo and a version hardcode.~~** Fixed. Typo
+**4. ~~The apf-tech-lead template has a typo and a version hardcode.~~** Fixed. Typo
 corrected ("sug-agents" -> "sub-agents") and hardcoded "v0.1" replaced with `[TBD]`
 placeholders with an `<!-- ADAPT -->` marker.
 
@@ -166,7 +166,7 @@ checks PRD->test plan traceability and implementation plan->test plan alignment.
 
 **6. ~~The SHARED-AGENT-CONTEXT template hardcodes "v0.1".~~** Fixed. Replaced
 hardcoded "v0.1" with `[TBD]` placeholders with an `<!-- ADAPT -->` marker in both
-the SHARED-AGENT-CONTEXT template and the tech-lead template (the latter was fixed
+the SHARED-AGENT-CONTEXT template and the apf-tech-lead template (the latter was fixed
 as part of point 4).
 
 ### More to improve: The CLAUDE-template is thin

@@ -9,10 +9,10 @@
 
 Add more agent templates for these roles:
 
-- frontend-specialist
-- test-specialist
-- security-specialist
-- code-reviewer
+- apf-frontend-specialist
+- apf-test-specialist
+- apf-security-specialist
+- apf-code-reviewer
 - documentation-specialist
 - system-architect:
   A Solutions Architect / System Architect that is called to enhance the PRD + TSD documents
@@ -33,12 +33,12 @@ software engineering theory (DRY, SOLID, SoC, etc.). It is the theoretical found
 behind the practical `PROGRAMMING-PRINCIPLES.md`. When creating agent templates,
 follow these rules:
 
-- **code-reviewer agent**: must read SOFTWARE-ENGINEERING-PRINCIPLES.md as its primary
+- **apf-code-reviewer agent**: must read SOFTWARE-ENGINEERING-PRINCIPLES.md as its primary
   review rubric. Review comments should reference specific principles by name.
-- **tech-lead agent**: should read only the "Architecture & Scale" section when planning task
+- **apf-tech-lead agent**: should read only the "Architecture & Scale" section when planning task
   decomposition.
   (Since it's impossible for an agent to read only part of a file, consider splitting the principles
-  file so the tech-lead can access only what it needs.)
+  file so the apf-tech-lead can access only what it needs.)
 - **Coding agents (backend, frontend, test) must NOT read this file.** Their context
   window is better spent on actual code and practical rules. When the code reviewer
   flags a principle violation, the coding agent fixes the specific issue without
@@ -60,8 +60,8 @@ knowledge files.
 
 ### Analysis: which agents need which concerns
 
-**Legend:** TL = tech-lead, BE = backend-specialist, FE = frontend-specialist,
-TE = test-specialist, SE = security-specialist, CR = code-reviewer,
+**Legend:** TL = apf-tech-lead, BE = apf-backend-specialist, FE = apf-frontend-specialist,
+TE = apf-test-specialist, SE = apf-security-specialist, CR = apf-code-reviewer,
 DO = documentation-specialist, SA = system-architect.
 
 <a id="refactor-table"/>

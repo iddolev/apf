@@ -61,10 +61,10 @@ Agents that review, analyze, or plan but do not produce files must not run any g
 
 <!-- ADAPT: List the agents that must not use git. Typical agents:
 
-     - tech-lead (orchestrates, never writes code)
-     - security-specialist (reviews, does not produce code)
+     - apf-tech-lead (orchestrates, never writes code)
+     - apf-security-specialist (reviews, does not produce code)
      - system-architect (plans, does not produce code)
-     - code-reviewer (reviews; while fixes should be re-routed through a coding agent)
+     - apf-code-reviewer (reviews; while fixes should be re-routed through a coding agent)
 -->
 
 - [TBD]
@@ -78,7 +78,7 @@ must adhere to these rules. Before making any file changes, they must:
    then create a new branch from the `main` branch: `git checkout -b <branch-name>`
 2. Make their changes only on the new branch, and never on the `main` branch
 3. Commit their work to the branch using the commit message format above
-4. Report back to the tech-lead agent or human user to say what was done 
+4. Report back to the apf-tech-lead agent or human user to say what was done 
    and ask for permission to push the branch to the remote repository.
 5. After a new branch's first push to the remote repository, 
    the agent must also create a Merge/Pull Request 
@@ -91,9 +91,9 @@ This section applies to the following agents:
 
 <!-- ADAPT: List the agents that follow this workflow. Typical agents:
 
-     - backend-specialist
-     - frontend-specialist
-     - test-specialist
+     - apf-backend-specialist
+     - apf-frontend-specialist
+     - apf-test-specialist
      - documentation-specialist
 -->
 
