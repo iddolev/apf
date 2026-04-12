@@ -64,7 +64,7 @@ PATH_MAP: list[tuple[str, str, bool]] = [
 # The following are supposed to be copied as-is to the user's project
 # and therefore should not also be pushed to the user's project repo.
 GITIGNORE_ENTRIES = [
-    "apf_install.bat",
+    "apf_install.*",
     ".apf/config/",
     ".apf/preparation/",
     ".apf/rules/",
