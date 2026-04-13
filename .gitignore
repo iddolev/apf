@@ -13,3 +13,8 @@ conversations/
 *.local.*
 tmp/
 
+# Don't include files of Code Quality in your repo
+code_quality_install.*
+.code-quality/installation/
+.claude/commands/code-quality/
+.claude/code-quality/
