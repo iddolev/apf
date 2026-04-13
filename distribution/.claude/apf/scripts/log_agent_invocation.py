@@ -9,8 +9,8 @@ import sys
 from common import InvalidInputException, APF_CONFIG_FOLDER, ALLOW_ALL_FIELDS, config_key_to_log_filepath
 from logger import Logger, EVENT_ID_FIELD, EVENT_ID_VALUE
 
-KEY_log_agent_invocation = "log_agent_invocation"
-LOGFILE = config_key_to_log_filepath(KEY_log_agent_invocation)
+KEY_LOG_AGENT_INVOCATION = "log_agent_invocation"
+LOGFILE = config_key_to_log_filepath(KEY_LOG_AGENT_INVOCATION)
 
 
 class AgentInvocationLogger(Logger):
@@ -30,9 +30,9 @@ class AgentInvocationLogger(Logger):
 
 if __name__ == "__main__":
     AgentInvocationLogger(
-        config_key=KEY_log_agent_invocation,
+        config_key=KEY_LOG_AGENT_INVOCATION,
         logfile=LOGFILE,
         # We always want all the three fields: actor, event_type, message - therefore ALLOW_ALL_FIELDS
         field_definitions=ALLOW_ALL_FIELDS,
-        sentinel_filepath=f"{APF_CONFIG_FOLDER}/.{KEY_log_agent_invocation}",
+        sentinel_filepath=f"{APF_CONFIG_FOLDER}/.{KEY_LOG_AGENT_INVOCATION}",
     ).main()

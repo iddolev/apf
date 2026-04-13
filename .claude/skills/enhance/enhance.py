@@ -198,7 +198,10 @@ def handle_no_processed_version(
     # Output suggested version to record
     print_section("SUGGESTED VERSION TO RECORD")
     print(f"After reviewing, update processed_version to: {target}")
-    print(f"(Run: python .claude/skills/enhance/enhance.py --set-version {framework_name} {target})")
+    print(
+        f"(Run: python .claude/skills/enhance/enhance.py"
+        f" --set-version {framework_name} {target})"
+    )
 
     return {"status": "first_review", "target": target}
 
@@ -305,7 +308,10 @@ def handle_update(
 
     print_section("SUGGESTED VERSION TO RECORD")
     print(f"After reviewing, update processed_version to: {new_version}")
-    print(f"(Run: python .claude/skills/enhance/enhance.py --set-version {framework_name} {new_version})")
+    print(
+        f"(Run: python .claude/skills/enhance/enhance.py"
+        f" --set-version {framework_name} {new_version})"
+    )
 
     return {"status": "update_available", "old": old_version, "new": new_version}
 
@@ -343,24 +349,24 @@ def check_framework(framework_name: str) -> dict[str, str]:
     if processed_version is None:
         # First time — full review
         return handle_no_processed_version(framework_name, fw, repo_url)
-    else:
-        # Check for updates
-        latest_tag: str | None = get_latest_tag(repo_url)
-        if latest_tag is None:
-            print_section(f"CHECK: {framework_name}")
-            print(f"No tags found in remote repo. Cannot compare versions.")
-            print(f"Repo: {repo_url}")
-            print(f"Processed version: {processed_version}")
-            return {"status": "no_tags"}
 
-        if latest_tag == processed_version:
-            print_section(f"UP TO DATE: {framework_name}")
-            print(f"Repo:              {repo_url}")
-            print(f"Current version:   {processed_version}")
-            print(f"Latest version:    {latest_tag}")
-            return {"status": "up_to_date"}
+    # Check for updates
+    latest_tag: str | None = get_latest_tag(repo_url)
+    if latest_tag is None:
+        print_section(f"CHECK: {framework_name}")
+        print("No tags found in remote repo. Cannot compare versions.")
+        print(f"Repo: {repo_url}")
+        print(f"Processed version: {processed_version}")
+        return {"status": "no_tags"}
 
-        return handle_update(framework_name, fw, repo_url, processed_version, latest_tag)
+    if latest_tag == processed_version:
+        print_section(f"UP TO DATE: {framework_name}")
+        print(f"Repo:              {repo_url}")
+        print(f"Current version:   {processed_version}")
+        print(f"Latest version:    {latest_tag}")
+        return {"status": "up_to_date"}
+
+    return handle_update(framework_name, fw, repo_url, processed_version, latest_tag)
 
 
 def list_frameworks() -> None:

@@ -12,7 +12,7 @@ APF_CONFIG_FOLDER = f"{APF_FOLDER}/config"
 APF_INFO_FILENAME = ".apf.yaml"
 APF_INFO_FILEPATH = f"{APF_CONFIG_FOLDER}/{APF_INFO_FILENAME}"
 
-KEY_log_claude_code_hook_event = "log_claude_code_hook_event"
+KEY_LOG_CLAUDE_CODE_HOOK_EVENT = "log_claude_code_hook_event"
 
 
 class InvalidInputException(Exception):

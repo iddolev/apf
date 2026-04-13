@@ -77,7 +77,7 @@ class Logger(ABC):
         if not data:
             warn(f"Warning: {self.config_key} section missing "
                  f"from config file {self.config_filepath}, "
-                 f"so no logging will occur")
+                 "so no logging will occur")
             return False, {}
         if data.get("do_all"):
             return ALLOW_ALL_FIELDS
@@ -86,7 +86,7 @@ class Logger(ABC):
         if fields is None:
             warn(f"Warning: 'fields' missing from {self.config_key} section "
                  f"in config file {self.config_filepath}, "
-                 f"so no logging will occur")
+                 "so no logging will occur")
             return False, {}
         if fields == ALLOW_ALL_FIELDS:
             return ALLOW_ALL_FIELDS
@@ -106,7 +106,9 @@ class Logger(ABC):
     def _install_on_existing_section(self, existing) -> bool:
         """Returns True iff there was a change"""
         if not isinstance(existing, dict):
-            raise ValueError(f"Section '{self.config_key}' is missing or corrupt in {self.config_filepath}")
+            raise ValueError(
+                f"Section '{self.config_key}' is missing or corrupt in {self.config_filepath}"
+            )
         fields = existing.get("fields")
         if fields == ALLOW_ALL_FIELDS:
             # Match everything, so no need to mention specific fields
@@ -249,5 +251,8 @@ class Logger(ABC):
             try:
                 self.log_event()
             except InvalidInputException as e:
-                warn(f"{str(e)}\nUsage: {Path(sys.argv[0]).name} [--status | --on | --off | --install]")
+                warn(
+                    f"{str(e)}\nUsage: {Path(sys.argv[0]).name}"
+                    " [--status | --on | --off | --install]"
+                )
                 sys.exit(1)

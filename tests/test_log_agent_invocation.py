@@ -5,24 +5,26 @@ from pathlib import Path
 import pytest
 import yaml
 
-# Make dist/.claude/scripts/apf/ importable
+# Make distribution/.claude/apf/scripts/ importable
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(PROJECT_ROOT / "dist" / ".claude" / "scripts" / "apf"))
+sys.path.insert(0, str(PROJECT_ROOT / "distribution" / ".claude" / "apf" / "scripts"))
 
 from common import ALLOW_ALL_FIELDS, InvalidInputException
-from log_agent_invocation import AgentInvocationLogger, KEY_log_agent_invocation, LOGFILE
+from log_agent_invocation import AgentInvocationLogger, KEY_LOG_AGENT_INVOCATION, LOGFILE
 from logger import Status, EVENT_ID_FIELD, EVENT_ID_VALUE
 
-CONFIG_KEY = KEY_log_agent_invocation
+CONFIG_KEY = KEY_LOG_AGENT_INVOCATION
 
 
-def _make_logger(config_filepath: Path, sentinel_filepath: Path | None = None) -> AgentInvocationLogger:
-    kwargs = dict(
-        config_key=CONFIG_KEY,
-        logfile=LOGFILE,
-        field_definitions=ALLOW_ALL_FIELDS,
-        config_filepath=str(config_filepath),
-    )
+def _make_logger(
+    config_filepath: Path, sentinel_filepath: Path | None = None,
+) -> AgentInvocationLogger:
+    kwargs = {
+        "config_key": CONFIG_KEY,
+        "logfile": LOGFILE,
+        "field_definitions": ALLOW_ALL_FIELDS,
+        "config_filepath": str(config_filepath),
+    }
     if sentinel_filepath is not None:
         kwargs["sentinel_filepath"] = str(sentinel_filepath)
     return AgentInvocationLogger(**kwargs)
@@ -49,7 +51,9 @@ class TestGetInput:
 
     def test_four_args_returns_dict(self, tmp_path, monkeypatch):
         """4 positional args (no invocation_id_value) returns the expected dict."""
-        monkeypatch.setattr("sys.argv", ["script", "claude", "start", "Starting session", "invocation_id"])
+        monkeypatch.setattr(
+            "sys.argv", ["script", "claude", "start", "Starting session", "invocation_id"],
+        )
         logger = self._make_any_logger(tmp_path)
 
         result = logger.get_input()
@@ -62,7 +66,9 @@ class TestGetInput:
 
     def test_five_args_includes_invocation_id_value(self, tmp_path, monkeypatch):
         """5 positional args includes EVENT_ID_VALUE in the result."""
-        monkeypatch.setattr("sys.argv", ["script", "claude", "stop", "Done", "invocation_id", "inv-abc123"])
+        monkeypatch.setattr(
+            "sys.argv", ["script", "claude", "stop", "Done", "invocation_id", "inv-abc123"],
+        )
         logger = self._make_any_logger(tmp_path)
 
         result = logger.get_input()
@@ -83,7 +89,9 @@ class TestGetInput:
 
     def test_too_many_args_raises(self, tmp_path, monkeypatch):
         """More than 5 positional args raises InvalidInputException."""
-        monkeypatch.setattr("sys.argv", ["script", "claude", "start", "msg", "id_field", "id_value", "extra"])
+        monkeypatch.setattr(
+            "sys.argv", ["script", "claude", "start", "msg", "id_field", "id_value", "extra"],
+        )
         logger = self._make_any_logger(tmp_path)
 
         with pytest.raises(InvalidInputException):
@@ -147,7 +155,9 @@ class TestLogEvent:
         _write_config_with_section(config_file)
         logger = self._make_enabled_logger(config_file, sentinel)
         monkeypatch.chdir(tmp_path)
-        monkeypatch.setattr("sys.argv", ["script", "claude", "start", "Session started", "invocation_id"])
+        monkeypatch.setattr(
+            "sys.argv", ["script", "claude", "start", "Session started", "invocation_id"],
+        )
 
         logger.log_event()
 
@@ -216,8 +226,10 @@ class TestLogEvent:
         monkeypatch.chdir(tmp_path)
 
         for event_type in ("start", "stop"):
-            monkeypatch.setattr("sys.argv",
-                                ["script", "claude", event_type, "msg", "invocation_id", f"inv-{event_type}"])
+            monkeypatch.setattr(
+                "sys.argv",
+                ["script", "claude", event_type, "msg", "invocation_id", f"inv-{event_type}"],
+            )
             logger.log_event()
 
         logfile = tmp_path / "logs" / "agent_invocations.jsonl"

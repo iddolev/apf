@@ -7,24 +7,26 @@ from unittest.mock import patch
 import pytest
 import yaml
 
-# Make dist/.claude/scripts/apf/ importable
+# Make distribution/.claude/apf/scripts/ importable
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(PROJECT_ROOT / "dist" / ".claude" / "scripts" / "apf"))
+sys.path.insert(0, str(PROJECT_ROOT / "distribution" / ".claude" / "apf" / "scripts"))
 
-from common import KEY_log_claude_code_hook_event, ALLOW_ALL_FIELDS
+from common import KEY_LOG_CLAUDE_CODE_HOOK_EVENT, ALLOW_ALL_FIELDS
 from log_claude_code_hook_event import ClaudeCodeHookLogger, FIELD_DEFINITIONS, LOGFILE
 from logger import Status
 
-CONFIG_KEY = KEY_log_claude_code_hook_event
+CONFIG_KEY = KEY_LOG_CLAUDE_CODE_HOOK_EVENT
 
 
-def _make_logger(config_filepath: Path, sentinel_filepath: Path | None = None) -> ClaudeCodeHookLogger:
-    kwargs = dict(
-        config_key=CONFIG_KEY,
-        logfile=LOGFILE,
-        field_definitions=FIELD_DEFINITIONS,
-        config_filepath=str(config_filepath),
-    )
+def _make_logger(
+    config_filepath: Path, sentinel_filepath: Path | None = None,
+) -> ClaudeCodeHookLogger:
+    kwargs = {
+        "config_key": CONFIG_KEY,
+        "logfile": LOGFILE,
+        "field_definitions": FIELD_DEFINITIONS,
+        "config_filepath": str(config_filepath),
+    }
     if sentinel_filepath is not None:
         kwargs["sentinel_filepath"] = str(sentinel_filepath)
     return ClaudeCodeHookLogger(**kwargs)
@@ -52,7 +54,9 @@ class TestInstall:
         sentinel = tmp_path / "sentinel"
         _write_base_config(config_file)
 
-        with patch("set_hooks_for_claude_code_event_logger.HooksInstaller.install_hooks_in_settings_file"):
+        with patch(
+            "set_hooks_for_claude_code_event_logger.HooksInstaller.install_hooks_in_settings_file",
+        ):
             _make_logger(config_file, sentinel).install()
 
         config = yaml.safe_load(config_file.read_text(encoding="utf-8"))
@@ -74,7 +78,9 @@ class TestInstall:
         sentinel = tmp_path / "sentinel"
         _write_base_config(config_file)
 
-        with patch("set_hooks_for_claude_code_event_logger.HooksInstaller.install_hooks_in_settings_file"):
+        with patch(
+            "set_hooks_for_claude_code_event_logger.HooksInstaller.install_hooks_in_settings_file",
+        ):
             _make_logger(config_file, sentinel).install()
 
         assert sentinel.exists()
@@ -88,7 +94,9 @@ class TestInstall:
         _write_config_with_section(config_file, fields=all_fields)
         content_before = config_file.read_text(encoding="utf-8")
 
-        with patch("set_hooks_for_claude_code_event_logger.HooksInstaller.install_hooks_in_settings_file"):
+        with patch(
+            "set_hooks_for_claude_code_event_logger.HooksInstaller.install_hooks_in_settings_file",
+        ):
             _make_logger(config_file, sentinel).install()
 
         assert config_file.read_text(encoding="utf-8") == content_before
@@ -100,7 +108,9 @@ class TestInstall:
         partial_fields = {FIELD_DEFINITIONS[0]["name"]: True, FIELD_DEFINITIONS[1]["name"]: False}
         _write_config_with_section(config_file, fields=partial_fields)
 
-        with patch("set_hooks_for_claude_code_event_logger.HooksInstaller.install_hooks_in_settings_file"):
+        with patch(
+            "set_hooks_for_claude_code_event_logger.HooksInstaller.install_hooks_in_settings_file",
+        ):
             _make_logger(config_file, sentinel).install()
 
         config = yaml.safe_load(config_file.read_text(encoding="utf-8"))
@@ -173,7 +183,9 @@ class TestLogEvent:
     def test_writes_enabled_fields_only(self, tmp_path, monkeypatch):
         config_file = tmp_path / "apf.yaml"
         sentinel = tmp_path / "sentinel"
-        _write_config_with_section(config_file, fields={"session_id": True, "agent_type": True, "cwd": False})
+        _write_config_with_section(
+            config_file, fields={"session_id": True, "agent_type": True, "cwd": False},
+        )
         logger = self._make_enabled_logger(config_file, sentinel)
         monkeypatch.chdir(tmp_path)
         monkeypatch.setattr("sys.argv", [""])

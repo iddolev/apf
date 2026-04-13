@@ -202,10 +202,10 @@ def update_gitignore(project_dir: Path, *, dry_run: bool) -> None:
 
     if not gitignore_path.exists():
         if dry_run:
-            print(f"  [dry-run] Would create .gitignore with APF entries")
+            print("  [dry-run] Would create .gitignore with APF entries")
             return
         gitignore_path.write_text(new_section, encoding="utf-8")
-        print(f"  📄 Created .gitignore")
+        print("  📄 Created .gitignore")
         return
 
     content = gitignore_path.read_text(encoding="utf-8")
@@ -219,10 +219,10 @@ def update_gitignore(project_dir: Path, *, dry_run: bool) -> None:
     if not existing_ignore:
         # None of the GITIGNORE_ENTRIES lines exist — add full section
         if dry_run:
-            print(f"  [dry-run] Would add APF section to .gitignore")
+            print("  [dry-run] Would add APF section to .gitignore")
             return
         gitignore_path.write_text(content.rstrip() + "\n\n" + new_section, encoding="utf-8")
-        print(f"  📄 Updated .gitignore")
+        print("  📄 Updated .gitignore")
         return
 
     if not missing:
@@ -235,12 +235,12 @@ def update_gitignore(project_dir: Path, *, dry_run: bool) -> None:
             last_idx = i
 
     if dry_run:
-        print(f"  [dry-run] Would add some APF entries to .gitignore")
+        print("  [dry-run] Would add some APF entries to .gitignore")
         return
 
     new_lines = content_lines[: last_idx + 1] + missing + content_lines[last_idx + 1:]
     gitignore_path.write_text("\n".join(new_lines) + "\n", encoding="utf-8")
-    print(f"  📄 Updated .gitignore")
+    print("  📄 Updated .gitignore")
 
 
 _VERSION_RE = re.compile(r"^version\s*:")
@@ -306,13 +306,13 @@ def update_claude_md(project_dir: Path, *, dry_run: bool) -> None:
 
     if not claude_path.exists():
         if dry_run:
-            print(f"  [dry-run] Would create CLAUDE.md with APF section")
+            print("  [dry-run] Would create CLAUDE.md with APF section")
             return
         claude_path.write_text(
             f"{APF_CLAUDE_SECTION_HEADING}\n\n{APF_CLAUDE_SECTION_BODY}\n",
             encoding="utf-8",
         )
-        print(f"  📄 Created CLAUDE.md")
+        print("  📄 Created CLAUDE.md")
         return
 
     content = claude_path.read_text(encoding="utf-8")
@@ -320,14 +320,14 @@ def update_claude_md(project_dir: Path, *, dry_run: bool) -> None:
         return
 
     if dry_run:
-        print(f"  [dry-run] Would append APF section to CLAUDE.md")
+        print("  [dry-run] Would append APF section to CLAUDE.md")
         return
 
     claude_path.write_text(
         content.rstrip() + f"\n\n{APF_CLAUDE_SECTION_HEADING}\n\n{APF_CLAUDE_SECTION_BODY}\n",
         encoding="utf-8",
     )
-    print(f"  📄 Updated CLAUDE.md")
+    print("  📄 Updated CLAUDE.md")
 
 
 def install(repo_dir: Path, project_dir: Path, new_version: str, *, dry_run: bool) -> None:
@@ -364,7 +364,7 @@ def resolve_versions(project_dir: Path, *, force: bool) -> tuple[str | None, str
 
     if current_version == new_version and not force:
         print(f"ℹ️  Already at version {new_version}.)")
-        print(f"    You can use --force to reinstall.")
+        print("    You can use --force to reinstall.")
         sys.exit(0)
 
     return current_version, new_version
@@ -439,7 +439,7 @@ def main() -> None:
         print()
         print(f"🏁 APF v{new_version} installed successfully.")
         warn(f"⚠️ IMPORTANT NOTE: You should commit {APF_VERSION_FILEPATH} to your repo, "
-             f"to remember the relevant APF info.")
+             "to remember the relevant APF info.")
 
 
 if __name__ == "__main__":

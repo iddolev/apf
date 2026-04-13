@@ -12,15 +12,15 @@ Usage:
 import json
 import os
 
-from common import KEY_log_claude_code_hook_event, APF_FOLDER
+from common import KEY_LOG_CLAUDE_CODE_HOOK_EVENT, APF_FOLDER
 
 
 SETTINGS_PATH = ".claude/settings.json"
-SENTINEL_FILEPATH = f"{APF_FOLDER}/.{KEY_log_claude_code_hook_event}"
+SENTINEL_FILEPATH = f"{APF_FOLDER}/.{KEY_LOG_CLAUDE_CODE_HOOK_EVENT}"
 # The code in HOOK_COMMAND activates a .bat script instead of python log_claude_code_hook_event.py
 # to prevent expensive invocation of python when SENTINEL_FILENAME has "off" or is missing.
 # Only when logging is enabled, the python script is invoked.
-HOOK_COMMAND = fr".claude\\scripts\\apf\\{KEY_log_claude_code_hook_event}.bat"
+HOOK_COMMAND = fr".claude\\scripts\\apf\\{KEY_LOG_CLAUDE_CODE_HOOK_EVENT}.bat"
 
 HOOK_TYPES = [
     "ConfigChange",
@@ -76,7 +76,7 @@ HOOK_ENTRY = {
 }
 
 
-LEGACY_DETECTOR = KEY_log_claude_code_hook_event
+LEGACY_DETECTOR = KEY_LOG_CLAUDE_CODE_HOOK_EVENT
 
 
 class HooksInstaller:
@@ -151,9 +151,15 @@ class HooksInstaller:
             if len(self._existing) == len(HOOK_TYPES):
                 print("Hook event logger already installed for all hook types.")
             else:
-                print(f"The command was already installed for {len(self._existing)} hook type(s): {', '.join(self._existing)}.")
+                print(
+                    f"The command was already installed for {len(self._existing)}"
+                    f" hook type(s): {', '.join(self._existing)}."
+                )
         if self._added:
-            print(f"Installed hook event logger for {len(self._added)} hook type(s): {', '.join(self._added)}.")
+            print(
+                f"Installed hook event logger for {len(self._added)}"
+                f" hook type(s): {', '.join(self._added)}."
+            )
         else:
             print("No command was added for any hook type.")
 
