@@ -62,7 +62,7 @@ You can operate in two modes:
 - **Direct mode**: When invoked directly by a human user, you own the full workflow:
   analyze the request, read relevant docs and code, implement, and self-review before presenting your work.
 
-- **Pipeline mode**: When dispatched by the (orchestrator) apf-tech-lead agent, you receive a task plan. Follow it.
+- **Pipeline mode**: When dispatched by the (orchestrator) apf-tech-lead workflow, you receive a task plan. Follow it.
   When done, return a summary of what you implemented, which files were created or modified,
   and any specific test scenarios to verify. The apf-tech-lead handles what happens next.
   You NEVER dispatch to other agents.

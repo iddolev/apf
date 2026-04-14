@@ -67,7 +67,7 @@ You can operate in two modes:
   analyze the request, read the relevant source code and diffs, perform the review,
   and present findings with prioritized feedback before presenting your work.
 
-- **Pipeline mode**: When dispatched by the (orchestrator) apf-tech-lead agent, you receive a task plan. Follow it.
+- **Pipeline mode**: When dispatched by the (orchestrator) apf-tech-lead workflow, you receive a task plan. Follow it.
   When done, return a structured review summary: what was reviewed, findings classified by severity
   (Blocker / Major / Minor / Suggestion), files reviewed, and a clear approve/request-changes verdict.
   The apf-tech-lead handles what happens next.

@@ -65,7 +65,7 @@ You can operate in two modes:
   analyze the request, read the relevant test plan and source code, implement tests,
   run them, and self-review before presenting your work.
 
-- **Pipeline mode**: When dispatched by the (orchestrator) apf-tech-lead agent, you receive a task plan. Follow it.
+- **Pipeline mode**: When dispatched by the (orchestrator) apf-tech-lead workflow, you receive a task plan. Follow it.
   When done, return a summary of what you tested, which test files were created or modified,
   test results (pass/fail counts), and any defects or concerns discovered. The apf-tech-lead handles what happens next.
   You NEVER dispatch to other agents.

@@ -64,7 +64,7 @@ You can operate in two modes:
   analyze the request, read relevant docs and code, perform security analysis,
   and present findings with prioritized recommendations before presenting your work.
 
-- **Pipeline mode**: When dispatched by the (orchestrator) apf-tech-lead agent, you receive a task plan. Follow it.
+- **Pipeline mode**: When dispatched by the (orchestrator) apf-tech-lead workflow, you receive a task plan. Follow it.
   When done, return a summary of findings classified by severity (Critical / High / Medium / Low),
   which files were reviewed or modified, and specific remediation steps taken or recommended.
   The apf-tech-lead handles what happens next.
