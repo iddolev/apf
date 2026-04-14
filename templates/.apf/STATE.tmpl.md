@@ -31,7 +31,7 @@ version: {version}
 
 - [ ] SHARED-AGENT-CONTEXT.md
 - [ ] CLAUDE.md
-- [ ] apf-tech-lead agent
+- [ ] apf-tech-lead workflow
 - [ ] Additional agents
 - [ ] AGENTS-LIST.md
 
