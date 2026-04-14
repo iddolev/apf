@@ -27,7 +27,7 @@ from urllib.error import URLError
 import yaml
 
 
-# Although the following 3 variables appear in dist/.claude/scripts/apf/common.py
+# Although the following 3 variables appear in distribution/.claude/apf/scripts/common.py
 # this file cannot be accessed here, as it can be copied only during copy_path_map()
 APF_FOLDER = ".apf"
 APF_CONFIG_FOLDER = f"{APF_FOLDER}/config"
@@ -68,6 +68,7 @@ GITIGNORE_ENTRIES = [
     ".apf/config/",
     ".apf/preparation/",
     ".apf/rules/",
+    ".apf/workflows/",
     ".claude/commands/apf/",
     ".claude/apf/",
 ]

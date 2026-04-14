@@ -16,7 +16,7 @@ If the argument is empty or not one of `status`, `on`, `off`, or `install`, tell
 2. Run the Python script with the argument:
 
 ```bash
-python .claude/scripts/apf/log_claude_code_hook_event.py --$ARGUMENTS
+python .claude/apf/scripts/log_claude_code_hook_event.py --$ARGUMENTS
 ```
 
 3. Report the result to the user.

@@ -1,6 +1,6 @@
 # Fix Bugs in format_markdown.py
 
-Bugs found in `.claude/scripts/apf/format_markdown.py`.
+Bugs found in `.claude/apf/scripts/format_markdown.py`.
 
 ## Bug 1 — `wrap_long_lines`: `initial_indent` computed but never used (High)
 

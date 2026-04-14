@@ -11,7 +11,7 @@ last_update: 2026-03-18
 Run the detection script:
 
 ```
-python .claude/scripts/apf/setup_github_ci.py --detect
+python .claude/apf/scripts/setup_github_ci.py --detect
 ```
 
 Parse the JSON output.
@@ -45,13 +45,13 @@ Wait for the user to confirm. If they want to customize, adjust accordingly.
 ## Step 3 — Write workflow file
 
 ```
-python .claude/scripts/apf/setup_github_ci.py --write-workflow
+python .claude/apf/scripts/setup_github_ci.py --write-workflow
 ```
 
 ## Step 4 — Set branch protection
 
 ```
-python .claude/scripts/apf/setup_github_ci.py --protect
+python .claude/apf/scripts/setup_github_ci.py --protect
 ```
 
 ## Step 5 — Commit and push

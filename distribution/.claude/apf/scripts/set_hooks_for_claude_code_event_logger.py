@@ -6,7 +6,7 @@ Loads the existing settings.json, merges in the hook entries (preserving any
 existing hooks), and writes it back.
 
 Usage:
-    python .claude/scripts/apf/install_claude_code_hook_event_logger.py
+    python .claude/apf/scripts/install_claude_code_hook_event_logger.py
 """
 
 import json
