@@ -40,13 +40,15 @@ for the new version.
 
 ## Creating Agent Files
 
-1. Instantiate the file `.apf/preparation/templates/.claude/agents/apf-tech-lead.tmpl.md` 
+1. Instantiate the file `.apf/preparation/templates/.apf/workflows/apf-tech-lead.tmpl.md` 
    according to the instructions in it.
    It must be instantiated in ALL projects.
-   Put the result file `apf-tech-lead.md` under the folder `.claude/agents/`.
+   Put the result file `apf-tech-lead.md` under the folder `.apf/workflows/`.
+   (Note: the apf-tech-lead is a workflow, not a subagent — it interacts with the user
+   directly and therefore is NOT placed under `.claude/agents/`.)
    Mark the apf-tech-lead agent checkbox as `[v]` in the latest `.apf/STATE-v*.md` file.
 2. For each agent template file `<X>.tmpl.md` in the folder 
-   `.apf/preparation/templates/.claude/agents/` (excluding apf-tech-lead, already handled above), 
+   `.apf/preparation/templates/.claude/agents/`, 
    decide whether it is required for the project based on:
    - Roles and responsibilities identified in the PRD and TSD
    - The technology stack (e.g. include a frontend-developer agent only if the project has a
