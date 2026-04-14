@@ -5,6 +5,8 @@ description: Starting point of APF
 last_update: 2026-03-24
 ---
 
+# Starting point of APF
+
 If the STATE*.md file of the latest version shows that some preparation step is not yet complete,
 then follow the instructions in @.apf/preparation/preparation.md .
 
