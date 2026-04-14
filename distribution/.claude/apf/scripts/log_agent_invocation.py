@@ -1,7 +1,7 @@
 """
 Logs agent invocation events to STATE/HISTORY.jsonl.
 
-Usage: python .claude/scripts/log_agent_invocation.py "<agent-name>" "<event-type>" "<message>"
+Usage: python .claude/apf/scripts/log_agent_invocation.py "<agent-name>" "<event-type>" "<message>"
 """
 
 import sys

@@ -17,7 +17,7 @@ If the argument is empty or not one of `status`, `on`, `off`, or `install`, tell
 2. Run the Python script with the argument:
 
 ```bash
-python .claude/scripts/apf/log_agent_invocation.py --$ARGUMENTS
+python .claude/apf/scripts/log_agent_invocation.py --$ARGUMENTS
 ```
 
 3. Report the result to the user.
