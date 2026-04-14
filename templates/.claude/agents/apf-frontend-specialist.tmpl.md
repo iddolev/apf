@@ -14,6 +14,7 @@ description: |
          [Agent tool is invoked with the apf-frontend-specialist agent]
   -->
 
+tools: Glob, Grep, Read, Edit, Write, Bash, WebFetch, WebSearch
 # Model is Sonnet and not Opus, to balance performance and cost
 model: sonnet
 color: orange

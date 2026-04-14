@@ -14,6 +14,8 @@ description: |
          [Agent tool is invoked with the apf-code-reviewer agent]
   -->
 
+tools: Glob, Grep, Read, Bash, WebFetch, WebSearch
+disallowedTools: Write, Edit
 # Model is Sonnet and not Opus, to balance performance and cost
 model: sonnet
 color: cyan
