@@ -12,6 +12,7 @@ private/
 conversations/
 *.local.*
 tmp/
+.env
 
 # Don't include files of Code Quality in your repo
 code_quality_install.*
