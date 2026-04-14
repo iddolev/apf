@@ -1,9 +1,9 @@
 ---
 name: apf-tech-lead
 description: |
-  Use this agent when a new task or request comes in that needs to be analyzed, broken down into subtasks,
+  Use this workflow when a new task or request comes in that needs to be analyzed, broken down into subtasks,
   and routed to the appropriate specialist agents.
-  This agent serves as the primary entry point for all tasks, and orchestrates the
+  This workflow serves as the primary entry point for all tasks, and orchestrates the
   execution flow across multiple agents.
 
   Examples:
@@ -11,26 +11,26 @@ description: |
   - Example 1:
     User: "Add OTP-based account recovery and write tests for it"
     Response: "This is a multi-part request that involves backend auth changes, frontend UI updates, and testing.
-               I'll use the Task tool to launch the apf-tech-lead agent to break this down and orchestrate the work."
+               I'll use the apf-tech-lead workflow to break this down and orchestrate the work."
     <commentary>
     Since this is a complex request involving multiple domains (backend auth, frontend UI,
-    testing, updating the documentation), use the apf-tech-lead agent to decompose the task,
+    testing, updating the documentation), use the apf-tech-lead workflow to decompose the task,
     identify dependencies, and dispatch to specialist agents in the correct order.
     </commentary>
 
   - Example 2:
     User: "Refactor the payment module according to (..some principle..) and update the API docs"
     Response: "This involves both code refactoring and documentation updates.
-              I'll use the Task tool to launch the apf-tech-lead agent to plan the execution
+              I'll use the apf-tech-lead workflow to plan the execution
               order and assign to the right specialists."
     <commentary>
-    The request spans multiple concerns. The mykey-task-router agent will determine that
+    The request spans multiple concerns. The apf-tech-lead workflow will determine that
     refactoring must complete before documentation updates, and will route accordingly.
     </commentary>
 
   - Example 3:
     User: "Fix BUG-17 related to user registration"
-    Assistant: "I'll use the Task tool to launch the apf-tech-lead agent to analyze this bug fix request
+    Assistant: "I'll use the apf-tech-lead workflow to analyze this bug fix request
                 and determine the best approach and which specialists to involve."
     <commentary>
     Even seemingly simple requests should go through the apf-tech-lead as the entry point,
@@ -40,21 +40,19 @@ description: |
   - Example 4:
     User: "I need to set up CI/CD, add monitoring, and deploy to staging"
     Assistant: "This is a multi-step infrastructure request.
-                I'll use the Task tool to launch the apf-tech-lead agent to orchestrate the pipeline setup,
+                I'll use the apf-tech-lead workflow to orchestrate the pipeline setup,
                 monitoring configuration, and deployment in the correct sequence."
     <commentary>
     Since this involves multiple infrastructure tasks with strict ordering dependencies,
-    the apf-tech-lead agent is essential to plan and execute in the right sequence.
+    the apf-tech-lead workflow is essential to plan and execute in the right sequence.
     </commentary>
 
 # Model is Opus, to allow deep planning mode
 model: opus
 color: green
-# memory is project, so that everything important the agent commits to its memory folder is shared in the project
-memory: project
 ---
 
-# Tech Lead Agent
+# Tech Lead Workflow
 
 ## Core Identity
 
