@@ -12,5 +12,5 @@ then follow the instructions in @.apf/preparation/preparation.md .
 
 Otherwise (all the preparation steps were done),
 then ensure that the "Running Agents" stage is marked as processing [.] 
-and activate .apf/workflows/apf-tech-lead.md  
+and activate .apf/workflows/apf-tech-lead.md and resume its operation according to docs/implementation-plan*.md (and if it's done then docs/test-plan*.md). 
 
